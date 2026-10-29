@@ -17,6 +17,7 @@ export function renderCalendarView(container) {
     'January', 'February', 'March', 'April', 'May', 'June',
     'July', 'August', 'September', 'October', 'November', 'December'
   ];
+  const shortMonthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   // Calendar dates math
   const firstDayOfMonth = new Date(year, month - 1, 1);
@@ -32,9 +33,11 @@ export function renderCalendarView(container) {
     const dayNum = prevMonthLastDay - i;
     const prevMonthDate = new Date(year, month - 2, dayNum);
     const dateStr = formatDateStr(prevMonthDate);
+    const showMonthPrefix = (i === startDayOfWeek - 1);
     calendarCells.push({
       dateStr,
       dayNum,
+      displayLabel: showMonthPrefix ? `${shortMonthNames[prevMonthDate.getMonth()]} ${dayNum}` : `${dayNum}`,
       isCurrentMonth: false
     });
   }
@@ -43,9 +46,11 @@ export function renderCalendarView(container) {
   for (let d = 1; d <= totalDaysInMonth; d++) {
     const currDate = new Date(year, month - 1, d);
     const dateStr = formatDateStr(currDate);
+    const showMonthPrefix = (d === 1);
     calendarCells.push({
       dateStr,
       dayNum: d,
+      displayLabel: showMonthPrefix ? `${shortMonthNames[currDate.getMonth()]} ${d}` : `${d}`,
       isCurrentMonth: true
     });
   }
@@ -55,9 +60,11 @@ export function renderCalendarView(container) {
   for (let d = 1; d <= remainingCells; d++) {
     const nextMonthDate = new Date(year, month, d);
     const dateStr = formatDateStr(nextMonthDate);
+    const showMonthPrefix = (d === 1);
     calendarCells.push({
       dateStr,
       dayNum: d,
+      displayLabel: showMonthPrefix ? `${shortMonthNames[nextMonthDate.getMonth()]} ${d}` : `${d}`,
       isCurrentMonth: false
     });
   }
@@ -151,7 +158,7 @@ export function renderCalendarView(container) {
             return `
               <div class="calendar-day-cell ${!cell.isCurrentMonth ? 'other-month' : ''} ${isToday ? 'cell-today' : ''} ${holidaysOnDay.length > 0 ? 'cell-blackout' : ''} ${isSelected ? 'cell-selected' : ''}" data-date="${cell.dateStr}">
                 <div class="cell-top">
-                  <span class="day-number ${isToday ? 'today-pill' : ''}">${cell.dayNum}</span>
+                  <span class="day-number ${isToday ? 'today-pill' : ''}">${cell.displayLabel || cell.dayNum}</span>
                   ${holidaysOnDay.length > 0 ? `
                     <span class="holiday-icon-badge" title="Holiday: ${escapeHtml(holidaysOnDay.map(h => h.name).join(', '))}">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
