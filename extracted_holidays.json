@@ -1,0 +1,149 @@
+[
+  {
+    "id": 1,
+    "name": "Kashmir Day",
+    "startDate": "2026-02-05",
+    "endDate": "2026-02-05",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 2,
+    "name": "Eid-ul-Fitr",
+    "startDate": "2026-03-20",
+    "endDate": "2026-03-21",
+    "notes": "Tentative (moon sighting)"
+  },
+  {
+    "id": 3,
+    "name": "Pakistan Day",
+    "startDate": "2026-03-23",
+    "endDate": "2026-03-23",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 4,
+    "name": "Labour Day",
+    "startDate": "2026-05-01",
+    "endDate": "2026-05-01",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 5,
+    "name": "Eid-ul-Adha",
+    "startDate": "2026-05-27",
+    "endDate": "2026-05-29",
+    "notes": "Tentative (moon sighting)"
+  },
+  {
+    "id": 6,
+    "name": "Ashura (9th-10th Muharram)",
+    "startDate": "2026-06-24",
+    "endDate": "2026-06-25",
+    "notes": "Tentative (Islamic calendar)"
+  },
+  {
+    "id": 7,
+    "name": "Independence Day",
+    "startDate": "2026-08-14",
+    "endDate": "2026-08-14",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 8,
+    "name": "Eid Milad-un-Nabi",
+    "startDate": "2026-08-25",
+    "endDate": "2026-08-25",
+    "notes": "Tentative (moon sighting)"
+  },
+  {
+    "id": 9,
+    "name": "Iqbal Day",
+    "startDate": "2026-11-09",
+    "endDate": "2026-11-09",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 10,
+    "name": "Quaid-e-Azam Day / Christmas",
+    "startDate": "2026-12-25",
+    "endDate": "2026-12-25",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 11,
+    "name": "Kashmir Day",
+    "startDate": "2027-02-05",
+    "endDate": "2027-02-05",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 12,
+    "name": "Eid-ul-Fitr",
+    "startDate": "2027-03-10",
+    "endDate": "2027-03-12",
+    "notes": "Tentative (moon sighting)"
+  },
+  {
+    "id": 13,
+    "name": "Pakistan Day",
+    "startDate": "2027-03-23",
+    "endDate": "2027-03-23",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 14,
+    "name": "Labour Day",
+    "startDate": "2027-05-01",
+    "endDate": "2027-05-01",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 15,
+    "name": "Eid-ul-Adha",
+    "startDate": "2027-05-17",
+    "endDate": "2027-05-18",
+    "notes": "Tentative (moon sighting)"
+  },
+  {
+    "id": 16,
+    "name": "Youm-e-Takbeer",
+    "startDate": "2027-05-28",
+    "endDate": "2027-05-28",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 17,
+    "name": "Ashura (9th-10th Muharram)",
+    "startDate": "2027-06-14",
+    "endDate": "2027-06-15",
+    "notes": "Tentative (Islamic calendar)"
+  },
+  {
+    "id": 18,
+    "name": "Independence Day",
+    "startDate": "2027-08-14",
+    "endDate": "2027-08-14",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 19,
+    "name": "Eid Milad-un-Nabi",
+    "startDate": "2027-08-15",
+    "endDate": "2027-08-15",
+    "notes": "Tentative (moon sighting)"
+  },
+  {
+    "id": 20,
+    "name": "Iqbal Day",
+    "startDate": "2027-11-09",
+    "endDate": "2027-11-09",
+    "notes": "Fixed public holiday"
+  },
+  {
+    "id": 21,
+    "name": "Quaid-e-Azam Day / Christmas",
+    "startDate": "2027-12-25",
+    "endDate": "2027-12-25",
+    "notes": "Fixed public holiday"
+  }
+]
