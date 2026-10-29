@@ -6483,10 +6483,10 @@ body.kanban-dragging-active * {
 }
 
 /* Cards & Surfaces */
-[data-theme="neumorphic"] .card,
-[data-theme="neumorphic"] .stat-card,
-[data-theme="neumorphic"] .chart-card,
-[data-theme="neumorphic"] .report-paper,
+[data-theme="neumorphic"] .card:not(.pdf-light-theme),
+[data-theme="neumorphic"] .stat-card:not(.pdf-light-theme),
+[data-theme="neumorphic"] .chart-card:not(.pdf-light-theme),
+[data-theme="neumorphic"] .report-paper:not(.pdf-light-theme),
 [data-theme="neumorphic"] .kanban-card,
 [data-theme="neumorphic"] .calendar-card,
 [data-theme="neumorphic"] .filter-bar,
@@ -6496,7 +6496,7 @@ body.kanban-dragging-active * {
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
 }
 
-[data-theme="neumorphic"] .card:hover,
+[data-theme="neumorphic"] .card:not(.pdf-light-theme):hover,
 [data-theme="neumorphic"] .kanban-card:hover {
   box-shadow: var(--neu-hover) !important;
 }
@@ -6655,4 +6655,289 @@ body.kanban-dragging-active * {
   color: #0a0a0a !important;
   font-weight: 500 !important;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5) !important;
+}
+
+/* =========================================================
+   ABSOLUTE LIGHT THEME SPECIFICATION FOR PDF EXPORT & PRINT
+   Guaranteed Crisp 100% White Theme across ALL components
+   ========================================================= */
+.report-paper.pdf-light-theme,
+[data-theme] .report-paper.pdf-light-theme,
+[data-theme="neumorphic"] .report-paper.pdf-light-theme {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #e2e8f0 !important;
+  box-shadow: none !important;
+  border-radius: 8px !important;
+  padding: 18px 22px !important;
+  max-width: 800px !important;
+  margin: 0 auto !important;
+}
+
+/* Remove any dark/extruded shadows inside the exported document */
+.report-paper.pdf-light-theme *,
+[data-theme] .report-paper.pdf-light-theme *,
+[data-theme="neumorphic"] .report-paper.pdf-light-theme * {
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* Header & Titles */
+.report-paper.pdf-light-theme .report-doc-header,
+[data-theme] .report-paper.pdf-light-theme .report-doc-header {
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding-bottom: 8px !important;
+}
+
+.report-paper.pdf-light-theme .doc-corp-title,
+[data-theme] .report-paper.pdf-light-theme .doc-corp-title {
+  color: #0f172a !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+}
+
+.report-paper.pdf-light-theme .doc-dept-title,
+[data-theme] .report-paper.pdf-light-theme .doc-dept-title {
+  color: #64748b !important;
+  font-size: 0.7rem !important;
+}
+
+.report-paper.pdf-light-theme .doc-logo-box,
+[data-theme] .report-paper.pdf-light-theme .doc-logo-box {
+  background: #f0fdf4 !important;
+  border: 1px solid #bbf7d0 !important;
+}
+
+.report-paper.pdf-light-theme .doc-logo-box svg,
+[data-theme] .report-paper.pdf-light-theme .doc-logo-box svg {
+  stroke: #059669 !important;
+}
+
+.report-paper.pdf-light-theme .doc-badge,
+[data-theme] .report-paper.pdf-light-theme .doc-badge {
+  background: #0f172a !important;
+  color: #ffffff !important;
+  font-size: 0.6rem !important;
+  font-weight: 700 !important;
+  padding: 2px 7px !important;
+}
+
+.report-paper.pdf-light-theme .doc-period,
+[data-theme] .report-paper.pdf-light-theme .doc-period {
+  color: #0f172a !important;
+  font-size: 1rem !important;
+  font-weight: 700 !important;
+}
+
+.report-paper.pdf-light-theme .doc-date,
+[data-theme] .report-paper.pdf-light-theme .doc-date {
+  color: #64748b !important;
+  font-size: 0.675rem !important;
+}
+
+.report-paper.pdf-light-theme .doc-live-dot,
+[data-theme] .report-paper.pdf-light-theme .doc-live-dot {
+  background: #059669 !important;
+}
+
+/* Title Banner */
+.report-paper.pdf-light-theme .report-title-banner,
+[data-theme] .report-paper.pdf-light-theme .report-title-banner {
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding-bottom: 6px !important;
+}
+
+.report-paper.pdf-light-theme .report-headline,
+[data-theme] .report-paper.pdf-light-theme .report-headline {
+  color: #0f172a !important;
+  font-size: 1.15rem !important;
+  font-weight: 700 !important;
+}
+
+.report-paper.pdf-light-theme .report-subline,
+[data-theme] .report-paper.pdf-light-theme .report-subline {
+  color: #475569 !important;
+  font-size: 0.725rem !important;
+}
+
+.report-paper.pdf-light-theme .report-scope-badge,
+[data-theme] .report-paper.pdf-light-theme .report-scope-badge {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.report-paper.pdf-light-theme .scope-badge-num,
+[data-theme] .report-paper.pdf-light-theme .scope-badge-num {
+  color: #0f172a !important;
+  font-size: 1.15rem !important;
+  font-weight: 800 !important;
+}
+
+.report-paper.pdf-light-theme .scope-badge-lbl,
+[data-theme] .report-paper.pdf-light-theme .scope-badge-lbl {
+  color: #64748b !important;
+  font-size: 0.575rem !important;
+}
+
+/* Narrative Box */
+.report-paper.pdf-light-theme .report-narrative-box,
+[data-theme] .report-paper.pdf-light-theme .report-narrative-box {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  border-left: 3.5px solid #00b48a !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+}
+
+.report-paper.pdf-light-theme .narrative-tag,
+[data-theme] .report-paper.pdf-light-theme .narrative-tag {
+  color: #008f6d !important;
+  font-size: 0.65rem !important;
+  font-weight: 700 !important;
+}
+
+.report-paper.pdf-light-theme .narrative-period-pill,
+[data-theme] .report-paper.pdf-light-theme .narrative-period-pill {
+  background: #e2e8f0 !important;
+  color: #475569 !important;
+  font-size: 0.625rem !important;
+}
+
+.report-paper.pdf-light-theme .narrative-text,
+[data-theme] .report-paper.pdf-light-theme .narrative-text {
+  color: #1e293b !important;
+  font-size: 0.775rem !important;
+  line-height: 1.45 !important;
+}
+
+/* KPI Scorecard Cards */
+.report-paper.pdf-light-theme .report-kpi-card,
+[data-theme] .report-paper.pdf-light-theme .report-kpi-card {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 8px 10px !important;
+}
+
+.report-paper.pdf-light-theme .rkpi-label,
+[data-theme] .report-paper.pdf-light-theme .rkpi-label {
+  color: #64748b !important;
+  font-size: 0.6rem !important;
+  font-weight: 600 !important;
+}
+
+.report-paper.pdf-light-theme .rkpi-value,
+[data-theme] .report-paper.pdf-light-theme .rkpi-value {
+  color: #0f172a !important;
+  font-size: 1.4rem !important;
+  font-weight: 800 !important;
+}
+
+.report-paper.pdf-light-theme .rkpi-sub,
+[data-theme] .report-paper.pdf-light-theme .rkpi-sub {
+  color: #64748b !important;
+  font-size: 0.65rem !important;
+}
+
+.report-paper.pdf-light-theme .rkpi-rate-badge,
+[data-theme] .report-paper.pdf-light-theme .rkpi-rate-badge {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #065f46 !important;
+  font-size: 0.675rem !important;
+}
+
+.report-paper.pdf-light-theme .rkpi-progress-bar-wrap,
+[data-theme] .report-paper.pdf-light-theme .rkpi-progress-bar-wrap {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  height: 4px !important;
+}
+
+.report-paper.pdf-light-theme .rkpi-progress-bar-fill,
+[data-theme] .report-paper.pdf-light-theme .rkpi-progress-bar-fill {
+  background: #00b48a !important;
+}
+
+/* Subcards / Analytic Tables */
+.report-paper.pdf-light-theme .report-subcard,
+[data-theme] .report-paper.pdf-light-theme .report-subcard {
+  background: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}
+
+.report-paper.pdf-light-theme .subcard-header-bar,
+[data-theme] .report-paper.pdf-light-theme .subcard-header-bar {
+  border-bottom: 1px solid #f1f5f9 !important;
+}
+
+.report-paper.pdf-light-theme .subcard-title,
+[data-theme] .report-paper.pdf-light-theme .subcard-title {
+  color: #0f172a !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+}
+
+.report-paper.pdf-light-theme .subcard-badge,
+[data-theme] .report-paper.pdf-light-theme .subcard-badge {
+  background: #f8fafc !important;
+  border: 1px solid #e2e8f0 !important;
+  color: #475569 !important;
+  font-size: 0.6rem !important;
+}
+
+/* Report Tables */
+.report-paper.pdf-light-theme .report-table,
+[data-theme] .report-paper.pdf-light-theme .report-table {
+  background: transparent !important;
+}
+
+.report-paper.pdf-light-theme .report-table th,
+[data-theme] .report-paper.pdf-light-theme .report-table th,
+[data-theme="neumorphic"] .report-paper.pdf-light-theme .report-table th {
+  background: #f8fafc !important;
+  color: #475569 !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 4px 6px !important;
+  font-size: 0.6rem !important;
+}
+
+.report-paper.pdf-light-theme .report-table td,
+[data-theme] .report-paper.pdf-light-theme .report-table td,
+[data-theme="neumorphic"] .report-paper.pdf-light-theme .report-table td {
+  background: transparent !important;
+  color: #0f172a !important;
+  border-bottom: 1px solid #f1f5f9 !important;
+  padding: 4px 6px !important;
+  font-size: 0.725rem !important;
+}
+
+.report-paper.pdf-light-theme .report-bar-track,
+[data-theme] .report-paper.pdf-light-theme .report-bar-track {
+  background: #f1f5f9 !important;
+  border: 1px solid #e2e8f0 !important;
+  height: 5px !important;
+}
+
+.report-paper.pdf-light-theme .report-bar-pct,
+[data-theme] .report-paper.pdf-light-theme .report-bar-pct {
+  color: #475569 !important;
+  font-size: 0.675rem !important;
+}
+
+.report-paper.pdf-light-theme .report-exec-footer,
+[data-theme] .report-paper.pdf-light-theme .report-exec-footer {
+  border-top: 1px solid #e2e8f0 !important;
+}
+
+.report-paper.pdf-light-theme .exec-footer-left,
+[data-theme] .report-paper.pdf-light-theme .exec-footer-left {
+  color: #64748b !important;
+}
+
+.report-paper.pdf-light-theme .exec-footer-right,
+[data-theme] .report-paper.pdf-light-theme .exec-footer-right {
+  color: #475569 !important;
 }

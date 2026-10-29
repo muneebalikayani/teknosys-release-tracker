@@ -416,8 +416,15 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName 
     `;
 
     const element = document.getElementById('executive-report-document');
+    const rootEl = document.documentElement;
+    const originalTheme = rootEl.getAttribute('data-theme');
+
     try {
+      if (originalTheme) rootEl.setAttribute('data-theme', 'light');
       element.classList.add('pdf-light-theme');
+      element.style.setProperty('background-color', '#ffffff', 'important');
+      element.style.setProperty('color', '#0f172a', 'important');
+      element.style.setProperty('box-shadow', 'none', 'important');
 
       const opt = {
         margin: [5, 8, 5, 8],
@@ -446,6 +453,14 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName 
       btn.disabled = false;
     } finally {
       element.classList.remove('pdf-light-theme');
+      element.style.removeProperty('background-color');
+      element.style.removeProperty('color');
+      element.style.removeProperty('box-shadow');
+      if (originalTheme) {
+        rootEl.setAttribute('data-theme', originalTheme);
+      } else {
+        rootEl.removeAttribute('data-theme');
+      }
     }
   });
 
