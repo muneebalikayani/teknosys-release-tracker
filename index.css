@@ -252,6 +252,21 @@ body {
   color: var(--text-main);
 }
 
+.theme-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-pill:hover {
+  background: rgba(0, 212, 164, 0.12);
+  border-color: rgba(0, 212, 164, 0.3);
+  color: #00d4a4;
+  transform: translateY(-1px);
+}
+
 .pulse {
   width: 7px;
   height: 7px;
@@ -6255,4 +6270,387 @@ body.kanban-dragging-active * {
     width: 52px;
     height: 52px;
   }
+}
+
+/* =========================================================
+   NEUMORPHISM (SOFT UI) THEME SPECIFICATION
+   ========================================================= */
+[data-theme="neumorphic"] {
+  /* Core Surface: Warm, tactile, matte slate-clay */
+  --bg-main: #e2e8f0;
+  --bg-surface: #e2e8f0;
+  --bg-card: #e2e8f0;
+  --bg-card-hover: #e8eef6;
+  --bg-input: #e2e8f0;
+  --bg-glass: rgba(226, 232, 240, 0.94);
+
+  /* Dual Lighting Shadows */
+  --neu-dark: rgba(163, 177, 198, 0.75);
+  --neu-light: #ffffff;
+
+  --neu-flat-xs: 2px 2px 5px var(--neu-dark), -2px -2px 5px var(--neu-light);
+  --neu-flat-sm: 4px 4px 9px var(--neu-dark), -4px -4px 9px var(--neu-light);
+  --neu-flat: 7px 7px 16px var(--neu-dark), -7px -7px 16px var(--neu-light);
+  --neu-flat-lg: 12px 12px 28px var(--neu-dark), -12px -12px 28px var(--neu-light);
+  --neu-hover: 9px 9px 20px var(--neu-dark), -9px -9px 20px var(--neu-light);
+  --neu-pressed: inset 3px 3px 6px var(--neu-dark), inset -3px -3px 6px var(--neu-light);
+  --neu-pressed-sm: inset 2px 2px 4px var(--neu-dark), inset -2px -2px 4px var(--neu-light);
+
+  --border-subtle: rgba(255, 255, 255, 0.65);
+  --border-medium: rgba(163, 177, 198, 0.45);
+  --border-focus: #00b48a;
+
+  --text-main: #1e293b;
+  --text-muted: #64748b;
+  --text-dim: #94a3b8;
+
+  --primary: #00b48a;
+  --primary-hover: #009e78;
+  --primary-glow: rgba(0, 180, 138, 0.3);
+
+  --accent-cyan: #0284c7;
+  --accent-purple: #7c3aed;
+  --accent-pink: #db2777;
+
+  --status-completed: #059669;
+  --status-on-track: #2563eb;
+  --status-at-risk: #d97706;
+  --status-delayed: #dc2626;
+  --status-on-hold: #64748b;
+
+  --shadow-sm: var(--neu-flat-sm);
+  --shadow-md: var(--neu-flat);
+  --shadow-lg: var(--neu-flat-lg);
+  --shadow-glow: 0 0 20px rgba(0, 180, 138, 0.25);
+}
+
+[data-theme="neumorphic"] body {
+  background-color: var(--bg-main) !important;
+  background-image: none !important;
+  color: var(--text-main) !important;
+}
+
+/* Page Titles & Headers */
+[data-theme="neumorphic"] .page-title {
+  color: var(--text-main) !important;
+}
+
+[data-theme="neumorphic"] .brand-title {
+  color: var(--text-main) !important;
+}
+
+/* Top Navigation Bar */
+[data-theme="neumorphic"] .navbar {
+  background: var(--bg-main) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.8) !important;
+  box-shadow: 0 6px 18px var(--neu-dark) !important;
+}
+
+[data-theme="neumorphic"] .brand-icon-box {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+}
+
+[data-theme="neumorphic"] .brand-icon-box svg {
+  stroke: #00b48a !important;
+}
+
+[data-theme="neumorphic"] .brand-badge {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.5) !important;
+  color: #008f6d !important;
+}
+
+/* Navigation Pills */
+[data-theme="neumorphic"] .live-pill {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  color: #059669 !important;
+}
+
+[data-theme="neumorphic"] .holiday-pill {
+  color: #2563eb !important;
+}
+
+[data-theme="neumorphic"] .theme-pill {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  color: #008f6d !important;
+}
+
+[data-theme="neumorphic"] .theme-pill:hover {
+  box-shadow: var(--neu-pressed-sm) !important;
+  color: #00664d !important;
+}
+
+[data-theme="neumorphic"] .db-pill {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  color: #059669 !important;
+}
+
+[data-theme="neumorphic"] .db-pill:hover {
+  box-shadow: var(--neu-pressed-sm) !important;
+}
+
+[data-theme="neumorphic"] .db-pill.disconnected {
+  color: var(--text-muted) !important;
+}
+
+/* Nav Tabs Track & Buttons */
+[data-theme="neumorphic"] .nav-tabs {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  padding: 4px !important;
+}
+
+[data-theme="neumorphic"] .nav-tab-btn {
+  color: var(--text-muted) !important;
+  border: 1px solid transparent !important;
+}
+
+[data-theme="neumorphic"] .nav-tab-btn:hover {
+  color: var(--text-main) !important;
+  background: transparent !important;
+}
+
+[data-theme="neumorphic"] .nav-tab-btn.active {
+  background: var(--bg-main) !important;
+  color: #008f6d !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  font-weight: 600 !important;
+}
+
+/* Tactile Buttons */
+[data-theme="neumorphic"] .btn {
+  background: var(--bg-main) !important;
+  color: var(--text-main) !important;
+  box-shadow: var(--neu-flat-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
+[data-theme="neumorphic"] .btn:hover {
+  box-shadow: var(--neu-hover) !important;
+  transform: translateY(-1px) !important;
+}
+
+[data-theme="neumorphic"] .btn:active,
+[data-theme="neumorphic"] .btn.active {
+  box-shadow: var(--neu-pressed) !important;
+  transform: translateY(1px) !important;
+}
+
+[data-theme="neumorphic"] .btn-primary {
+  background: linear-gradient(145deg, #00c99b, #00a47d) !important;
+  color: #ffffff !important;
+  box-shadow: 4px 4px 10px var(--neu-dark), -4px -4px 10px var(--neu-light) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+}
+
+[data-theme="neumorphic"] .btn-primary:hover {
+  background: linear-gradient(145deg, #00d4a4, #00b48a) !important;
+  box-shadow: 6px 6px 14px var(--neu-dark), -6px -6px 14px var(--neu-light) !important;
+}
+
+[data-theme="neumorphic"] .btn-primary:active {
+  box-shadow: inset 3px 3px 6px rgba(0, 0, 0, 0.25), inset -3px -3px 6px rgba(255, 255, 255, 0.25) !important;
+}
+
+[data-theme="neumorphic"] .btn-secondary {
+  background: var(--bg-main) !important;
+  color: var(--text-main) !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="neumorphic"] .btn-ghost {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+[data-theme="neumorphic"] .btn-ghost:hover {
+  box-shadow: var(--neu-pressed-sm) !important;
+  background: var(--bg-main) !important;
+}
+
+/* Cards & Surfaces */
+[data-theme="neumorphic"] .card,
+[data-theme="neumorphic"] .stat-card,
+[data-theme="neumorphic"] .chart-card,
+[data-theme="neumorphic"] .report-paper,
+[data-theme="neumorphic"] .kanban-card,
+[data-theme="neumorphic"] .calendar-card,
+[data-theme="neumorphic"] .filter-bar,
+[data-theme="neumorphic"] .table-card {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+}
+
+[data-theme="neumorphic"] .card:hover,
+[data-theme="neumorphic"] .kanban-card:hover {
+  box-shadow: var(--neu-hover) !important;
+}
+
+/* Recessed Inset Inputs & Selects */
+[data-theme="neumorphic"] input,
+[data-theme="neumorphic"] select,
+[data-theme="neumorphic"] textarea,
+[data-theme="neumorphic"] .filter-input,
+[data-theme="neumorphic"] .search-input {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="neumorphic"] input:focus,
+[data-theme="neumorphic"] select:focus,
+[data-theme="neumorphic"] textarea:focus {
+  border-color: #00b48a !important;
+  box-shadow: inset 4px 4px 8px var(--neu-dark), inset -4px -4px 8px var(--neu-light), 0 0 0 2px rgba(0, 180, 138, 0.25) !important;
+}
+
+/* Kanban Columns & Dragging */
+[data-theme="neumorphic"] .kanban-column {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+[data-theme="neumorphic"] .kanban-column.drag-over {
+  box-shadow: inset 5px 5px 10px var(--neu-dark), inset -5px -5px 10px var(--neu-light), 0 0 0 2px #00b48a !important;
+}
+
+[data-theme="neumorphic"] .kanban-card {
+  box-shadow: var(--neu-flat-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+}
+
+/* Progress & KPI Bars */
+[data-theme="neumorphic"] .progress-bar-container,
+[data-theme="neumorphic"] .report-bar-wrap,
+[data-theme="neumorphic"] .rkpi-progress-bar-track,
+[data-theme="neumorphic"] .progress-bar-track {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Modals */
+[data-theme="neumorphic"] .modal-overlay {
+  background: rgba(15, 23, 42, 0.4) !important;
+  backdrop-filter: blur(8px) !important;
+}
+
+[data-theme="neumorphic"] .modal-card {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-lg) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="neumorphic"] .modal-header,
+[data-theme="neumorphic"] .modal-footer {
+  border-color: rgba(163, 177, 198, 0.4) !important;
+}
+
+/* Tables */
+[data-theme="neumorphic"] .table-wrapper,
+[data-theme="neumorphic"] .releases-table-container {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+}
+
+[data-theme="neumorphic"] th {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  color: var(--text-muted) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+[data-theme="neumorphic"] td {
+  border-bottom: 1px solid rgba(163, 177, 198, 0.35) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="neumorphic"] tr:hover td {
+  background: rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Badges & Monospace Tags */
+[data-theme="neumorphic"] .release-id-badge,
+[data-theme="neumorphic"] .scope-badge,
+[data-theme="neumorphic"] .table-badge {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6) !important;
+  color: var(--text-main) !important;
+}
+
+/* Floating Teknobot AI Launcher */
+[data-theme="neumorphic"] .teknobot-launcher {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  color: #008f6d !important;
+}
+
+[data-theme="neumorphic"] .teknobot-launcher:hover {
+  box-shadow: var(--neu-hover) !important;
+  color: #00664d !important;
+}
+
+[data-theme="neumorphic"] .teknobot-window {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-lg) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+}
+
+[data-theme="neumorphic"] .teknobot-header {
+  border-bottom: 1px solid rgba(163, 177, 198, 0.3) !important;
+}
+
+[data-theme="neumorphic"] .teknobot-footer {
+  background: var(--bg-main) !important;
+  border-top: 1px solid rgba(163, 177, 198, 0.3) !important;
+}
+
+[data-theme="neumorphic"] .teknobot-input {
+  box-shadow: var(--neu-pressed) !important;
+  color: var(--text-main) !important;
+  background: var(--bg-main) !important;
+}
+
+[data-theme="neumorphic"] .teknobot-send-btn {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.8) !important;
+  color: #008f6d !important;
+}
+
+[data-theme="neumorphic"] .teknobot-send-btn:hover {
+  box-shadow: var(--neu-pressed-sm) !important;
+}
+
+[data-theme="neumorphic"] .bot-message .msg-bubble {
+  background: var(--bg-main) !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.7) !important;
+  color: var(--text-main) !important;
+}
+
+[data-theme="neumorphic"] .user-message .msg-bubble {
+  background: linear-gradient(145deg, #00c99b, #00a47d) !important;
+  color: #ffffff !important;
+  box-shadow: 3px 3px 8px var(--neu-dark) !important;
 }

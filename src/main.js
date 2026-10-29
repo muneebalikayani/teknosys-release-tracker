@@ -124,6 +124,32 @@ document.getElementById('btn-sync-cloud')?.addEventListener('click', async (e) =
   }
 });
 
+// Theme Management (Mintlify Dark vs Neumorphism)
+const themeToggleBtn = document.getElementById('btn-theme-toggle');
+const themeToggleLabel = document.getElementById('theme-toggle-label');
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('release-tracker-theme', theme);
+  if (themeToggleLabel) {
+    themeToggleLabel.textContent = theme === 'neumorphic' ? 'Neumorphic' : 'Mintlify Dark';
+  }
+  if (themeToggleBtn) {
+    themeToggleBtn.setAttribute('data-current-theme', theme);
+    themeToggleBtn.title = `Theme: ${theme === 'neumorphic' ? 'Neumorphic (Soft UI)' : 'Mintlify Dark'} · Click to toggle`;
+  }
+}
+
+// Check saved theme, default to 'neumorphic' as requested
+const savedTheme = localStorage.getItem('release-tracker-theme') || 'neumorphic';
+applyTheme(savedTheme);
+
+themeToggleBtn?.addEventListener('click', () => {
+  const current = document.documentElement.getAttribute('data-theme') || 'mintlify';
+  const nextTheme = current === 'neumorphic' ? 'mintlify' : 'neumorphic';
+  applyTheme(nextTheme);
+});
+
 // Brand logo link jumps to dashboard
 document.getElementById('brand-logo-link')?.addEventListener('click', (e) => {
   e.preventDefault();
