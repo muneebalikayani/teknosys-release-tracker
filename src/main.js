@@ -124,7 +124,7 @@ document.getElementById('btn-sync-cloud')?.addEventListener('click', async (e) =
   }
 });
 
-// Theme Management (Mintlify Dark vs Neumorphism)
+// Theme Management (Mintlify Dark vs Dark Neumorphic Soft UI)
 const themeToggleBtn = document.getElementById('btn-theme-toggle');
 const themeToggleLabel = document.getElementById('theme-toggle-label');
 
@@ -132,15 +132,15 @@ function applyTheme(theme) {
   document.documentElement.setAttribute('data-theme', theme);
   localStorage.setItem('release-tracker-theme', theme);
   if (themeToggleLabel) {
-    themeToggleLabel.textContent = theme === 'neumorphic' ? 'Neumorphic' : 'Mintlify Dark';
+    themeToggleLabel.textContent = theme === 'neumorphic' ? 'Dark Soft UI' : 'Mintlify Dark';
   }
   if (themeToggleBtn) {
     themeToggleBtn.setAttribute('data-current-theme', theme);
-    themeToggleBtn.title = `Theme: ${theme === 'neumorphic' ? 'Neumorphic (Soft UI)' : 'Mintlify Dark'} · Click to toggle`;
+    themeToggleBtn.title = `Theme: ${theme === 'neumorphic' ? 'Dark Neumorphic (Soft UI)' : 'Mintlify Dark'} · Click to toggle`;
   }
 }
 
-// Check saved theme, default to 'neumorphic' as requested
+// Keep theme dark: default to 'neumorphic' (Dark Neumorphism)
 const savedTheme = localStorage.getItem('release-tracker-theme') || 'neumorphic';
 applyTheme(savedTheme);
 
