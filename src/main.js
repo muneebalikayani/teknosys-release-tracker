@@ -20,13 +20,23 @@ const releaseCountEl = document.getElementById('nav-release-count');
 const holidayCountEl = document.getElementById('nav-holiday-count');
 
 function updateTopBarBadges() {
+  const total = store.releases.length;
+  const conflicts = store.getConflictingReleases().length;
+
   if (releaseCountEl) {
-    const total = store.releases.length;
-    const conflicts = store.getConflictingReleases().length;
     releaseCountEl.textContent = `${total} Releases${conflicts > 0 ? ` (${conflicts} ⚠️)` : ''}`;
   }
   if (holidayCountEl) {
     holidayCountEl.textContent = `${store.holidays.length} Holidays`;
+  }
+
+  const releaseBadge = document.getElementById('nav-release-count-badge');
+  if (releaseBadge) {
+    releaseBadge.textContent = total;
+  }
+  const holidayBadge = document.getElementById('nav-holiday-count-badge');
+  if (holidayBadge) {
+    holidayBadge.textContent = store.holidays.length;
   }
 
   // Update Cloud Database Status Pill
@@ -87,22 +97,61 @@ function renderActiveView() {
   }
 }
 
+// Mobile Sidebar Drawer Management
+const sidebarEl = document.getElementById('app-sidebar');
+const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+const sidebarToggleBtn = document.getElementById('btn-sidebar-toggle');
+const sidebarCloseBtn = document.getElementById('btn-sidebar-close');
+
+function openMobileSidebar() {
+  sidebarEl?.classList.add('sidebar-open');
+  sidebarBackdrop?.classList.add('active');
+  document.body.classList.add('sidebar-locked');
+}
+
+function closeMobileSidebar() {
+  sidebarEl?.classList.remove('sidebar-open');
+  sidebarBackdrop?.classList.remove('active');
+  document.body.classList.remove('sidebar-locked');
+}
+
+sidebarToggleBtn?.addEventListener('click', openMobileSidebar);
+sidebarCloseBtn?.addEventListener('click', closeMobileSidebar);
+sidebarBackdrop?.addEventListener('click', closeMobileSidebar);
+
 // Nav tab click listeners
-navTabs.addEventListener('click', (e) => {
+navTabs?.addEventListener('click', (e) => {
   const btn = e.target.closest('.nav-tab-btn');
   if (btn) {
     const targetView = btn.dataset.view;
     if (targetView && targetView !== store.currentView) {
       store.currentView = targetView;
       renderActiveView();
-      btn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      if (window.innerWidth <= 1024) {
+        closeMobileSidebar();
+      }
     }
   }
 });
 
-// Mobile quick new release
+// Primary CTA: New Release (Sidebar + Mobile)
+document.getElementById('btn-sidebar-new-release')?.addEventListener('click', () => {
+  openReleaseModal({ mode: 'create' });
+  if (window.innerWidth <= 1024) {
+    closeMobileSidebar();
+  }
+});
+
 document.getElementById('btn-mobile-new-release')?.addEventListener('click', () => {
   openReleaseModal({ mode: 'create' });
+});
+
+// Mobile brand link jumps to dashboard
+document.getElementById('brand-logo-mobile')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  store.currentView = 'dashboard';
+  renderActiveView();
+  closeMobileSidebar();
 });
 
 // Supabase DB modal trigger
@@ -196,6 +245,7 @@ window.addEventListener('keydown', (e) => {
   }
 
   if (e.key === 'Escape') {
+    closeMobileSidebar();
     document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
   }
 
