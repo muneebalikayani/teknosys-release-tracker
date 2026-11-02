@@ -196,7 +196,18 @@ function setupKanbanEvents(container, groupBy) {
           if (targetCol === 'Completed') {
             const check = store.validateDeploymentCompletion({ ...release, stage: 'Completed', status: 'Completed' });
             if (!check.valid) {
-              showToast(`⚠️ Governance Policy: ${check.error} Release #${release.id} requires both CR and RITM to be completed.`, 'warning', 5000);
+              showToast({
+                title: 'DEPLOYMENT BLOCKED',
+                message: `Release #${release.id} (<strong>${escapeHtml(release.name)}</strong>) requires both CR and RITM before moving to Completed.`,
+                type: 'warning',
+                duration: 6500,
+                action: {
+                  label: 'Edit Release to Attach Tickets',
+                  onClick: () => {
+                    window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'edit', id: release.id } }));
+                  }
+                }
+              });
               renderKanbanBoard(container);
               return;
             }
@@ -208,7 +219,18 @@ function setupKanbanEvents(container, groupBy) {
           if (targetCol === 'Completed') {
             const check = store.validateDeploymentCompletion({ ...release, status: 'Completed' });
             if (!check.valid) {
-              showToast(`⚠️ Governance Policy: ${check.error} Release #${release.id} requires both CR and RITM to be completed.`, 'warning', 5000);
+              showToast({
+                title: 'DEPLOYMENT BLOCKED',
+                message: `Release #${release.id} (<strong>${escapeHtml(release.name)}</strong>) requires both CR and RITM before moving to Completed.`,
+                type: 'warning',
+                duration: 6500,
+                action: {
+                  label: 'Edit Release to Attach Tickets',
+                  onClick: () => {
+                    window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'edit', id: release.id } }));
+                  }
+                }
+              });
               renderKanbanBoard(container);
               return;
             }

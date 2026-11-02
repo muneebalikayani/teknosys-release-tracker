@@ -262,7 +262,19 @@ export function openReleaseDetailModal(id) {
   const ensureCanComplete = () => {
     const check = store.validateDeploymentCompletion({ ...rel, stage: 'Completed', status: 'Completed' });
     if (!check.valid) {
-      showToast(`⚠️ Governance Policy: ${check.error} Please click "Edit Record" to enter ticket details first.`, 'warning', 5000);
+      showToast({
+        title: 'GOVERNANCE COMPLIANCE REQUIRED',
+        message: 'Both <strong>Change Request (CR)</strong> and <strong>RITM Number</strong> are mandatory before completing a deployment.',
+        type: 'warning',
+        duration: 7000,
+        action: {
+          label: 'Edit Record to Attach Tickets',
+          onClick: () => {
+            closeModal();
+            window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'edit', id } }));
+          }
+        }
+      });
       return false;
     }
     return true;

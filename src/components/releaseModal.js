@@ -298,16 +298,31 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
 
     if (isCompleted && (!crVal || !ritmVal)) {
       if (!crVal && !ritmVal) {
-        showToast('⚠️ Deployment Governance Policy: Both Change Request (CR) and RITM Number are mandatory to complete deployment.', 'warning', 5000);
+        showToast({
+          title: 'GOVERNANCE COMPLIANCE REQUIRED',
+          message: 'Both <strong>Change Request (CR)</strong> and <strong>RITM Number</strong> are mandatory to complete a deployment.',
+          type: 'warning',
+          duration: 6000
+        });
         inputRitm.classList.add('input-field-error');
         inputCr.classList.add('input-field-error');
         inputRitm.focus();
       } else if (!crVal) {
-        showToast('⚠️ Deployment Governance Policy: Change Request (CR) is mandatory to complete deployment.', 'warning', 5000);
+        showToast({
+          title: 'GOVERNANCE COMPLIANCE REQUIRED',
+          message: '<strong>Change Request (CR)</strong> ticket number is mandatory to complete a deployment.',
+          type: 'warning',
+          duration: 6000
+        });
         inputCr.classList.add('input-field-error');
         inputCr.focus();
       } else {
-        showToast('⚠️ Deployment Governance Policy: RITM Number is mandatory to complete deployment.', 'warning', 5000);
+        showToast({
+          title: 'GOVERNANCE COMPLIANCE REQUIRED',
+          message: '<strong>RITM Number</strong> ticket is mandatory to complete a deployment.',
+          type: 'warning',
+          duration: 6000
+        });
         inputRitm.classList.add('input-field-error');
         inputRitm.focus();
       }
@@ -317,10 +332,20 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
     let resultRelease = null;
     if (isEdit) {
       resultRelease = store.updateRelease(id, data);
-      showToast(`Release "${data.name}" updated successfully!`, 'success');
+      showToast({
+        title: 'RECORD UPDATED',
+        message: `Release "<strong>${escapeHtml(data.name)}</strong>" updated successfully.`,
+        type: 'success',
+        duration: 4000
+      });
     } else {
       resultRelease = store.addRelease(data);
-      showToast(`New release "${data.name}" created successfully!`, 'success');
+      showToast({
+        title: 'NEW RELEASE CREATED',
+        message: `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully.`,
+        type: 'success',
+        duration: 4000
+      });
     }
 
     // If the calendar is currently active, ensure it navigates to the release's month
