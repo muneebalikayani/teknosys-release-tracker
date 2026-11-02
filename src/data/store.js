@@ -550,7 +550,6 @@ class ReleaseStore {
   // --- Holiday Conflict Calculation ---
   // Exactly implements the Excel sheet logic:
   // IF TargetDeploy falls within [HolidayStart, HolidayEnd] -> "Conflict: " + HolidayName
-  // For Month-End Reporting (Days 1–6): flags as isReportingLoad with special alert logic
   checkHolidayConflict(targetDeployDate) {
     if (!targetDeployDate) return null;
     const target = targetDeployDate.trim();
@@ -561,101 +560,13 @@ class ReleaseStore {
       const start = holiday.startDate;
       const end = holiday.endDate || holiday.startDate;
       if (target >= start && target <= end) {
-        const isReportingLoad = Boolean(
-          holiday.type === 'reporting_load' ||
-          holiday.isReportingLoad ||
-          (holiday.name && holiday.name.toLowerCase().includes('reporting load')) ||
-          (holiday.notes && holiday.notes.toLowerCase().includes('reporting load'))
-        );
-
         return {
           holiday,
-          isReportingLoad,
-          conflictText: isReportingLoad 
-            ? `Reporting Load: ${holiday.name}` 
-            : `Conflict: ${holiday.name}`
+          conflictText: `Conflict: ${holiday.name}`
         };
       }
     }
     return null;
-  }
-
-  // Generate 1st to 6th reporting load periods for given years
-  addReportingLoadHolidays(years = [2026]) {
-    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    let addedCount = 0;
-
-    years.forEach(year => {
-      for (let m = 1; m <= 12; m++) {
-        const mStr = String(m).padStart(2, '0');
-        const startDate = `${year}-${mStr}-01`;
-        const endDate = `${year}-${mStr}-06`;
-        const name = `Month-End Reporting Load (${monthNames[m - 1]} ${year})`;
-
-        // Check if an entry with this date range already exists
-        const exists = this.holidays.some(h => 
-          (h.startDate === startDate && h.endDate === endDate) ||
-          (h.name === name)
-        );
-
-        if (!exists) {
-          const nextId = this.holidays.length > 0
-            ? Math.max(...this.holidays.map(h => Number(h.id) || 0)) + 1
-            : 1;
-
-          const newHoliday = {
-            id: nextId,
-            name,
-            startDate,
-            endDate,
-            type: 'reporting_load',
-            isReportingLoad: true,
-            notes: 'Month-end reporting load. Only very important deployments allowed.'
-          };
-
-          this.holidays.push(newHoliday);
-          addedCount++;
-        }
-      }
-    });
-
-    if (addedCount > 0) {
-      this.saveHolidays();
-      this.recalculateAllHolidayConflicts();
-      this.lastLocalMutation = Date.now();
-      this.notify();
-      this.syncCloud();
-
-      if (this.isSupabaseConnected) {
-        this.holidays.slice(-addedCount).forEach(h => {
-          upsertHolidayInSupabase(h).catch(() => {});
-        });
-      }
-    }
-
-    return addedCount;
-  }
-
-  deleteReportingLoadHolidays(year = null) {
-    const beforeCount = this.holidays.length;
-    this.holidays = this.holidays.filter(h => {
-      const isRep = h.type === 'reporting_load' || 
-                    h.isReportingLoad || 
-                    (h.name && h.name.toLowerCase().includes('reporting load'));
-      if (!isRep) return true;
-      if (year && !h.startDate.startsWith(String(year))) return true;
-      return false;
-    });
-
-    const removedCount = beforeCount - this.holidays.length;
-    if (removedCount > 0) {
-      this.saveHolidays();
-      this.recalculateAllHolidayConflicts();
-      this.lastLocalMutation = Date.now();
-      this.notify();
-      this.syncCloud();
-    }
-    return removedCount;
   }
 
   recalculateAllHolidayConflicts() {
@@ -831,20 +742,11 @@ class ReleaseStore {
       ? Math.max(...this.holidays.map(h => Number(h.id) || 0)) + 1
       : 1;
 
-    const isReportingLoad = Boolean(
-      data.type === 'reporting_load' ||
-      data.isReportingLoad ||
-      (data.name && data.name.toLowerCase().includes('reporting load')) ||
-      (data.notes && data.notes.toLowerCase().includes('reporting load'))
-    );
-
     const newHoliday = {
       id: nextId,
       name: (data.name || '').trim(),
       startDate: data.startDate || '',
       endDate: data.endDate || data.startDate || '',
-      type: isReportingLoad ? 'reporting_load' : (data.type || 'public'),
-      isReportingLoad,
       notes: (data.notes || '').trim()
     };
 
@@ -1002,8 +904,8 @@ class ReleaseStore {
         if (y !== parseInt(this.filters.year, 10)) return false;
       }
 
-      // Has Holiday or Reporting Load Conflict
-      if (this.filters.hasConflict && (!rel.holidayConflict || (!rel.holidayConflict.startsWith('Conflict:') && !rel.holidayConflict.includes('Reporting Load')))) {
+      // Has Holiday Conflict
+      if (this.filters.hasConflict && (!rel.holidayConflict || !rel.holidayConflict.startsWith('Conflict:'))) {
         return false;
       }
 

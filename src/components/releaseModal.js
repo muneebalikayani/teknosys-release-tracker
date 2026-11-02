@@ -247,29 +247,18 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
     if (inputCr.value.trim()) inputCr.classList.remove('input-field-error');
   });
 
-  // Real-time holiday conflict and month-end reporting load checking
+  // Real-time holiday conflict checking
   const checkConflict = () => {
     const val = targetDeployInput.value;
     const conflict = store.checkHolidayConflict(val);
     if (conflict) {
-      if (conflict.isReportingLoad) {
-        conflictTitle.textContent = `⚠️ Month-End Reporting Load: ${conflict.holiday.name}`;
-        conflictDesc.textContent = `Notice: Only add very important deployments due to month end reporting load (Days 1 to 6).`;
-        conflictBanner.className = 'alert-banner reporting-load-banner';
-        conflictBanner.style.display = 'flex';
-        targetDeployInput.classList.remove('input-conflict');
-        targetDeployInput.classList.add('input-reporting-load');
-      } else {
-        conflictTitle.textContent = `⚠️ Holiday Conflict: ${conflict.holiday.name}`;
-        conflictDesc.textContent = `Holiday period: ${conflict.holiday.startDate} to ${conflict.holiday.endDate || conflict.holiday.startDate}. Target deployments during public holidays are restricted.`;
-        conflictBanner.className = 'alert-banner warning-banner';
-        conflictBanner.style.display = 'flex';
-        targetDeployInput.classList.remove('input-reporting-load');
-        targetDeployInput.classList.add('input-conflict');
-      }
+      conflictTitle.textContent = `⚠️ Holiday Conflict: ${conflict.holiday.name}`;
+      conflictDesc.textContent = `Holiday period: ${conflict.holiday.startDate} to ${conflict.holiday.endDate || conflict.holiday.startDate}. Target deployments during public holidays are restricted.`;
+      conflictBanner.style.display = 'flex';
+      targetDeployInput.classList.add('input-conflict');
     } else {
       conflictBanner.style.display = 'none';
-      targetDeployInput.classList.remove('input-conflict', 'input-reporting-load');
+      targetDeployInput.classList.remove('input-conflict');
     }
   };
 
@@ -341,28 +330,21 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
     }
 
     let resultRelease = null;
-    const conflictOnSave = store.checkHolidayConflict(data.targetDeploy);
-    const isReportingLoadSave = conflictOnSave && conflictOnSave.isReportingLoad;
-
     if (isEdit) {
       resultRelease = store.updateRelease(id, data);
       showToast({
-        title: isReportingLoadSave ? 'RECORD UPDATED (HIGH LOAD NOTICE)' : 'RECORD UPDATED',
-        message: isReportingLoadSave
-          ? `Release "<strong>${escapeHtml(data.name)}</strong>" updated.<br><small style="color: #f97316;">⚠️ Reminder: Scheduled during month-end reporting load. Ensure this is an essential deployment.</small>`
-          : `Release "<strong>${escapeHtml(data.name)}</strong>" updated successfully.`,
-        type: isReportingLoadSave ? 'warning' : 'success',
-        duration: 5000
+        title: 'RECORD UPDATED',
+        message: `Release "<strong>${escapeHtml(data.name)}</strong>" updated successfully.`,
+        type: 'success',
+        duration: 4000
       });
     } else {
       resultRelease = store.addRelease(data);
       showToast({
-        title: isReportingLoadSave ? 'NEW RELEASE CREATED (HIGH LOAD NOTICE)' : 'NEW RELEASE CREATED',
-        message: isReportingLoadSave
-          ? `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled.<br><small style="color: #f97316;">⚠️ Reminder: Scheduled during month-end reporting load. Ensure this is an essential deployment.</small>`
-          : `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully.`,
-        type: isReportingLoadSave ? 'warning' : 'success',
-        duration: 5000
+        title: 'NEW RELEASE CREATED',
+        message: `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully.`,
+        type: 'success',
+        duration: 4000
       });
     }
 

@@ -180,18 +180,12 @@ function mapHolidayToDb(h) {
 }
 
 function mapDbToHoliday(row) {
-  const isReportingLoad = Boolean(
-    (row.name && row.name.toLowerCase().includes('reporting load')) ||
-    (row.notes && row.notes.toLowerCase().includes('reporting load'))
-  );
   return {
     id: Number(row.id),
     name: row.name || '',
     startDate: row.start_date || '',
     endDate: row.end_date || row.start_date || '',
-    notes: row.notes || '',
-    type: isReportingLoad ? 'reporting_load' : 'public',
-    isReportingLoad
+    notes: row.notes || ''
   };
 }
 
