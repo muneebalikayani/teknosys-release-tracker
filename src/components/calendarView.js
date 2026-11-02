@@ -316,7 +316,12 @@ function setupCalendarEvents(container) {
   });
 
   container.querySelector('#btn-cal-new-release')?.addEventListener('click', () => {
-    window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'create' } }));
+    const today = new Date();
+    const isCurrentMonth = (today.getFullYear() === window._calState.year && (today.getMonth() + 1) === window._calState.month);
+    const defaultDate = isCurrentMonth 
+      ? today.toISOString().slice(0, 10) 
+      : `${window._calState.year}-${String(window._calState.month).padStart(2, '0')}-01`;
+    window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'create', defaultDate } }));
   });
 
   // Event chip click opens detail

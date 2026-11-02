@@ -1,4 +1,5 @@
 import { store } from '../data/store.js';
+import { showToast } from '../utils/toast.js';
 
 export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' } = {}) {
   let modalEl = document.getElementById('release-modal-overlay');
@@ -9,7 +10,7 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
     document.body.appendChild(modalEl);
   }
 
-  const isEdit = mode === 'edit' && id !== null;
+  const isEdit = mode === 'edit' && id !== null && id !== undefined;
   const rel = isEdit ? store.getReleaseById(id) : null;
 
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -23,150 +24,153 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
           <span class="modal-eyebrow">${isEdit ? 'UPDATE RECORD' : 'NEW RELEASE ENTRY'}</span>
           <h2 class="modal-title">${isEdit ? 'Edit Release Record' : 'Create New Release'}</h2>
         </div>
-        <button class="modal-close-btn" id="modal-close">&times;</button>
+        <button class="modal-close-btn" id="modal-close" type="button" aria-label="Close modal">&times;</button>
       </div>
 
-      <form id="release-form" class="modal-body">
-        <!-- Live Holiday Conflict Indicator Banner -->
-        <div id="modal-conflict-banner" class="alert-banner warning-banner" style="display: none;">
-          <div class="banner-icon">⚠️</div>
-          <div class="banner-content">
-            <div class="banner-title" id="conflict-banner-title">Holiday Conflict Detected</div>
-            <div class="banner-text" id="conflict-banner-desc">Target deployment falls within a public holiday period.</div>
+      <form id="release-form" class="modal-form-wrap">
+        <div class="modal-body">
+          <!-- Live Holiday Conflict Indicator Banner -->
+          <div id="modal-conflict-banner" class="alert-banner warning-banner" style="display: none;">
+            <div class="banner-icon">⚠️</div>
+            <div class="banner-content">
+              <div class="banner-title" id="conflict-banner-title">Holiday Conflict Detected</div>
+              <div class="banner-text" id="conflict-banner-desc">Target deployment falls within a public holiday period.</div>
+            </div>
+          </div>
+
+          <div class="form-grid-2">
+            <!-- Release Name -->
+            <div class="form-group col-span-2">
+              <label class="form-label required">Release Name</label>
+              <input type="text" name="name" class="form-input" required maxlength="200" 
+                     placeholder="e.g. BVS Sales Old Age flag Core" 
+                     value="${escapeHtml(rel ? rel.name : '')}">
+            </div>
+
+            <!-- Developer Name -->
+            <div class="form-group">
+              <label class="form-label required">Developer Name</label>
+              <input type="text" name="developer" class="form-input" required maxlength="100" 
+                     placeholder="e.g. Rabia Qayyum" 
+                     value="${escapeHtml(rel ? rel.developer : '')}">
+            </div>
+
+            <!-- Version / Tag -->
+            <div class="form-group">
+              <label class="form-label">Version / Tag</label>
+              <input type="text" name="version" class="form-input font-mono" maxlength="30" 
+                     placeholder="e.g. v1, v2.1" 
+                     value="${escapeHtml(rel ? rel.version : 'v1')}">
+            </div>
+
+            <!-- Platform -->
+            <div class="form-group">
+              <label class="form-label required">Platform</label>
+              <select name="platform" class="form-select" required>
+                ${store.platforms.map(p => `
+                  <option value="${p}" ${rel && rel.platform === p ? 'selected' : (!rel && p === 'GSM' ? 'selected' : '')}>${p}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Deployment Type -->
+            <div class="form-group">
+              <label class="form-label required">Deployment Type</label>
+              <select name="type" class="form-select" required>
+                ${store.deploymentTypes.map(t => `
+                  <option value="${t}" ${rel && rel.type === t ? 'selected' : (!rel && t === 'Scheduled' ? 'selected' : '')}>${t}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Start Date -->
+            <div class="form-group">
+              <label class="form-label">Start Date</label>
+              <input type="date" name="startDate" id="input-start-date" class="form-input font-mono" 
+                     value="${initialStartDate}">
+            </div>
+
+            <!-- Target Deploy Date -->
+            <div class="form-group">
+              <label class="form-label required">Target Deploy Date</label>
+              <input type="date" name="targetDeploy" id="input-target-deploy" class="form-input font-mono" required 
+                     value="${initialTargetDeploy}">
+              <span class="field-hint">Checked in real-time against holiday dates</span>
+            </div>
+
+            <!-- Current Stage -->
+            <div class="form-group">
+              <label class="form-label required">Current Stage</label>
+              <select name="stage" class="form-select" required>
+                ${store.stages.map(s => `
+                  <option value="${s}" ${rel && rel.stage === s ? 'selected' : (!rel && s === 'Development' ? 'selected' : '')}>${s}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Stage Owner -->
+            <div class="form-group">
+              <label class="form-label required">Stage Owner</label>
+              <select name="owner" class="form-select" required>
+                ${store.owners.map(o => `
+                  <option value="${o}" ${rel && rel.owner === o ? 'selected' : (!rel && o === 'Dev Team' ? 'selected' : '')}>${o}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Status -->
+            <div class="form-group">
+              <label class="form-label required">Status</label>
+              <select name="status" class="form-select" required>
+                ${store.statuses.map(st => `
+                  <option value="${st}" ${rel && rel.status === st ? 'selected' : (!rel && st === 'On Track' ? 'selected' : '')}>${st}</option>
+                `).join('')}
+              </select>
+            </div>
+
+            <!-- Ticket RITM -->
+            <div class="form-group">
+              <label class="form-label">RITM Number</label>
+              <input type="text" name="ritm" class="form-input font-mono" maxlength="30" 
+                     placeholder="e.g. RITM0129384" 
+                     value="${escapeHtml(rel ? rel.ritm : '')}">
+            </div>
+
+            <!-- Ticket CR -->
+            <div class="form-group">
+              <label class="form-label">Change Request (CR)</label>
+              <input type="text" name="cr" class="form-input font-mono" maxlength="30" 
+                     placeholder="e.g. CR-90218" 
+                     value="${escapeHtml(rel ? rel.cr : '')}">
+            </div>
+
+            <!-- DB Objects Changed -->
+            <div class="form-group col-span-2">
+              <label class="form-label">Impacted Database Objects</label>
+              <textarea name="dbObjects" class="form-textarea font-mono" rows="2" maxlength="1000"
+                        placeholder="e.g. DW_SALES_FACT, SP_LOAD_BVS_SALES, VW_DAILY_KPIS (comma separated)">${escapeHtml(rel ? rel.dbObjects : '')}</textarea>
+              <span class="field-hint">Impacted tables, views, stored procedures affected (comma separated)</span>
+            </div>
+
+            <!-- Notes / Blockers -->
+            <div class="form-group col-span-2">
+              <label class="form-label">Notes / Blockers</label>
+              <input type="text" name="notes" class="form-input" maxlength="200" 
+                     placeholder="e.g. Blocked on SIT data refresh from upstream core" 
+                     value="${escapeHtml(rel ? rel.notes : '')}">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group col-span-2">
+              <label class="form-label">Notification Email / Reference</label>
+              <input type="text" name="email" class="form-input" 
+                     placeholder="e.g. dev-team@teknosys.com or reference thread" 
+                     value="${escapeHtml(rel ? rel.email : '')}">
+            </div>
           </div>
         </div>
 
-        <div class="form-grid-2">
-          <!-- Release Name -->
-          <div class="form-group col-span-2">
-            <label class="form-label required">Release Name</label>
-            <input type="text" name="name" class="form-input" required maxlength="200" 
-                   placeholder="e.g. BVS Sales Old Age flag Core" 
-                   value="${escapeHtml(rel ? rel.name : '')}">
-          </div>
-
-          <!-- Developer Name -->
-          <div class="form-group">
-            <label class="form-label required">Developer Name</label>
-            <input type="text" name="developer" class="form-input" required maxlength="100" 
-                   placeholder="e.g. Rabia Qayyum" 
-                   value="${escapeHtml(rel ? rel.developer : '')}">
-          </div>
-
-          <!-- Version / Tag -->
-          <div class="form-group">
-            <label class="form-label">Version / Tag</label>
-            <input type="text" name="version" class="form-input font-mono" maxlength="30" 
-                   placeholder="e.g. v1, v2.1" 
-                   value="${escapeHtml(rel ? rel.version : 'v1')}">
-          </div>
-
-          <!-- Platform -->
-          <div class="form-group">
-            <label class="form-label required">Platform</label>
-            <select name="platform" class="form-select" required>
-              ${store.platforms.map(p => `
-                <option value="${p}" ${rel && rel.platform === p ? 'selected' : (!rel && p === 'GSM' ? 'selected' : '')}>${p}</option>
-              `).join('')}
-            </select>
-          </div>
-
-          <!-- Deployment Type -->
-          <div class="form-group">
-            <label class="form-label required">Deployment Type</label>
-            <select name="type" class="form-select" required>
-              ${store.deploymentTypes.map(t => `
-                <option value="${t}" ${rel && rel.type === t ? 'selected' : (!rel && t === 'Scheduled' ? 'selected' : '')}>${t}</option>
-              `).join('')}
-            </select>
-          </div>
-
-          <!-- Start Date -->
-          <div class="form-group">
-            <label class="form-label">Start Date</label>
-            <input type="date" name="startDate" id="input-start-date" class="form-input font-mono" 
-                   value="${initialStartDate}">
-          </div>
-
-          <!-- Target Deploy Date -->
-          <div class="form-group">
-            <label class="form-label required">Target Deploy Date</label>
-            <input type="date" name="targetDeploy" id="input-target-deploy" class="form-input font-mono" required 
-                   value="${initialTargetDeploy}">
-            <span class="field-hint">Checked in real-time against holiday dates</span>
-          </div>
-
-          <!-- Current Stage -->
-          <div class="form-group">
-            <label class="form-label required">Current Stage</label>
-            <select name="stage" class="form-select" required>
-              ${store.stages.map(s => `
-                <option value="${s}" ${rel && rel.stage === s ? 'selected' : (!rel && s === 'Development' ? 'selected' : '')}>${s}</option>
-              `).join('')}
-            </select>
-          </div>
-
-          <!-- Stage Owner -->
-          <div class="form-group">
-            <label class="form-label required">Stage Owner</label>
-            <select name="owner" class="form-select" required>
-              ${store.owners.map(o => `
-                <option value="${o}" ${rel && rel.owner === o ? 'selected' : (!rel && o === 'Dev Team' ? 'selected' : '')}>${o}</option>
-              `).join('')}
-            </select>
-          </div>
-
-          <!-- Status -->
-          <div class="form-group">
-            <label class="form-label required">Status</label>
-            <select name="status" class="form-select" required>
-              ${store.statuses.map(st => `
-                <option value="${st}" ${rel && rel.status === st ? 'selected' : (!rel && st === 'On Track' ? 'selected' : '')}>${st}</option>
-              `).join('')}
-            </select>
-          </div>
-
-          <!-- Ticket RITM -->
-          <div class="form-group">
-            <label class="form-label">RITM Number</label>
-            <input type="text" name="ritm" class="form-input font-mono" maxlength="30" 
-                   placeholder="e.g. RITM0129384" 
-                   value="${escapeHtml(rel ? rel.ritm : '')}">
-          </div>
-
-          <!-- Ticket CR -->
-          <div class="form-group">
-            <label class="form-label">Change Request (CR)</label>
-            <input type="text" name="cr" class="form-input font-mono" maxlength="30" 
-                   placeholder="e.g. CR-90218" 
-                   value="${escapeHtml(rel ? rel.cr : '')}">
-          </div>
-
-          <!-- DB Objects Changed -->
-          <div class="form-group col-span-2">
-            <label class="form-label">Impacted Database Objects</label>
-            <textarea name="dbObjects" class="form-textarea font-mono" rows="2" maxlength="1000"
-                      placeholder="e.g. DW_SALES_FACT, SP_LOAD_BVS_SALES, VW_DAILY_KPIS (comma separated)">${escapeHtml(rel ? rel.dbObjects : '')}</textarea>
-            <span class="field-hint">Impacted tables, views, stored procedures affected (comma separated)</span>
-          </div>
-
-          <!-- Notes / Blockers -->
-          <div class="form-group col-span-2">
-            <label class="form-label">Notes / Blockers</label>
-            <input type="text" name="notes" class="form-input" maxlength="200" 
-                   placeholder="e.g. Blocked on SIT data refresh from upstream core" 
-                   value="${escapeHtml(rel ? rel.notes : '')}">
-          </div>
-
-          <!-- Email -->
-          <div class="form-group col-span-2">
-            <label class="form-label">Notification Email / Reference</label>
-            <input type="text" name="email" class="form-input" 
-                   placeholder="e.g. dev-team@teknosys.com or reference thread" 
-                   value="${escapeHtml(rel ? rel.email : '')}">
-          </div>
-        </div>
-
+        <!-- Pinned Fixed Footer: Always Visible and Accessible -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" id="modal-cancel">Cancel</button>
           <button type="submit" class="btn btn-primary" id="modal-submit">
@@ -200,34 +204,61 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
   };
 
   targetDeployInput.addEventListener('input', checkConflict);
-  checkConflict(); // Run initial check
+  checkConflict();
 
   // Close handlers
   const closeModal = () => {
     modalEl.classList.remove('show');
   };
 
-  modalEl.querySelector('#modal-close').addEventListener('click', closeModal);
-  modalEl.querySelector('#modal-cancel').addEventListener('click', closeModal);
-  modalEl.addEventListener('click', (e) => {
-    if (e.target === modalEl) closeModal();
-  });
+  modalEl.querySelector('#modal-close').onclick = closeModal;
+  modalEl.querySelector('#modal-cancel').onclick = closeModal;
+
+  // Safe backdrop click handling:
+  // Requires both mousedown AND mouseup on the backdrop to close,
+  // preventing accidental closes when dragging text or releasing mouse outside.
+  let isBackdropClick = false;
+  modalEl.onmousedown = (e) => {
+    isBackdropClick = (e.target === modalEl);
+  };
+  modalEl.onmouseup = (e) => {
+    if (isBackdropClick && e.target === modalEl) {
+      closeModal();
+    }
+    isBackdropClick = false;
+  };
 
   // Submit handler
   const form = modalEl.querySelector('#release-form');
-  form.addEventListener('submit', (e) => {
+  form.onsubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
 
+    let resultRelease = null;
     if (isEdit) {
-      store.updateRelease(id, data);
+      resultRelease = store.updateRelease(id, data);
+      showToast(`Release "${data.name}" updated successfully!`, 'success');
     } else {
-      store.addRelease(data);
+      resultRelease = store.addRelease(data);
+      showToast(`New release "${data.name}" created successfully!`, 'success');
+    }
+
+    // If the calendar is currently active, ensure it navigates to the release's month
+    if (resultRelease && resultRelease.targetDeploy && window._calState) {
+      const parts = resultRelease.targetDeploy.split('-');
+      if (parts.length >= 2) {
+        const relYear = parseInt(parts[0], 10);
+        const relMonth = parseInt(parts[1], 10);
+        if (window._calState.month !== relMonth || window._calState.year !== relYear) {
+          window._calState.month = relMonth;
+          window._calState.year = relYear;
+        }
+      }
     }
 
     closeModal();
-  });
+  };
 }
 
 function escapeHtml(str) {

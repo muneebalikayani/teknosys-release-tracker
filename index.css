@@ -2857,6 +2857,14 @@ body.kanban-dragging-active * {
   color: #fff;
 }
 
+.modal-form-wrap {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
 .modal-body {
   padding: 1.5rem;
   overflow-y: auto;
@@ -2864,6 +2872,8 @@ body.kanban-dragging-active * {
   display: flex;
   flex-direction: column;
   gap: 1.1rem;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 .modal-footer {
@@ -2873,7 +2883,8 @@ body.kanban-dragging-active * {
   align-items: center;
   justify-content: flex-end;
   gap: 0.65rem;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(15, 23, 42, 0.95);
+  flex-shrink: 0;
 }
 
 .detail-modal-footer {
@@ -7026,4 +7037,81 @@ body.kanban-dragging-active * {
 .report-paper.pdf-light-theme .exec-footer-right,
 [data-theme] .report-paper.pdf-light-theme .exec-footer-right {
   color: #475569 !important;
+}
+
+/* =========================================================
+   TOAST NOTIFICATION COMPONENT
+   ========================================================= */
+.toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 10000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 420px;
+  pointer-events: none;
+}
+
+.toast-message {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  background: #181b20;
+  color: #f8fafc;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+  transform: translateY(16px);
+  opacity: 0;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-message.toast-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.toast-message.toast-success {
+  border-left: 4px solid #00d4a4;
+}
+
+.toast-message.toast-warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.toast-message.toast-error {
+  border-left: 4px solid #ef4444;
+}
+
+.toast-body {
+  flex: 1;
+  line-height: 1.4;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 1.25rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 8px;
+  transition: color 0.15s ease;
+}
+
+.toast-close:hover {
+  color: #fff;
+}
+
+[data-theme="neumorphic"] .toast-message {
+  background: #181b20 !important;
+  box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.8), -3px -3px 8px rgba(255, 255, 255, 0.04) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }

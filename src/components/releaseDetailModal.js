@@ -239,11 +239,19 @@ export function openReleaseDetailModal(id) {
   modalEl.classList.add('show');
 
   const closeModal = () => modalEl.classList.remove('show');
-  modalEl.querySelector('#detail-modal-close').addEventListener('click', closeModal);
-  modalEl.querySelector('#detail-done-btn').addEventListener('click', closeModal);
-  modalEl.addEventListener('click', (e) => {
-    if (e.target === modalEl) closeModal();
-  });
+  modalEl.querySelector('#detail-modal-close').onclick = closeModal;
+  modalEl.querySelector('#detail-done-btn').onclick = closeModal;
+
+  let isBackdropClick = false;
+  modalEl.onmousedown = (e) => {
+    isBackdropClick = (e.target === modalEl);
+  };
+  modalEl.onmouseup = (e) => {
+    if (isBackdropClick && e.target === modalEl) {
+      closeModal();
+    }
+    isBackdropClick = false;
+  };
 
   // Advance Stage button
   modalEl.querySelector('#btn-advance-stage')?.addEventListener('click', () => {

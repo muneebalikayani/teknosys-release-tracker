@@ -29,6 +29,7 @@ class ReleaseStore {
     this.isSupabaseConnected = false;
     this.isSyncing = false;
     this.unsubscribeRealtime = null;
+    this.lastLocalMutation = 0;
 
     this.releases = this.loadReleases();
     this.saveReleases();
@@ -489,28 +490,38 @@ class ReleaseStore {
   startPolling() {
     this.stopPolling();
     this.pollInterval = setInterval(async () => {
-      if (!this.isSyncing) {
-        try {
-          const cloudData = await fetchCloudStore();
-          if (cloudData && Array.isArray(cloudData.releases)) {
-            const normalizedCloud = cloudData.releases.map(r => this.normalizeRelease(r));
-            const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
-            const newSummary = normalizedCloud.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
-            if (currSummary !== newSummary) {
-              console.log('🔄 Live update received from team member, refreshing views...');
-              this.releases = normalizedCloud;
-              if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
-                this.holidays = cloudData.holidays;
-                this.saveHolidays();
-              }
-              this.saveReleases();
-              this.recalculateAllHolidayConflicts();
-              this.notify();
+      // Don't poll while an active sync is running or if local changes occurred within 15s
+      if (this.isSyncing) return;
+      if (Date.now() - (this.lastLocalMutation || 0) < 15000) return;
+
+      try {
+        const cloudData = await fetchCloudStore();
+        if (cloudData && Array.isArray(cloudData.releases)) {
+          // If a local mutation happened, ensure cloud response is strictly newer
+          if (cloudData.updatedAt && this.lastLocalMutation) {
+            const cloudTimestamp = new Date(cloudData.updatedAt).getTime();
+            if (cloudTimestamp < this.lastLocalMutation) {
+              return; // Edge CDN returned stale cache, do not clobber local mutations
             }
           }
-        } catch (e) {
-          // background poll catch
+
+          const normalizedCloud = cloudData.releases.map(r => this.normalizeRelease(r));
+          const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
+          const newSummary = normalizedCloud.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
+          if (currSummary !== newSummary) {
+            console.log('🔄 Live update received from team member, refreshing views...');
+            this.releases = normalizedCloud;
+            if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
+              this.holidays = cloudData.holidays;
+              this.saveHolidays();
+            }
+            this.saveReleases();
+            this.recalculateAllHolidayConflicts();
+            this.notify();
+          }
         }
+      } catch (e) {
+        // background poll catch
       }
     }, 6000);
   }
@@ -519,6 +530,19 @@ class ReleaseStore {
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
       this.pollInterval = null;
+    }
+  }
+
+  async syncCloud() {
+    try {
+      this.isSyncing = true;
+      this.notify();
+      await pushCloudStore(this.releases, this.holidays);
+    } catch (err) {
+      console.warn('Failed to push updates to cloud store:', err);
+    } finally {
+      this.isSyncing = false;
+      this.notify();
     }
   }
 
@@ -589,10 +613,11 @@ class ReleaseStore {
 
     this.releases.push(newRelease);
     this.saveReleases();
+    this.lastLocalMutation = Date.now();
     this.notify();
 
     // Push to zero-config cloud store for all team members
-    pushCloudStore(this.releases, this.holidays).catch(() => {});
+    this.syncCloud();
 
     if (this.isSupabaseConnected) {
       upsertReleaseInSupabase(newRelease).catch(err => {
@@ -604,8 +629,12 @@ class ReleaseStore {
   }
 
   updateRelease(id, updates) {
-    const index = this.releases.findIndex(r => r.id === id);
-    if (index === -1) return null;
+    const targetId = Number(id);
+    const index = this.releases.findIndex(r => Number(r.id) === targetId);
+    if (index === -1) {
+      console.warn(`Release #${id} not found for update`);
+      return null;
+    }
 
     const current = this.releases[index];
     const updated = { ...current, ...updates };
@@ -617,10 +646,11 @@ class ReleaseStore {
 
     this.releases[index] = updated;
     this.saveReleases();
+    this.lastLocalMutation = Date.now();
     this.notify();
 
     // Push to zero-config cloud store for all team members
-    pushCloudStore(this.releases, this.holidays).catch(() => {});
+    this.syncCloud();
 
     if (this.isSupabaseConnected) {
       upsertReleaseInSupabase(updated).catch(err => {
@@ -632,17 +662,19 @@ class ReleaseStore {
   }
 
   deleteRelease(id) {
-    const index = this.releases.findIndex(r => r.id === id);
+    const targetId = Number(id);
+    const index = this.releases.findIndex(r => Number(r.id) === targetId);
     if (index === -1) return false;
     this.releases.splice(index, 1);
     this.saveReleases();
+    this.lastLocalMutation = Date.now();
     this.notify();
 
     // Push to zero-config cloud store for all team members
-    pushCloudStore(this.releases, this.holidays).catch(() => {});
+    this.syncCloud();
 
     if (this.isSupabaseConnected) {
-      deleteReleaseInSupabase(id).catch(err => {
+      deleteReleaseInSupabase(targetId).catch(err => {
         console.error('Failed to sync deleted release from Supabase:', err);
       });
     }
@@ -651,7 +683,8 @@ class ReleaseStore {
   }
 
   duplicateRelease(id) {
-    const original = this.releases.find(r => r.id === id);
+    const targetId = Number(id);
+    const original = this.releases.find(r => Number(r.id) === targetId);
     if (!original) return null;
     const copy = { ...original };
     delete copy.id;
@@ -660,7 +693,8 @@ class ReleaseStore {
   }
 
   getReleaseById(id) {
-    return this.releases.find(r => r.id === id) || null;
+    const targetId = Number(id);
+    return this.releases.find(r => Number(r.id) === targetId) || null;
   }
 
   // --- CRUD for Holidays ---
