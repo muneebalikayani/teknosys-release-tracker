@@ -59,9 +59,6 @@ export function renderDashboard(container) {
       <!-- Dashboard Controls & Breadcrumb -->
       <div class="dashboard-header-bar">
         <div class="header-titles">
-          <div class="header-badge">
-            <span class="live-dot pulse"></span> LIVE TELECOM DW TRACKER
-          </div>
           <h1 class="page-title">Executive Release Dashboard</h1>
           <p class="page-subtitle">Real-time status, platform distributions, velocity analytics & holiday conflict monitoring</p>
         </div>

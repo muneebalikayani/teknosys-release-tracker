@@ -22,26 +22,32 @@
   --text-dim: #66666e;
 
   /* Mintlify Signature Accents & Statuses */
-  --primary: #00d4a4;
-  --primary-hover: #00b48a;
-  --primary-glow: rgba(0, 212, 164, 0.25);
+  /* Core 4-Color Palette: Green, Blue, Orange, Red */
+  --primary: #10b981;
+  --primary-hover: #059669;
+  --primary-glow: rgba(16, 185, 129, 0.25);
 
-  --accent-cyan: #00d4a4;
-  --accent-purple: #8b5cf6;
-  --accent-pink: #ec4899;
+  --color-green: #10b981;
+  --color-blue: #3b82f6;
+  --color-orange: #f59e0b;
+  --color-red: #ef4444;
 
-  --status-completed: #00d4a4;
-  --status-on-track: #3772cf;
-  --status-at-risk: #c37d0d;
-  --status-delayed: #d45656;
-  --status-on-hold: #888888;
+  --accent-cyan: #3b82f6;
+  --accent-purple: #3b82f6;
+  --accent-pink: #ef4444;
 
-  --platform-gsm: #00d4a4;
-  --platform-dfs: #10b981;
-  --platform-apis: #3772cf;
-  --platform-dpi: #a855f7;
-  --platform-bi: #c37d0d;
-  --platform-jlv: #ec4899;
+  --status-completed: #10b981;
+  --status-on-track: #3b82f6;
+  --status-at-risk: #f59e0b;
+  --status-delayed: #ef4444;
+  --status-on-hold: #64748b;
+
+  --platform-gsm: #10b981;
+  --platform-dfs: #3b82f6;
+  --platform-apis: #3b82f6;
+  --platform-dpi: #f97316;
+  --platform-bi: #f59e0b;
+  --platform-jlv: #ef4444;
 
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -1243,24 +1249,24 @@ body {
 }
 
 .bar-stage-development {
-  background: #3772cf;
+  background: #3b82f6;
 }
 
 .bar-stage-sit {
-  background: #06b6d4;
+  background: #3b82f6;
 }
 
 .bar-stage-uat {
-  background: #3b82f6;
+  background: #2563eb;
 }
 
 .bar-stage-cab,
 .bar-stage-cab---rfc {
-  background: #8b5cf6;
+  background: #f97316;
 }
 
 .bar-stage-code-freeze {
-  background: #ec4899;
+  background: #ef4444;
 }
 
 .bar-stage-pre-prod {
@@ -1272,7 +1278,7 @@ body {
 }
 
 .bar-stage-completed {
-  background: #059669;
+  background: #10b981;
 }
 
 .bar-stage-on-hold {
@@ -1826,27 +1832,27 @@ body {
 }
 
 .platform-gsm {
-  background: rgba(99, 102, 241, 0.15);
-  color: #818cf8;
-  border: 1px solid rgba(99, 102, 241, 0.3);
-}
-
-.platform-dfs {
   background: rgba(16, 185, 129, 0.15);
   color: #34d399;
   border: 1px solid rgba(16, 185, 129, 0.3);
 }
 
+.platform-dfs {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
+}
+
 .platform-apis {
-  background: rgba(6, 182, 212, 0.15);
-  color: #22d3ee;
-  border: 1px solid rgba(6, 182, 212, 0.3);
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.3);
 }
 
 .platform-dpi {
-  background: rgba(168, 85, 247, 0.15);
-  color: #c084fc;
-  border: 1px solid rgba(168, 85, 247, 0.3);
+  background: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.3);
 }
 
 .platform-bi {
@@ -1856,9 +1862,9 @@ body {
 }
 
 .platform-jlv {
-  background: rgba(236, 72, 153, 0.15);
-  color: #f472b6;
-  border: 1px solid rgba(236, 72, 153, 0.3);
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
 .type-pill {
@@ -4631,15 +4637,15 @@ body.kanban-dragging-active * {
   text-align: right;
 }
 
-/* Platform bar fills */
-.platform-fill-gsm  { background: linear-gradient(90deg, #00d4a4, #7cebcb); }
-.platform-fill-dfs  { background: linear-gradient(90deg, #10b981, #34d399); }
-.platform-fill-apis { background: linear-gradient(90deg, #3772cf, #60a5fa); }
-.platform-fill-dpi  { background: linear-gradient(90deg, #a855f7, #c084fc); }
-.platform-fill-bi   { background: linear-gradient(90deg, #c37d0d, #fbbf24); }
-.platform-fill-jlv  { background: linear-gradient(90deg, #ec4899, #f472b6); }
-.platform-fill-fms  { background: linear-gradient(90deg, #00d4a4, #7cebcb); }
-.platform-fill-eai  { background: linear-gradient(90deg, #0ea5e9, #38bdf8); }
+/* Platform bar fills (Strict 4 Colors: Green, Blue, Orange, Red) */
+.platform-fill-gsm  { background: linear-gradient(90deg, #10b981, #34d399); }
+.platform-fill-dfs  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.platform-fill-apis { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.platform-fill-dpi  { background: linear-gradient(90deg, #f97316, #fb923c); }
+.platform-fill-bi   { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.platform-fill-jlv  { background: linear-gradient(90deg, #ef4444, #f87171); }
+.platform-fill-fms  { background: linear-gradient(90deg, #10b981, #34d399); }
+.platform-fill-eai  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
 .platform-fill-crm  { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
 
 /* Change Type bar fills */
@@ -5053,14 +5059,14 @@ body.kanban-dragging-active * {
   font-size: 0.675rem !important;
 }
 
-.report-paper.pdf-light-theme .platform-fill-gsm  { background: #00b48a !important; }
-.report-paper.pdf-light-theme .platform-fill-dfs  { background: #10b981 !important; }
-.report-paper.pdf-light-theme .platform-fill-apis { background: #3772cf !important; }
-.report-paper.pdf-light-theme .platform-fill-dpi  { background: #a855f7 !important; }
-.report-paper.pdf-light-theme .platform-fill-bi   { background: #c37d0d !important; }
-.report-paper.pdf-light-theme .platform-fill-jlv  { background: #ec4899 !important; }
-.report-paper.pdf-light-theme .platform-fill-fms  { background: #00b48a !important; }
-.report-paper.pdf-light-theme .platform-fill-eai  { background: #0284c7 !important; }
+.report-paper.pdf-light-theme .platform-fill-gsm  { background: #10b981 !important; }
+.report-paper.pdf-light-theme .platform-fill-dfs  { background: #3b82f6 !important; }
+.report-paper.pdf-light-theme .platform-fill-apis { background: #3b82f6 !important; }
+.report-paper.pdf-light-theme .platform-fill-dpi  { background: #f97316 !important; }
+.report-paper.pdf-light-theme .platform-fill-bi   { background: #f59e0b !important; }
+.report-paper.pdf-light-theme .platform-fill-jlv  { background: #ef4444 !important; }
+.report-paper.pdf-light-theme .platform-fill-fms  { background: #10b981 !important; }
+.report-paper.pdf-light-theme .platform-fill-eai  { background: #3b82f6 !important; }
 .report-paper.pdf-light-theme .platform-fill-crm  { background: #f59e0b !important; }
 
 .report-paper.pdf-light-theme .fill-type-scheduled { background: #3b82f6 !important; }
@@ -5415,14 +5421,14 @@ body.kanban-dragging-active * {
     font-size: 0.675rem !important;
   }
 
-  .platform-fill-gsm  { background: #00b48a !important; }
-  .platform-fill-dfs  { background: #10b981 !important; }
-  .platform-fill-apis { background: #3772cf !important; }
-  .platform-fill-dpi  { background: #a855f7 !important; }
-  .platform-fill-bi   { background: #c37d0d !important; }
-  .platform-fill-jlv  { background: #ec4899 !important; }
-  .platform-fill-fms  { background: #00b48a !important; }
-  .platform-fill-eai  { background: #0284c7 !important; }
+  .platform-fill-gsm  { background: #10b981 !important; }
+  .platform-fill-dfs  { background: #3b82f6 !important; }
+  .platform-fill-apis { background: #3b82f6 !important; }
+  .platform-fill-dpi  { background: #f97316 !important; }
+  .platform-fill-bi   { background: #f59e0b !important; }
+  .platform-fill-jlv  { background: #ef4444 !important; }
+  .platform-fill-fms  { background: #10b981 !important; }
+  .platform-fill-eai  { background: #3b82f6 !important; }
   .platform-fill-crm  { background: #f59e0b !important; }
 
   .fill-type-scheduled { background: #3b82f6 !important; }
@@ -6832,12 +6838,17 @@ body.kanban-dragging-active * {
   --primary-hover: #00b48a;
   --primary-glow: rgba(0, 212, 164, 0.28);
 
-  --accent-cyan: #00d4a4;
-  --accent-purple: #8b5cf6;
-  --accent-pink: #ec4899;
+  --color-green: #10b981;
+  --color-blue: #3b82f6;
+  --color-orange: #f59e0b;
+  --color-red: #ef4444;
 
-  --status-completed: #00d4a4;
-  --status-on-track: #3772cf;
+  --accent-cyan: #3b82f6;
+  --accent-purple: #3b82f6;
+  --accent-pink: #ef4444;
+
+  --status-completed: #10b981;
+  --status-on-track: #3b82f6;
   --status-at-risk: #f59e0b;
   --status-delayed: #ef4444;
   --status-on-hold: #64748b;
