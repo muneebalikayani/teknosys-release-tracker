@@ -180,14 +180,7 @@ navTabs?.addEventListener('click', (e) => {
   }
 });
 
-// Primary CTA: New Release (Sidebar + Mobile)
-document.getElementById('btn-sidebar-new-release')?.addEventListener('click', () => {
-  openReleaseModal({ mode: 'create' });
-  if (window.innerWidth <= 1024) {
-    closeMobileSidebar();
-  }
-});
-
+// Primary CTA: New Release (Mobile header)
 document.getElementById('btn-mobile-new-release')?.addEventListener('click', () => {
   openReleaseModal({ mode: 'create' });
 });
