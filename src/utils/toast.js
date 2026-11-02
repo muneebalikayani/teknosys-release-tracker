@@ -32,3 +32,4 @@ export function showToast(message, type = 'success', duration = 4000) {
   toast.querySelector('.toast-close').addEventListener('click', removeToast);
   setTimeout(removeToast, duration);
 }
+

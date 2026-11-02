@@ -7115,3 +7115,46 @@ body.kanban-dragging-active * {
   box-shadow: 6px 6px 14px rgba(0, 0, 0, 0.8), -3px -3px 8px rgba(255, 255, 255, 0.04) !important;
   border: 1px solid rgba(255, 255, 255, 0.05) !important;
 }
+
+/* =========================================================
+   DEPLOYMENT GOVERNANCE (CR & RITM MANDATORY VALIDATION)
+   ========================================================= */
+.governance-req-hint {
+  font-size: 0.675rem;
+  font-weight: 600;
+  color: #f59e0b;
+  margin-left: 6px;
+}
+
+.input-field-error {
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.3) !important;
+  background-color: rgba(239, 68, 68, 0.06) !important;
+  animation: shakeInput 0.3s ease-in-out;
+}
+
+[data-theme="neumorphic"] .input-field-error {
+  border-color: #ef4444 !important;
+  box-shadow: inset 2px 2px 5px rgba(0, 0, 0, 0.7), inset -2px -2px 5px rgba(255, 255, 255, 0.04), 0 0 0 2px rgba(239, 68, 68, 0.45) !important;
+  background-color: #1a1416 !important;
+}
+
+@keyframes shakeInput {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.badge-audit-warning {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  color: #fbbf24;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+

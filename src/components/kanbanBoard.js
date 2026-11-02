@@ -1,4 +1,5 @@
 import { store } from '../data/store.js';
+import { showToast } from '../utils/toast.js';
 
 export function renderKanbanBoard(container) {
   const groupBy = store.boardGroupBy || 'stage'; // 'stage' or 'status'
@@ -192,10 +193,26 @@ function setupKanbanEvents(container, groupBy) {
 
       if (groupBy === 'stage') {
         if (release.stage !== targetCol) {
+          if (targetCol === 'Completed') {
+            const check = store.validateDeploymentCompletion({ ...release, stage: 'Completed', status: 'Completed' });
+            if (!check.valid) {
+              showToast(`⚠️ Governance Policy: ${check.error} Release #${release.id} requires both CR and RITM to be completed.`, 'warning', 5000);
+              renderKanbanBoard(container);
+              return;
+            }
+          }
           store.updateRelease(rawId, { stage: targetCol });
         }
       } else {
         if (release.status !== targetCol) {
+          if (targetCol === 'Completed') {
+            const check = store.validateDeploymentCompletion({ ...release, status: 'Completed' });
+            if (!check.valid) {
+              showToast(`⚠️ Governance Policy: ${check.error} Release #${release.id} requires both CR and RITM to be completed.`, 'warning', 5000);
+              renderKanbanBoard(container);
+              return;
+            }
+          }
           store.updateRelease(rawId, { status: targetCol });
         }
       }

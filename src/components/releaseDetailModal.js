@@ -1,5 +1,6 @@
 import confetti from 'canvas-confetti';
 import { store } from '../data/store.js';
+import { showToast } from '../utils/toast.js';
 
 export function openReleaseDetailModal(id) {
   let modalEl = document.getElementById('release-detail-overlay');
@@ -152,12 +153,16 @@ export function openReleaseDetailModal(id) {
 
           <div class="detail-item">
             <span class="detail-label">RITM Ticket</span>
-            <span class="detail-val font-mono">${escapeHtml(rel.ritm || 'None')}</span>
+            <span class="detail-val font-mono">
+              ${rel.ritm && rel.ritm.trim() ? escapeHtml(rel.ritm) : '<span class="text-warning text-xs font-semibold">⚠️ Missing (Required for Completion)</span>'}
+            </span>
           </div>
 
           <div class="detail-item">
             <span class="detail-label">CR Number</span>
-            <span class="detail-val font-mono">${escapeHtml(rel.cr || 'None')}</span>
+            <span class="detail-val font-mono">
+              ${rel.cr && rel.cr.trim() ? escapeHtml(rel.cr) : '<span class="text-warning text-xs font-semibold">⚠️ Missing (Required for Completion)</span>'}
+            </span>
           </div>
         </div>
 
@@ -253,14 +258,27 @@ export function openReleaseDetailModal(id) {
     isBackdropClick = false;
   };
 
+  // Helper to ensure deployment can be marked Completed under governance rules
+  const ensureCanComplete = () => {
+    const check = store.validateDeploymentCompletion({ ...rel, stage: 'Completed', status: 'Completed' });
+    if (!check.valid) {
+      showToast(`⚠️ Governance Policy: ${check.error} Please click "Edit Record" to enter ticket details first.`, 'warning', 5000);
+      return false;
+    }
+    return true;
+  };
+
   // Advance Stage button
   modalEl.querySelector('#btn-advance-stage')?.addEventListener('click', () => {
     if (currentStageIdx < stages.length - 1) {
       const nextStage = stages[currentStageIdx + 1];
+      if (nextStage === 'Completed') {
+        if (!ensureCanComplete()) return;
+        triggerCelebration();
+      }
       const updates = { stage: nextStage };
       if (nextStage === 'Completed') {
         updates.status = 'Completed';
-        triggerCelebration();
       }
       store.updateRelease(id, updates);
       openReleaseDetailModal(id); // Re-render modal
@@ -279,6 +297,7 @@ export function openReleaseDetailModal(id) {
 
   // Mark Completed button
   modalEl.querySelector('#btn-mark-completed')?.addEventListener('click', () => {
+    if (!ensureCanComplete()) return;
     store.updateRelease(id, { stage: 'Completed', status: 'Completed' });
     triggerCelebration();
     openReleaseDetailModal(id);
@@ -289,10 +308,13 @@ export function openReleaseDetailModal(id) {
     step.addEventListener('click', () => {
       const targetStage = step.dataset.stageName;
       if (targetStage) {
+        if (targetStage === 'Completed') {
+          if (!ensureCanComplete()) return;
+          triggerCelebration();
+        }
         const updates = { stage: targetStage };
         if (targetStage === 'Completed') {
           updates.status = 'Completed';
-          triggerCelebration();
         }
         store.updateRelease(id, updates);
         openReleaseDetailModal(id);

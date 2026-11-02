@@ -583,6 +583,28 @@ class ReleaseStore {
     }
   }
 
+  // --- Deployment Governance Validation ---
+  // A deployment cannot be completed without both Change Request (CR) and RITM Number
+  validateDeploymentCompletion(releaseOrUpdates) {
+    const cr = releaseOrUpdates.cr ? String(releaseOrUpdates.cr).trim() : '';
+    const ritm = releaseOrUpdates.ritm ? String(releaseOrUpdates.ritm).trim() : '';
+    const isCompleted = releaseOrUpdates.stage === 'Completed' || releaseOrUpdates.status === 'Completed';
+
+    if (isCompleted && (!cr || !ritm)) {
+      return {
+        valid: false,
+        missingCr: !cr,
+        missingRitm: !ritm,
+        error: !cr && !ritm 
+          ? 'Both Change Request (CR) and RITM Number are mandatory before completing a deployment.'
+          : !cr 
+            ? 'Change Request (CR) is mandatory before completing a deployment.'
+            : 'RITM Number is mandatory before completing a deployment.'
+      };
+    }
+    return { valid: true };
+  }
+
   // --- CRUD for Releases ---
   addRelease(data) {
     const nextId = this.releases.length > 0
@@ -611,6 +633,13 @@ class ReleaseStore {
       holidayConflict: conflict ? conflict.conflictText : ''
     };
 
+    // Governance policy check: cannot complete deployment if CR or RITM is empty
+    const check = this.validateDeploymentCompletion(newRelease);
+    if (!check.valid) {
+      console.warn(`Governance Block: Cannot create release #${nextId} as Completed without CR and RITM`);
+      return null;
+    }
+
     this.releases.push(newRelease);
     this.saveReleases();
     this.lastLocalMutation = Date.now();
@@ -638,6 +667,15 @@ class ReleaseStore {
 
     const current = this.releases[index];
     const updated = { ...current, ...updates };
+
+    // Governance policy check: cannot complete deployment if CR or RITM is empty
+    if (!updates.bypassValidation) {
+      const check = this.validateDeploymentCompletion(updated);
+      if (!check.valid) {
+        console.warn(`Governance Block: Cannot complete release #${id}: ${check.error}`);
+        return null;
+      }
+    }
 
     if (updates.targetDeploy !== undefined) {
       const conflict = this.checkHolidayConflict(updated.targetDeploy);

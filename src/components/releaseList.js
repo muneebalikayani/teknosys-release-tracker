@@ -1,5 +1,6 @@
 import { store } from '../data/store.js';
 import { exportReleasesToExcel, exportReleasesToCSV } from './excelManager.js';
+import { showToast } from '../utils/toast.js';
 
 export function renderReleaseList(container) {
   if (!window._releaseListMode) {
@@ -814,6 +815,15 @@ function bindItemEvents(container) {
     sel.addEventListener('change', (e) => {
       const id = parseInt(e.target.dataset.releaseId, 10);
       const newStage = e.target.value;
+      const release = store.getReleaseById(id);
+      if (newStage === 'Completed' && release) {
+        const check = store.validateDeploymentCompletion({ ...release, stage: 'Completed', status: 'Completed' });
+        if (!check.valid) {
+          showToast(`⚠️ Governance Policy: ${check.error} Release #${release.id} requires both CR and RITM to be completed.`, 'warning', 5000);
+          e.target.value = release.stage;
+          return;
+        }
+      }
       store.updateRelease(id, { stage: newStage });
     });
   });
@@ -823,6 +833,15 @@ function bindItemEvents(container) {
     sel.addEventListener('change', (e) => {
       const id = parseInt(e.target.dataset.releaseId, 10);
       const newStatus = e.target.value;
+      const release = store.getReleaseById(id);
+      if (newStatus === 'Completed' && release) {
+        const check = store.validateDeploymentCompletion({ ...release, status: 'Completed' });
+        if (!check.valid) {
+          showToast(`⚠️ Governance Policy: ${check.error} Release #${release.id} requires both CR and RITM to be completed.`, 'warning', 5000);
+          e.target.value = release.status;
+          return;
+        }
+      }
       store.updateRelease(id, { status: newStatus });
     });
   });

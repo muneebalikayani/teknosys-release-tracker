@@ -38,6 +38,15 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
             </div>
           </div>
 
+          <!-- Mandatory Governance Banner for Completed Deployments -->
+          <div id="modal-completion-banner" class="alert-banner warning-banner" style="display: none;">
+            <div class="banner-icon">🛡️</div>
+            <div class="banner-content">
+              <div class="banner-title">Deployment Completion Governance</div>
+              <div class="banner-text">ServiceNow <strong>Change Request (CR)</strong> and <strong>RITM Number</strong> are both mandatory before completing a deployment.</div>
+            </div>
+          </div>
+
           <div class="form-grid-2">
             <!-- Release Name -->
             <div class="form-group col-span-2">
@@ -100,8 +109,8 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
 
             <!-- Current Stage -->
             <div class="form-group">
-              <label class="form-label required">Current Stage</label>
-              <select name="stage" class="form-select" required>
+              <label class="form-label required" id="label-stage">Current Stage</label>
+              <select name="stage" id="input-stage" class="form-select" required>
                 ${store.stages.map(s => `
                   <option value="${s}" ${rel && rel.stage === s ? 'selected' : (!rel && s === 'Development' ? 'selected' : '')}>${s}</option>
                 `).join('')}
@@ -120,8 +129,8 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
 
             <!-- Status -->
             <div class="form-group">
-              <label class="form-label required">Status</label>
-              <select name="status" class="form-select" required>
+              <label class="form-label required" id="label-status">Status</label>
+              <select name="status" id="input-status" class="form-select" required>
                 ${store.statuses.map(st => `
                   <option value="${st}" ${rel && rel.status === st ? 'selected' : (!rel && st === 'On Track' ? 'selected' : '')}>${st}</option>
                 `).join('')}
@@ -130,18 +139,20 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
 
             <!-- Ticket RITM -->
             <div class="form-group">
-              <label class="form-label">RITM Number</label>
-              <input type="text" name="ritm" class="form-input font-mono" maxlength="30" 
+              <label class="form-label" id="label-ritm">RITM Number</label>
+              <input type="text" name="ritm" id="input-ritm" class="form-input font-mono" maxlength="30" 
                      placeholder="e.g. RITM0129384" 
                      value="${escapeHtml(rel ? rel.ritm : '')}">
+              <span class="field-hint" id="hint-ritm">Required for Completed deployments</span>
             </div>
 
             <!-- Ticket CR -->
             <div class="form-group">
-              <label class="form-label">Change Request (CR)</label>
-              <input type="text" name="cr" class="form-input font-mono" maxlength="30" 
-                     placeholder="e.g. CR-90218" 
+              <label class="form-label" id="label-cr">Change Request (CR)</label>
+              <input type="text" name="cr" id="input-cr" class="form-input font-mono" maxlength="30" 
+                     placeholder="e.g. CR-90218 or CHG0154162" 
                      value="${escapeHtml(rel ? rel.cr : '')}">
+              <span class="field-hint" id="hint-cr">Required for Completed deployments</span>
             </div>
 
             <!-- DB Objects Changed -->
@@ -183,12 +194,60 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
 
   modalEl.classList.add('show');
 
-  // Real-time conflict checking
+  // Elements
+  const form = modalEl.querySelector('#release-form');
   const targetDeployInput = modalEl.querySelector('#input-target-deploy');
   const conflictBanner = modalEl.querySelector('#modal-conflict-banner');
   const conflictTitle = modalEl.querySelector('#conflict-banner-title');
   const conflictDesc = modalEl.querySelector('#conflict-banner-desc');
 
+  const stageSelect = modalEl.querySelector('#input-stage');
+  const statusSelect = modalEl.querySelector('#input-status');
+  const completionBanner = modalEl.querySelector('#modal-completion-banner');
+  const labelRitm = modalEl.querySelector('#label-ritm');
+  const labelCr = modalEl.querySelector('#label-cr');
+  const inputRitm = modalEl.querySelector('#input-ritm');
+  const inputCr = modalEl.querySelector('#input-cr');
+  const hintRitm = modalEl.querySelector('#hint-ritm');
+  const hintCr = modalEl.querySelector('#hint-cr');
+
+  // Governance state updater: marks CR & RITM required when stage or status is Completed
+  const updateGovernanceState = () => {
+    const isCompleted = (stageSelect.value === 'Completed' || statusSelect.value === 'Completed');
+    if (isCompleted) {
+      completionBanner.style.display = 'flex';
+      labelRitm.classList.add('required');
+      labelRitm.innerHTML = `RITM Number <span class="governance-req-hint">(Required to complete)</span>`;
+      labelCr.classList.add('required');
+      labelCr.innerHTML = `Change Request (CR) <span class="governance-req-hint">(Required to complete)</span>`;
+      hintRitm.style.color = '#f59e0b';
+      hintCr.style.color = '#f59e0b';
+    } else {
+      completionBanner.style.display = 'none';
+      labelRitm.classList.remove('required');
+      labelRitm.textContent = `RITM Number`;
+      labelCr.classList.remove('required');
+      labelCr.textContent = `Change Request (CR)`;
+      hintRitm.style.color = '';
+      hintCr.style.color = '';
+      inputRitm.classList.remove('input-field-error');
+      inputCr.classList.remove('input-field-error');
+    }
+  };
+
+  stageSelect.addEventListener('change', updateGovernanceState);
+  statusSelect.addEventListener('change', updateGovernanceState);
+  updateGovernanceState(); // Initial evaluation
+
+  // Clear error styles when user types in CR / RITM
+  inputRitm.addEventListener('input', () => {
+    if (inputRitm.value.trim()) inputRitm.classList.remove('input-field-error');
+  });
+  inputCr.addEventListener('input', () => {
+    if (inputCr.value.trim()) inputCr.classList.remove('input-field-error');
+  });
+
+  // Real-time holiday conflict checking
   const checkConflict = () => {
     const val = targetDeployInput.value;
     const conflict = store.checkHolidayConflict(val);
@@ -214,9 +273,7 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
   modalEl.querySelector('#modal-close').onclick = closeModal;
   modalEl.querySelector('#modal-cancel').onclick = closeModal;
 
-  // Safe backdrop click handling:
-  // Requires both mousedown AND mouseup on the backdrop to close,
-  // preventing accidental closes when dragging text or releasing mouse outside.
+  // Safe backdrop click handling
   let isBackdropClick = false;
   modalEl.onmousedown = (e) => {
     isBackdropClick = (e.target === modalEl);
@@ -228,12 +285,34 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
     isBackdropClick = false;
   };
 
-  // Submit handler
-  const form = modalEl.querySelector('#release-form');
+  // Submit handler with strict Governance Enforcement
   form.onsubmit = (e) => {
     e.preventDefault();
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
+
+    // Deployment Governance Check: CR and RITM are mandatory to complete deployment
+    const isCompleted = (data.stage === 'Completed' || data.status === 'Completed');
+    const crVal = (data.cr || '').trim();
+    const ritmVal = (data.ritm || '').trim();
+
+    if (isCompleted && (!crVal || !ritmVal)) {
+      if (!crVal && !ritmVal) {
+        showToast('⚠️ Deployment Governance Policy: Both Change Request (CR) and RITM Number are mandatory to complete deployment.', 'warning', 5000);
+        inputRitm.classList.add('input-field-error');
+        inputCr.classList.add('input-field-error');
+        inputRitm.focus();
+      } else if (!crVal) {
+        showToast('⚠️ Deployment Governance Policy: Change Request (CR) is mandatory to complete deployment.', 'warning', 5000);
+        inputCr.classList.add('input-field-error');
+        inputCr.focus();
+      } else {
+        showToast('⚠️ Deployment Governance Policy: RITM Number is mandatory to complete deployment.', 'warning', 5000);
+        inputRitm.classList.add('input-field-error');
+        inputRitm.focus();
+      }
+      return; // Block submission
+    }
 
     let resultRelease = null;
     if (isEdit) {
