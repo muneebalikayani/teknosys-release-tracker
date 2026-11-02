@@ -1482,17 +1482,88 @@ body {
   z-index: 2;
 }
 
-.search-bars-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.85rem;
+.unified-search-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+  width: 100%;
+  position: relative;
+  z-index: 40;
+}
+
+.unified-search-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.search-mode-control {
+  display: inline-flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 3px;
+  gap: 3px;
+}
+
+.search-mode-control .seg-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 11px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: calc(var(--radius-md) - 2px);
+  color: var(--text-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.search-mode-control .seg-btn:hover:not(.active) {
+  color: var(--text-main);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.search-mode-control .seg-btn.active {
+  background: var(--bg-card);
+  color: #fff;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-medium);
+}
+
+[data-theme="neumorphic"] .search-mode-control {
+  background: #14171b !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="neumorphic"] .search-mode-control .seg-btn.active {
+  background: #181b21 !important;
+  color: #60a5fa !important;
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.5), -1px -1px 4px rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(59, 130, 246, 0.3) !important;
+}
+
+.unified-search-box {
+  width: 100%;
+  position: relative;
+}
+
+.unified-search-input {
   width: 100%;
 }
 
-@media (max-width: 860px) {
-  .search-bars-grid {
-    grid-template-columns: 1fr;
-  }
+.search-bars-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  width: 100%;
 }
 
 .search-box-wrapper {

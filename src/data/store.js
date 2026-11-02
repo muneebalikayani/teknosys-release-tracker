@@ -53,6 +53,7 @@ class ReleaseStore {
     // Filter and view state
     this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'board' | 'calendar' | 'timeline' | 'year' | 'holidays'
     this.boardGroupBy = 'stage'; // 'stage' | 'status'
+    this.searchMode = 'all'; // 'all' | 'general' | 'dbObjects'
 
     this.filters = {
       search: '',
@@ -809,31 +810,56 @@ class ReleaseStore {
 
   getFilteredReleases() {
     const filtered = this.releases.filter(rel => {
-      // Search (General: release title, developer, version, tickets, notes)
+      // Search (Unified: supports 'all', 'general', and 'dbObjects' scopes)
       if (this.filters.search) {
-        const query = this.filters.search.toLowerCase();
-        const searchCorpus = [
-          rel.name,
-          rel.developer,
-          rel.version,
-          rel.platform,
-          rel.type,
-          rel.stage,
-          rel.owner,
-          rel.status,
-          rel.ritm,
-          rel.cr,
-          rel.notes
-        ].join(' ').toLowerCase();
+        const query = this.filters.search.toLowerCase().trim();
+        const mode = this.searchMode || 'all';
 
-        if (!searchCorpus.includes(query)) return false;
+        if (mode === 'dbObjects') {
+          // Strictly Database Objects Changed
+          if (!rel.dbObjects || !rel.dbObjects.toLowerCase().includes(query)) return false;
+        } else if (mode === 'general') {
+          // General fields: title, developer, version, platform, type, stage, owner, status, ritm, cr, notes
+          const searchCorpus = [
+            rel.name,
+            rel.developer,
+            rel.version,
+            rel.platform,
+            rel.type,
+            rel.stage,
+            rel.owner,
+            rel.status,
+            rel.ritm,
+            rel.cr,
+            rel.notes
+          ].join(' ').toLowerCase();
+
+          if (!searchCorpus.includes(query)) return false;
+        } else {
+          // 'all': searches everything (general metadata + database objects)
+          const searchCorpus = [
+            rel.name,
+            rel.developer,
+            rel.version,
+            rel.platform,
+            rel.type,
+            rel.stage,
+            rel.owner,
+            rel.status,
+            rel.ritm,
+            rel.cr,
+            rel.notes,
+            rel.dbObjects
+          ].join(' ').toLowerCase();
+
+          if (!searchCorpus.includes(query)) return false;
+        }
       }
 
-      // Impacted DB Object Search: searches strictly and only in Database Objects Changed
+      // Backward compatible impacted DB object filter (if selected specifically)
       if (this.filters.impactedObject && this.filters.impactedObject !== 'ALL' && this.filters.impactedObject.trim()) {
         const objQuery = this.filters.impactedObject.trim().toLowerCase();
-        if (!rel.dbObjects) return false;
-        if (!rel.dbObjects.toLowerCase().includes(objQuery)) return false;
+        if (!rel.dbObjects || !rel.dbObjects.toLowerCase().includes(objQuery)) return false;
       }
 
       // Platform

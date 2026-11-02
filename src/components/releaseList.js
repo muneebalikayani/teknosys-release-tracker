@@ -15,14 +15,21 @@ export function renderReleaseList(container) {
   const selStart = wasSearchFocused ? activeEl.selectionStart : null;
   const selEnd = wasSearchFocused ? activeEl.selectionEnd : null;
 
-  const wasImpactedFocused = activeEl && activeEl.id === 'filter-impacted-object';
-  const impactedSelStart = wasImpactedFocused ? activeEl.selectionStart : null;
-  const impactedSelEnd = wasImpactedFocused ? activeEl.selectionEnd : null;
-
   const releases = store.getFilteredReleases();
   const totalCount = store.releases.length;
   const filteredCount = releases.length;
   const allDbObjects = store.getAllDbObjects();
+
+  const searchMode = store.searchMode || 'all';
+  let hintText = 'Search across releases, developers, tickets & database objects';
+  let placeholderText = 'Search releases, developers, CR, RITM, or database objects...';
+  if (searchMode === 'general') {
+    hintText = 'Release name, developer, CR, RITM, version';
+    placeholderText = 'Search releases, developers, CR, RITM...';
+  } else if (searchMode === 'dbObjects') {
+    hintText = `${allDbObjects.length} database objects available`;
+    placeholderText = 'Search database object (e.g. JTR_PRD_..., DW_...)';
+  }
 
   const platforms = ['ALL', ...store.platforms];
   const types = ['ALL', ...store.deploymentTypes];
@@ -94,42 +101,39 @@ export function renderReleaseList(container) {
         </div>
       </div>
 
-      <!-- Filter Controls Bar with Dual Dedicated Search Bars -->
+      <!-- Filter Controls Bar with Unified Search Bar & Search Mode Scope -->
       <div class="filter-bar card">
-        <div class="search-bars-grid">
-          <!-- General Search Bar -->
-          <div class="search-box-wrapper">
-            <div class="search-bar-label-row">
-              <label class="search-bar-label" for="filter-search">
+        <div class="unified-search-wrapper" id="unified-search-wrapper">
+          <div class="unified-search-header">
+            <div class="segmented-control search-mode-control" title="Choose Search Scope">
+              <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                All Search
+              </button>
+              <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                 General Search
-              </label>
-              <span class="search-bar-hint">Release, dev, CR, RITM...</span>
+              </button>
+              <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
+                Database Objects
+              </button>
             </div>
-            <div class="search-box">
-              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              <input type="text" id="filter-search" class="search-input" placeholder="Search releases, developers, CR, RITM..." value="${escapeHtml(store.filters.search || '')}" autocomplete="off">
-              <button id="clear-search-btn" class="clear-input-btn" style="${store.filters.search ? 'display: inline-flex;' : 'display: none;'}" title="Clear search">&times;</button>
-            </div>
+            <span class="search-bar-hint" id="search-bar-hint-text">${hintText}</span>
           </div>
 
-          <!-- Separate Dedicated Impacted Objects Search Bar -->
-          <div class="search-box-wrapper" id="impacted-search-wrapper">
-            <div class="search-bar-label-row">
-              <label class="search-bar-label text-cyan" for="filter-impacted-object">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-                Database Objects Changed
-              </label>
-              <span class="search-bar-hint">${allDbObjects.length} objects available</span>
-            </div>
-            <div class="search-box search-box-impacted">
-              <svg class="search-icon search-icon-cyan" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg>
-              <input type="text" id="filter-impacted-object" class="search-input search-input-impacted font-mono" placeholder="Search database object (e.g. JTR_PRD_..., DW_...)" value="${escapeHtml(store.filters.impactedObject && store.filters.impactedObject !== 'ALL' ? store.filters.impactedObject : '')}" autocomplete="off">
-              <button id="clear-impacted-btn" class="clear-input-btn" style="${store.filters.impactedObject && store.filters.impactedObject !== 'ALL' ? 'display: inline-flex;' : 'display: none;'}" title="Clear object filter">&times;</button>
-              
-              <!-- Floating Suggestions Dropdown -->
-              <div id="impacted-suggestions-dropdown" class="suggestions-dropdown" style="display: none;"></div>
-            </div>
+          <div class="search-box unified-search-box ${searchMode === 'dbObjects' ? 'search-box-impacted' : ''}">
+            <svg class="search-icon ${searchMode === 'dbObjects' ? 'search-icon-cyan' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              ${searchMode === 'dbObjects' ? 
+                `<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path>` :
+                `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`
+              }
+            </svg>
+            <input type="text" id="filter-search" class="search-input unified-search-input ${searchMode === 'dbObjects' ? 'search-input-impacted font-mono' : ''}" placeholder="${placeholderText}" value="${escapeHtml(store.filters.search || '')}" autocomplete="off">
+            <button id="clear-search-btn" class="clear-input-btn" style="${store.filters.search ? 'display: inline-flex;' : 'display: none;'}" title="Clear search">&times;</button>
+            
+            <!-- Floating Suggestions Dropdown -->
+            <div id="impacted-suggestions-dropdown" class="suggestions-dropdown" style="display: none;"></div>
           </div>
         </div>
 
@@ -533,43 +537,18 @@ function setupTableEvents(container) {
     window.dispatchEvent(new CustomEvent('open-import-modal'));
   });
 
-  // --- General Search Input ---
+  // --- Unified Search Bar with Mode Options (All, General, DB Objects) ---
   const searchInput = container.querySelector('#filter-search');
   const clearBtn = container.querySelector('#clear-search-btn');
-
-  if (searchInput) {
-    searchInput.addEventListener('input', (e) => {
-      store.filters.search = e.target.value;
-      if (clearBtn) {
-        clearBtn.style.display = e.target.value ? 'inline-flex' : 'none';
-      }
-      updateActiveFilterBtn(container);
-      renderListResults(container);
-    });
-  }
-
-  if (clearBtn) {
-    clearBtn.addEventListener('click', () => {
-      store.filters.search = '';
-      if (searchInput) {
-        searchInput.value = '';
-        searchInput.focus();
-      }
-      clearBtn.style.display = 'none';
-      updateActiveFilterBtn(container);
-      renderListResults(container);
-    });
-  }
-
-  // --- Dedicated Impacted Objects Search Bar & Autocomplete Suggestions ---
-  const impactedInput = container.querySelector('#filter-impacted-object');
-  const clearImpactedBtn = container.querySelector('#clear-impacted-btn');
   const suggestionsDropdown = container.querySelector('#impacted-suggestions-dropdown');
+  const searchBox = container.querySelector('.unified-search-box');
+  const searchIcon = searchBox?.querySelector('.search-icon');
+  const hintEl = container.querySelector('#search-bar-hint-text');
   let activeIndex = -1;
 
   const renderSuggestions = () => {
-    if (!suggestionsDropdown || !impactedInput) return;
-    const q = (impactedInput.value || '').trim();
+    if (!suggestionsDropdown || !searchInput) return;
+    const q = (searchInput.value || '').trim();
     const qLower = q.toLowerCase();
     const allObjects = store.getAllDbObjects();
 
@@ -622,10 +601,13 @@ function setupTableEvents(container) {
       item.addEventListener('click', (e) => {
         e.stopPropagation();
         const objName = item.dataset.objName;
-        impactedInput.value = objName;
-        store.filters.impactedObject = objName;
-        if (clearImpactedBtn) {
-          clearImpactedBtn.style.display = 'inline-flex';
+        searchInput.value = objName;
+        store.filters.search = objName;
+        if (store.searchMode === 'dbObjects') {
+          store.filters.impactedObject = objName;
+        }
+        if (clearBtn) {
+          clearBtn.style.display = 'inline-flex';
         }
         suggestionsDropdown.style.display = 'none';
         activeIndex = -1;
@@ -635,24 +617,85 @@ function setupTableEvents(container) {
     });
   };
 
-  if (impactedInput) {
-    impactedInput.addEventListener('input', (e) => {
-      activeIndex = -1;
-      const val = e.target.value;
-      store.filters.impactedObject = val.trim();
-      if (clearImpactedBtn) {
-        clearImpactedBtn.style.display = val ? 'inline-flex' : 'none';
+  // Search Mode Switcher Buttons
+  container.querySelectorAll('.search-mode-control .seg-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const newMode = btn.dataset.searchMode;
+      store.searchMode = newMode;
+
+      // Update active button state
+      container.querySelectorAll('.search-mode-control .seg-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.searchMode === newMode);
+      });
+
+      // Update placeholders and hints
+      if (newMode === 'general') {
+        if (hintEl) hintEl.textContent = 'Release name, developer, CR, RITM, version';
+        if (searchInput) {
+          searchInput.placeholder = 'Search releases, developers, CR, RITM...';
+          searchInput.classList.remove('font-mono', 'search-input-impacted');
+        }
+        searchBox?.classList.remove('search-box-impacted');
+        if (searchIcon) {
+          searchIcon.innerHTML = `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`;
+          searchIcon.classList.remove('search-icon-cyan');
+        }
+        if (suggestionsDropdown) suggestionsDropdown.style.display = 'none';
+      } else if (newMode === 'dbObjects') {
+        if (hintEl) hintEl.textContent = `${allDbObjects.length} database objects available`;
+        if (searchInput) {
+          searchInput.placeholder = 'Search database object (e.g. JTR_PRD_..., DW_...)';
+          searchInput.classList.add('font-mono', 'search-input-impacted');
+        }
+        searchBox?.classList.add('search-box-impacted');
+        if (searchIcon) {
+          searchIcon.innerHTML = `<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path>`;
+          searchIcon.classList.add('search-icon-cyan');
+        }
+        renderSuggestions();
+      } else {
+        if (hintEl) hintEl.textContent = 'Search across releases, developers, tickets & database objects';
+        if (searchInput) {
+          searchInput.placeholder = 'Search releases, developers, CR, RITM, or database objects...';
+          searchInput.classList.remove('font-mono', 'search-input-impacted');
+        }
+        searchBox?.classList.remove('search-box-impacted');
+        if (searchIcon) {
+          searchIcon.innerHTML = `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`;
+          searchIcon.classList.remove('search-icon-cyan');
+        }
+        if (suggestionsDropdown) suggestionsDropdown.style.display = 'none';
       }
-      renderSuggestions();
+
+      updateActiveFilterBtn(container);
+      renderListResults(container);
+    });
+  });
+
+  // Input typing and keydown
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      store.filters.search = val;
+      if (clearBtn) {
+        clearBtn.style.display = val ? 'inline-flex' : 'none';
+      }
+      if (store.searchMode === 'dbObjects') {
+        activeIndex = -1;
+        renderSuggestions();
+      }
       updateActiveFilterBtn(container);
       renderListResults(container);
     });
 
-    impactedInput.addEventListener('focus', () => {
-      renderSuggestions();
+    searchInput.addEventListener('focus', () => {
+      if (store.searchMode === 'dbObjects') {
+        renderSuggestions();
+      }
     });
 
-    impactedInput.addEventListener('keydown', (e) => {
+    searchInput.addEventListener('keydown', (e) => {
+      if (store.searchMode !== 'dbObjects') return;
       const items = suggestionsDropdown ? suggestionsDropdown.querySelectorAll('.suggestion-item') : [];
       if (!items || items.length === 0 || suggestionsDropdown.style.display === 'none') {
         if (e.key === 'ArrowDown') {
@@ -683,14 +726,16 @@ function setupTableEvents(container) {
     });
   }
 
-  if (clearImpactedBtn) {
-    clearImpactedBtn.addEventListener('click', () => {
+  // Clear button
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      store.filters.search = '';
       store.filters.impactedObject = '';
-      if (impactedInput) {
-        impactedInput.value = '';
-        impactedInput.focus();
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.focus();
       }
-      clearImpactedBtn.style.display = 'none';
+      clearBtn.style.display = 'none';
       if (suggestionsDropdown) {
         suggestionsDropdown.style.display = 'none';
       }
@@ -701,7 +746,7 @@ function setupTableEvents(container) {
 
   // Dismiss suggestions on click outside
   document.addEventListener('click', (e) => {
-    if (!container.querySelector('#impacted-search-wrapper')?.contains(e.target)) {
+    if (!container.querySelector('#unified-search-wrapper')?.contains(e.target)) {
       if (suggestionsDropdown) {
         suggestionsDropdown.style.display = 'none';
       }
@@ -768,6 +813,7 @@ function setupTableEvents(container) {
       year: 'ALL',
       hasConflict: false
     };
+    store.searchMode = 'all';
     renderReleaseList(container);
   });
 
@@ -803,6 +849,7 @@ function bindItemEvents(container) {
       year: 'ALL',
       hasConflict: false
     };
+    store.searchMode = 'all';
     renderReleaseList(container);
   });
 
