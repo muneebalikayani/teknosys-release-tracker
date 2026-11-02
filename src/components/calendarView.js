@@ -152,15 +152,24 @@ export function renderCalendarView(container) {
               return cell.dateStr >= start && cell.dateStr <= end;
             });
 
+            const hasReportingOnDay = holidaysOnDay.some(h => 
+              h.type === 'reporting_load' || 
+              h.isReportingLoad || 
+              (h.name && h.name.toLowerCase().includes('reporting load'))
+            );
+            const hasHardHoliday = holidaysOnDay.some(h => 
+              !h.type || h.type === 'public' || (!h.isReportingLoad && !h.name.toLowerCase().includes('reporting load'))
+            );
+
             const startingReleases = store.releases.filter(r => r.startDate === cell.dateStr);
             const targetReleases = store.releases.filter(r => r.targetDeploy === cell.dateStr);
 
             return `
-              <div class="calendar-day-cell ${!cell.isCurrentMonth ? 'other-month' : ''} ${isToday ? 'cell-today' : ''} ${holidaysOnDay.length > 0 ? 'cell-blackout' : ''} ${isSelected ? 'cell-selected' : ''}" data-date="${cell.dateStr}">
+              <div class="calendar-day-cell ${!cell.isCurrentMonth ? 'other-month' : ''} ${isToday ? 'cell-today' : ''} ${hasHardHoliday ? 'cell-blackout' : (hasReportingOnDay ? 'cell-reporting-load' : '')} ${isSelected ? 'cell-selected' : ''}" data-date="${cell.dateStr}">
                 <div class="cell-top">
                   <span class="day-number ${isToday ? 'today-pill' : ''}">${cell.displayLabel || cell.dayNum}</span>
                   ${holidaysOnDay.length > 0 ? `
-                    <span class="holiday-icon-badge" title="Holiday: ${escapeHtml(holidaysOnDay.map(h => h.name).join(', '))}">
+                    <span class="holiday-icon-badge ${hasReportingOnDay && !hasHardHoliday ? 'badge-reporting' : ''}" title="Holiday / Window: ${escapeHtml(holidaysOnDay.map(h => h.name).join(', '))}">
                       <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
                     </span>
                   ` : ''}
@@ -168,17 +177,20 @@ export function renderCalendarView(container) {
 
                 <!-- Mobile Event Dots Indicator -->
                 <div class="cell-dots-mobile">
-                  ${holidaysOnDay.length > 0 ? `<span class="mobile-dot dot-holiday"></span>` : ''}
+                  ${holidaysOnDay.length > 0 ? `<span class="mobile-dot ${hasReportingOnDay && !hasHardHoliday ? 'dot-reporting' : 'dot-holiday'}"></span>` : ''}
                   ${targetReleases.length > 0 ? `<span class="mobile-dot dot-deploy"></span>` : ''}
                   ${startingReleases.length > 0 ? `<span class="mobile-dot dot-start"></span>` : ''}
                 </div>
 
                 <!-- Desktop Holiday Banner -->
-                ${holidaysOnDay.map(h => `
-                  <div class="day-holiday-banner desktop-only" title="${escapeHtml(h.name)} - ${escapeHtml(h.notes || '')}">
-                    <span>${escapeHtml(h.name)}</span>
-                  </div>
-                `).join('')}
+                ${holidaysOnDay.map(h => {
+                  const isRep = h.type === 'reporting_load' || h.isReportingLoad || (h.name && h.name.toLowerCase().includes('reporting load'));
+                  return `
+                    <div class="day-holiday-banner ${isRep ? 'day-reporting-banner' : ''} desktop-only" title="${escapeHtml(h.name)} - ${escapeHtml(h.notes || '')}">
+                      <span>${escapeHtml(h.name)}</span>
+                    </div>
+                  `;
+                }).join('')}
 
                 <!-- Desktop Event Chips Container -->
                 <div class="day-events-container desktop-only">
@@ -231,11 +243,15 @@ export function renderCalendarView(container) {
 
           <div class="inspector-content">
             ${inspectedDay.holidays.length > 0 ? `
-              <div class="inspector-holiday-alert">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-warning"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
+              <div class="inspector-holiday-alert ${inspectedDay.holidays.some(h => h.type === 'reporting_load' || h.isReportingLoad || (h.name && h.name.toLowerCase().includes('reporting load'))) ? 'inspector-reporting-alert' : ''}">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="${inspectedDay.holidays.some(h => h.isReportingLoad || h.type === 'reporting_load') ? 'text-warning' : 'text-danger'}"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>
                 <div>
-                  <strong>Public Holiday: ${escapeHtml(inspectedDay.holidays.map(h => h.name).join(', '))}</strong>
-                  <p class="text-xs text-muted">Deployments prohibited on this date.</p>
+                  <strong>${escapeHtml(inspectedDay.holidays.map(h => h.name).join(', '))}</strong>
+                  <p class="text-xs text-muted">
+                    ${inspectedDay.holidays.some(h => h.type === 'reporting_load' || h.isReportingLoad || (h.name && h.name.toLowerCase().includes('reporting load')))
+                      ? 'Month-End Reporting Load (Days 1–6): Only add very important deployments.'
+                      : 'Deployments prohibited on this date.'}
+                  </p>
                 </div>
               </div>
             ` : ''}

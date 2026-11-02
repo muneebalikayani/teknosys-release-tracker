@@ -1,4 +1,5 @@
 import { store } from '../data/store.js';
+import { openReportingLoadModal } from './reportingLoadModal.js';
 
 export function renderHolidayView(container) {
   const holidays = store.holidays;
@@ -38,9 +39,13 @@ export function renderHolidayView(container) {
         </div>
 
         <div class="holidays-controls">
+          <button class="btn btn-secondary" id="btn-add-reporting-load" title="Add 1st - 6th days of every month as Month-End Reporting Load restrictions">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="12" y1="18" x2="12" y2="12"></line><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+            <span>Add Month-End Reporting (1st–6th)</span>
+          </button>
           <button class="btn btn-primary" id="btn-add-holiday">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Add Holiday
+            <span>Add Holiday</span>
           </button>
         </div>
       </div>
@@ -72,11 +77,11 @@ export function renderHolidayView(container) {
           <thead>
             <tr>
               <th class="col-id">#</th>
-              <th>Holiday Name</th>
+              <th>Holiday / Window Name</th>
               <th>Start Date</th>
               <th>End Date</th>
               <th>Duration</th>
-              <th>Notes / Type</th>
+              <th>Type / Policy</th>
               <th>Conflicting Releases</th>
               <th class="col-actions">Actions</th>
             </tr>
@@ -84,13 +89,21 @@ export function renderHolidayView(container) {
           <tbody>
             ${holidayStats.map(h => {
               const hasClash = h.clashes.length > 0;
+              const isReportingLoad = Boolean(
+                h.type === 'reporting_load' ||
+                h.isReportingLoad ||
+                (h.name && h.name.toLowerCase().includes('reporting load')) ||
+                (h.notes && h.notes.toLowerCase().includes('reporting load'))
+              );
+
               return `
-                <tr class="table-row ${hasClash ? 'row-conflict' : ''}" data-holiday-id="${h.id}">
+                <tr class="table-row ${hasClash ? (isReportingLoad ? 'row-reporting-load' : 'row-conflict') : ''}" data-holiday-id="${h.id}">
                   <td class="col-id font-mono">${h.id}</td>
 
                   <td>
                     <div class="holiday-name-cell">
                       <strong>${escapeHtml(h.name)}</strong>
+                      ${isReportingLoad ? `<span class="badge-reporting-pill">1st–6th Load</span>` : ''}
                     </div>
                   </td>
 
@@ -101,14 +114,26 @@ export function renderHolidayView(container) {
                     <span class="duration-badge">${h.durationDays} day${h.durationDays > 1 ? 's' : ''}</span>
                   </td>
 
-                  <td class="text-muted">${escapeHtml(h.notes || '—')}</td>
+                  <td>
+                    ${isReportingLoad ? `
+                      <span class="badge-reporting-load">📊 Month-End Reporting</span>
+                    ` : `
+                      <span class="text-muted">${escapeHtml(h.notes || 'Public Holiday')}</span>
+                    `}
+                  </td>
 
                   <td>
-                    ${hasClash ? `
-                      <span class="conflict-badge" title="${h.clashes.map(r => r.name).join(', ')}">
-                        ⚠️ ${h.clashes.length} Release${h.clashes.length > 1 ? 's' : ''} Conflict
-                      </span>
-                    ` : `
+                    ${hasClash ? (
+                      isReportingLoad ? `
+                        <span class="conflict-badge conflict-reporting" title="${h.clashes.map(r => r.name).join(', ')}">
+                          ⚠️ ${h.clashes.length} Release${h.clashes.length > 1 ? 's' : ''} (High Load Alert)
+                        </span>
+                      ` : `
+                        <span class="conflict-badge" title="${h.clashes.map(r => r.name).join(', ')}">
+                          ⚠️ ${h.clashes.length} Release${h.clashes.length > 1 ? 's' : ''} Conflict
+                        </span>
+                      `
+                    ) : `
                       <span class="text-success text-xs font-semibold">✓ No Conflicts</span>
                     `}
                   </td>
@@ -139,6 +164,13 @@ function setupHolidayEvents(container) {
   container.querySelector('#btn-add-holiday')?.addEventListener('click', () => {
     window.dispatchEvent(new CustomEvent('open-holiday-modal', { detail: { mode: 'create' } }));
   });
+
+  container.querySelector('#btn-add-reporting-load')?.addEventListener('click', () => {
+    openReportingLoadModal();
+  });
+
+  const onRefresh = () => renderHolidayView(container);
+  window.addEventListener('refresh-holiday-view', onRefresh, { once: true });
 
   container.querySelectorAll('.edit-holiday-btn').forEach(btn => {
     btn.addEventListener('click', () => {

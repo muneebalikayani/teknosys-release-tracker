@@ -240,7 +240,8 @@ export function getReleasesListHTML(releases, viewMode) {
     return `
       <div class="release-cards-grid">
         ${releases.map(rel => {
-          const hasConflict = rel.holidayConflict && rel.holidayConflict.startsWith('Conflict:');
+          const hasConflict = rel.holidayConflict && (rel.holidayConflict.startsWith('Conflict:') || rel.holidayConflict.includes('Reporting Load'));
+          const isReporting = rel.holidayConflict && rel.holidayConflict.includes('Reporting Load');
           const isOnHold = rel.status === 'On Hold';
           const statusSlug = (rel.status || '').toLowerCase().replace(/\s+/g, '-');
           const stageSlug = (rel.stage || '').toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -248,7 +249,7 @@ export function getReleasesListHTML(releases, viewMode) {
           const typeSlug = (rel.type || '').toLowerCase();
 
           return `
-            <div class="mobile-release-card card ${hasConflict ? 'card-conflict-border' : ''} ${isOnHold ? 'card-on-hold-border' : ''}" data-release-id="${rel.id}">
+            <div class="mobile-release-card card ${hasConflict ? (isReporting ? 'card-reporting-border' : 'card-conflict-border') : ''} ${isOnHold ? 'card-on-hold-border' : ''}" data-release-id="${rel.id}">
               <div class="m-card-header">
                 <div class="m-card-tags">
                   <span class="platform-tag platform-${platformSlug}">${rel.platform || '-'}</span>
@@ -264,8 +265,8 @@ export function getReleasesListHTML(releases, viewMode) {
               </h3>
 
               ${hasConflict ? `
-                <div class="m-card-conflict">
-                  ⚠️ Holiday Conflict: <strong>${escapeHtml(rel.holidayConflict.replace('Conflict: ', ''))}</strong>
+                <div class="m-card-conflict ${isReporting ? 'm-card-reporting-load' : ''}">
+                  ⚠️ ${isReporting ? 'Reporting Load (1st–6th):' : 'Holiday Conflict:'} <strong>${escapeHtml(rel.holidayConflict.replace(/^(Conflict: |Reporting Load: )/, ''))}</strong>
                 </div>
               ` : ''}
 
@@ -332,7 +333,8 @@ export function getReleasesListHTML(releases, viewMode) {
         </thead>
         <tbody>
           ${releases.map(rel => {
-            const hasConflict = rel.holidayConflict && rel.holidayConflict.startsWith('Conflict:');
+            const hasConflict = rel.holidayConflict && (rel.holidayConflict.startsWith('Conflict:') || rel.holidayConflict.includes('Reporting Load'));
+            const isReporting = rel.holidayConflict && rel.holidayConflict.includes('Reporting Load');
             const isOnHold = rel.status === 'On Hold';
             const statusSlug = (rel.status || '').toLowerCase().replace(/\s+/g, '-');
             const stageSlug = (rel.stage || '').toLowerCase().replace(/[^a-z0-9]/g, '-');
@@ -340,7 +342,7 @@ export function getReleasesListHTML(releases, viewMode) {
             const typeSlug = (rel.type || '').toLowerCase();
 
             return `
-              <tr class="table-row ${hasConflict ? 'row-conflict' : ''} ${isOnHold ? 'row-on-hold' : ''}" data-release-id="${rel.id}">
+              <tr class="table-row ${hasConflict ? (isReporting ? 'row-reporting-load' : 'row-conflict') : ''} ${isOnHold ? 'row-on-hold' : ''}" data-release-id="${rel.id}">
                 <td class="col-id font-mono">${rel.id}</td>
                 
                 <td class="col-name">
@@ -404,9 +406,9 @@ export function getReleasesListHTML(releases, viewMode) {
 
                 <td class="col-conflict">
                   ${hasConflict ? `
-                    <div class="conflict-badge" title="${escapeHtml(rel.holidayConflict)}">
+                    <div class="conflict-badge ${isReporting ? 'conflict-reporting' : ''}" title="${escapeHtml(rel.holidayConflict)}${isReporting ? ' - High reporting load: only very important deployments' : ''}">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                      <span>${escapeHtml(rel.holidayConflict.replace('Conflict: ', ''))}</span>
+                      <span>${isReporting ? 'Reporting Load' : escapeHtml(rel.holidayConflict.replace('Conflict: ', ''))}</span>
                     </div>
                   ` : `
                     <span class="conflict-clear" title="No holiday conflict">
