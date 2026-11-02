@@ -299,7 +299,6 @@ export function getReleasesListHTML(releases, viewMode) {
 
               <div class="m-card-actions">
                 <button class="btn btn-sm btn-secondary act-edit" data-release-id="${rel.id}">Edit</button>
-                <button class="btn btn-sm btn-ghost act-duplicate" data-release-id="${rel.id}">Copy</button>
                 <button class="btn btn-sm btn-ghost text-danger act-delete" data-release-id="${rel.id}">Delete</button>
               </div>
             </div>
