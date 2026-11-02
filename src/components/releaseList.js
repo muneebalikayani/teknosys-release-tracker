@@ -254,17 +254,15 @@ export function getReleasesListHTML(releases, viewMode) {
             <div class="mobile-release-card card ${hasConflict ? 'card-conflict-border' : ''} ${isOnHold ? 'card-on-hold-border' : ''}" data-release-id="${rel.id}">
               <div class="m-card-header">
                 <div class="m-card-tags">
-                  <span class="card-id font-mono">#${rel.id}</span>
                   <span class="platform-tag platform-${platformSlug}">${rel.platform || '-'}</span>
                   <span class="type-pill type-${typeSlug}">${rel.type || '-'}</span>
-                  ${rel.version ? `<span class="badge-version">${escapeHtml(rel.version)}</span>` : ''}
                 </div>
                 <div class="m-card-status">
                   <span class="status-pill status-${statusSlug}">${rel.status || 'Pending'}</span>
                 </div>
               </div>
 
-              <h3 class="m-card-title clickable-title" data-release-id="${rel.id}">
+              <h3 class="m-card-title clickable-title" data-release-id="${rel.id}" title="${escapeHtml(rel.name)}">
                 ${escapeHtml(rel.name)}
               </h3>
 
@@ -300,8 +298,7 @@ export function getReleasesListHTML(releases, viewMode) {
               </div>
 
               <div class="m-card-actions">
-                <button class="btn btn-sm btn-secondary act-view" data-release-id="${rel.id}">View Details</button>
-                <button class="btn btn-sm btn-ghost act-edit" data-release-id="${rel.id}">Edit</button>
+                <button class="btn btn-sm btn-secondary act-edit" data-release-id="${rel.id}">Edit</button>
                 <button class="btn btn-sm btn-ghost act-duplicate" data-release-id="${rel.id}">Copy</button>
                 <button class="btn btn-sm btn-ghost text-danger act-delete" data-release-id="${rel.id}">Delete</button>
               </div>
