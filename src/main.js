@@ -97,6 +97,52 @@ function renderActiveView() {
   }
 }
 
+// Sidebar Collapse & Expand Management (Desktop)
+const sidebarCollapseBtn = document.getElementById('btn-sidebar-collapse');
+const collapseChevronIcon = document.getElementById('collapse-chevron-icon');
+
+function setSidebarCollapsed(collapsed) {
+  if (collapsed) {
+    sidebarEl?.classList.add('sidebar-collapsed');
+    if (sidebarCollapseBtn) {
+      sidebarCollapseBtn.title = 'Expand sidebar (Ctrl+B / [)';
+      sidebarCollapseBtn.setAttribute('aria-expanded', 'false');
+    }
+    if (collapseChevronIcon) {
+      collapseChevronIcon.innerHTML = '<polyline points="9 18 15 12 9 6"></polyline>';
+    }
+    localStorage.setItem('release-tracker-sidebar-collapsed', 'true');
+  } else {
+    sidebarEl?.classList.remove('sidebar-collapsed');
+    if (sidebarCollapseBtn) {
+      sidebarCollapseBtn.title = 'Collapse sidebar (Ctrl+B / [)';
+      sidebarCollapseBtn.setAttribute('aria-expanded', 'true');
+    }
+    if (collapseChevronIcon) {
+      collapseChevronIcon.innerHTML = '<polyline points="15 18 9 12 15 6"></polyline>';
+    }
+    localStorage.setItem('release-tracker-sidebar-collapsed', 'false');
+  }
+}
+
+function toggleSidebarCollapse() {
+  const isCollapsed = sidebarEl?.classList.contains('sidebar-collapsed');
+  setSidebarCollapsed(!isCollapsed);
+}
+
+sidebarCollapseBtn?.addEventListener('click', (e) => {
+  e.stopPropagation();
+  toggleSidebarCollapse();
+});
+
+// Restore saved sidebar collapsed state on startup (desktop only)
+if (window.innerWidth > 1024) {
+  const savedCollapsed = localStorage.getItem('release-tracker-sidebar-collapsed');
+  if (savedCollapsed === 'true') {
+    setSidebarCollapsed(true);
+  }
+}
+
 // Mobile Sidebar Drawer Management
 const sidebarEl = document.getElementById('app-sidebar');
 const sidebarBackdrop = document.getElementById('sidebar-backdrop');
@@ -247,6 +293,12 @@ window.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') {
     closeMobileSidebar();
     document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+  }
+
+  // '[' or Ctrl+B / Cmd+B to toggle sidebar collapse
+  if (e.key === '[' || ((e.ctrlKey || e.metaKey) && (e.key === 'b' || e.key === 'B'))) {
+    e.preventDefault();
+    toggleSidebarCollapse();
   }
 
   // 'n' for new release
