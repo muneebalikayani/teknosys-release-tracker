@@ -220,8 +220,8 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
       labelRitm.innerHTML = `RITM Number <span class="governance-req-hint">(Required to complete)</span>`;
       labelCr.classList.add('required');
       labelCr.innerHTML = `Change Request (CR) <span class="governance-req-hint">(Required to complete)</span>`;
-      hintRitm.style.color = '#f59e0b';
-      hintCr.style.color = '#f59e0b';
+      hintRitm.style.color = '#f97316';
+      hintCr.style.color = '#f97316';
     } else {
       completionBanner.style.display = 'none';
       labelRitm.classList.remove('required');
