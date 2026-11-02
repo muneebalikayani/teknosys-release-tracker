@@ -104,8 +104,26 @@ export function renderReleaseList(container) {
       <!-- Filter Controls Bar with Unified Search Bar & Search Mode Scope -->
       <div class="filter-bar card">
         <div class="unified-search-wrapper" id="unified-search-wrapper">
+          <div class="unified-search-header">
+            <div class="segmented-control search-mode-control" title="Choose Search Scope">
+              <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                All Search
+              </button>
+              <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                General Search
+              </button>
+              <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
+                Database Objects
+              </button>
+            </div>
+            <span class="search-bar-hint" id="search-bar-hint-text">${hintText}</span>
+          </div>
+
           <div class="search-box unified-search-box ${searchMode === 'dbObjects' ? 'search-box-impacted' : ''}">
-            <svg class="search-icon ${searchMode === 'dbObjects' ? 'search-icon-cyan' : ''}" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <svg class="search-icon ${searchMode === 'dbObjects' ? 'search-icon-cyan' : ''}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               ${searchMode === 'dbObjects' ? 
                 `<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path>` :
                 `<circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>`
@@ -117,66 +135,53 @@ export function renderReleaseList(container) {
             <!-- Floating Suggestions Dropdown -->
             <div id="impacted-suggestions-dropdown" class="suggestions-dropdown" style="display: none;"></div>
           </div>
-
-          <div class="segmented-control search-mode-control" title="Choose Search Scope">
-            <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all" title="Search all fields & database objects">
-              All
-            </button>
-            <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general" title="Search releases, developers, CR, RITM">
-              General
-            </button>
-            <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects" title="Search database objects">
-              DB Objects
-            </button>
-          </div>
-          <span class="search-bar-hint" id="search-bar-hint-text" style="display: none;">${hintText}</span>
         </div>
 
         <div class="filter-dropdowns">
-          <div class="filter-item ${store.filters.platform !== 'ALL' ? 'filter-item-active' : ''}">
+          <div class="filter-item">
             <label class="filter-label">Platform</label>
             <select id="filter-platform" class="filter-select">
-              ${platforms.map(p => `<option value="${p}" ${store.filters.platform === p ? 'selected' : ''}>${p === 'ALL' ? 'All' : p}</option>`).join('')}
+              ${platforms.map(p => `<option value="${p}" ${store.filters.platform === p ? 'selected' : ''}>${p === 'ALL' ? 'All Platforms' : p}</option>`).join('')}
             </select>
           </div>
 
-          <div class="filter-item ${store.filters.type !== 'ALL' ? 'filter-item-active' : ''}">
+          <div class="filter-item">
             <label class="filter-label">Type</label>
             <select id="filter-type" class="filter-select">
-              ${types.map(t => `<option value="${t}" ${store.filters.type === t ? 'selected' : ''}>${t === 'ALL' ? 'All' : t}</option>`).join('')}
+              ${types.map(t => `<option value="${t}" ${store.filters.type === t ? 'selected' : ''}>${t === 'ALL' ? 'All Types' : t}</option>`).join('')}
             </select>
           </div>
 
-          <div class="filter-item ${store.filters.stage !== 'ALL' ? 'filter-item-active' : ''}">
+          <div class="filter-item">
             <label class="filter-label">Stage</label>
             <select id="filter-stage" class="filter-select">
-              ${stages.map(s => `<option value="${s}" ${store.filters.stage === s ? 'selected' : ''}>${s === 'ALL' ? 'All' : s}</option>`).join('')}
+              ${stages.map(s => `<option value="${s}" ${store.filters.stage === s ? 'selected' : ''}>${s === 'ALL' ? 'All Stages' : s}</option>`).join('')}
             </select>
           </div>
 
-          <div class="filter-item ${store.filters.status !== 'ALL' ? 'filter-item-active' : ''}">
+          <div class="filter-item">
             <label class="filter-label">Status</label>
             <select id="filter-status" class="filter-select">
-              ${statuses.map(st => `<option value="${st}" ${store.filters.status === st ? 'selected' : ''}>${st === 'ALL' ? 'All' : st}</option>`).join('')}
+              ${statuses.map(st => `<option value="${st}" ${store.filters.status === st ? 'selected' : ''}>${st === 'ALL' ? 'All Statuses' : st}</option>`).join('')}
             </select>
           </div>
 
-          <div class="filter-item ${store.filters.owner !== 'ALL' ? 'filter-item-active' : ''}">
+          <div class="filter-item">
             <label class="filter-label">Owner</label>
             <select id="filter-owner" class="filter-select">
-              ${owners.map(o => `<option value="${o}" ${store.filters.owner === o ? 'selected' : ''}>${o === 'ALL' ? 'All' : o}</option>`).join('')}
+              ${owners.map(o => `<option value="${o}" ${store.filters.owner === o ? 'selected' : ''}>${o === 'ALL' ? 'All Owners' : o}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Sort</label>
             <select id="filter-sort" class="filter-select">
-              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Newest)</option>
-              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (Oldest)</option>
+              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Reverse: 44 → 1)</option>
+              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (1 → 44)</option>
               <option value="targetDeploy-desc" ${currentSortKey === 'targetDeploy-desc' ? 'selected' : ''}>Timeline (Newest)</option>
               <option value="targetDeploy-asc" ${currentSortKey === 'targetDeploy-asc' ? 'selected' : ''}>Timeline (Oldest)</option>
-              <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Name (A → Z)</option>
-              <option value="name-desc" ${currentSortKey === 'name-desc' ? 'selected' : ''}>Name (Z → A)</option>
+              <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Release Name (A → Z)</option>
+              <option value="name-desc" ${currentSortKey === 'name-desc' ? 'selected' : ''}>Release Name (Z → A)</option>
               <option value="developer-asc" ${currentSortKey === 'developer-asc' ? 'selected' : ''}>Developer (A → Z)</option>
               <option value="platform-asc" ${currentSortKey === 'platform-asc' ? 'selected' : ''}>Platform</option>
               <option value="stage-asc" ${currentSortKey === 'stage-asc' ? 'selected' : ''}>Stage</option>
@@ -184,7 +189,7 @@ export function renderReleaseList(container) {
             </select>
           </div>
 
-          <div class="filter-item checkbox-filter ${store.filters.hasConflict ? 'filter-item-active' : ''}">
+          <div class="filter-item checkbox-filter">
             <label class="checkbox-label" title="Show only releases with holiday conflict">
               <input type="checkbox" id="filter-conflict" ${store.filters.hasConflict ? 'checked' : ''}>
               <span>⚠️ Conflicts</span>
@@ -192,7 +197,7 @@ export function renderReleaseList(container) {
           </div>
 
           <div id="reset-filter-wrap" style="${hasActiveFilters ? 'display: inline-block;' : 'display: none;'}">
-            <button class="btn btn-ghost btn-sm reset-filter-link" id="btn-reset-filters" title="Reset all filters">Clear</button>
+            <button class="btn btn-ghost btn-sm reset-filter-link" id="btn-reset-filters" title="Reset all filters">Clear Filters</button>
           </div>
         </div>
       </div>
@@ -477,13 +482,6 @@ function updateActiveFilterBtn(container) {
   );
 
   resetWrap.style.display = hasActiveFilters ? 'inline-block' : 'none';
-
-  container.querySelector('#filter-platform')?.closest('.filter-item')?.classList.toggle('filter-item-active', store.filters.platform !== 'ALL');
-  container.querySelector('#filter-type')?.closest('.filter-item')?.classList.toggle('filter-item-active', store.filters.type !== 'ALL');
-  container.querySelector('#filter-stage')?.closest('.filter-item')?.classList.toggle('filter-item-active', store.filters.stage !== 'ALL');
-  container.querySelector('#filter-status')?.closest('.filter-item')?.classList.toggle('filter-item-active', store.filters.status !== 'ALL');
-  container.querySelector('#filter-owner')?.closest('.filter-item')?.classList.toggle('filter-item-active', store.filters.owner !== 'ALL');
-  container.querySelector('#filter-conflict')?.closest('.filter-item')?.classList.toggle('filter-item-active', Boolean(store.filters.hasConflict));
 }
 
 function setupTableEvents(container) {
