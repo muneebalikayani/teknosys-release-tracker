@@ -34,6 +34,7 @@ class ReleaseStore {
     this.releases = this.loadReleases();
     this.saveReleases();
     this.holidays = this.loadHolidays();
+    this.purgeReportingLoadHolidays();
 
     // Ensure all releases have their holidayConflict evaluated
     this.recalculateAllHolidayConflicts();
@@ -286,7 +287,11 @@ class ReleaseStore {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          return parsed;
+          return parsed.filter(h => 
+            !h.name?.toLowerCase().includes('reporting load') &&
+            !h.name?.toLowerCase().includes('month-end') &&
+            !h.notes?.toLowerCase().includes('reporting load')
+          );
         }
       }
     } catch (e) {
@@ -295,9 +300,45 @@ class ReleaseStore {
     return JSON.parse(JSON.stringify(DEFAULT_HOLIDAYS));
   }
 
+  purgeReportingLoadHolidays() {
+    const beforeCount = this.holidays.length;
+    this.holidays = this.holidays.filter(h => 
+      !h.name?.toLowerCase().includes('reporting load') &&
+      !h.name?.toLowerCase().includes('month-end') &&
+      !h.notes?.toLowerCase().includes('reporting load')
+    );
+
+    let releasesChanged = false;
+    for (const r of this.releases) {
+      if (
+        r.holidayConflict && (
+          r.holidayConflict.toLowerCase().includes('reporting load') ||
+          r.holidayConflict.toLowerCase().includes('month-end')
+        )
+      ) {
+        r.holidayConflict = '';
+        releasesChanged = true;
+      }
+    }
+
+    if (this.holidays.length !== beforeCount || releasesChanged) {
+      this.saveHolidays();
+      this.saveReleases();
+      this.recalculateAllHolidayConflicts();
+      this.syncCloud();
+    }
+  }
+
   saveHolidays() {
     try {
-      localStorage.setItem(this.storageKeyHolidays, JSON.stringify(this.holidays));
+      // Ensure no reporting load entries are saved
+      const cleaned = this.holidays.filter(h => 
+        !h.name?.toLowerCase().includes('reporting load') &&
+        !h.name?.toLowerCase().includes('month-end') &&
+        !h.notes?.toLowerCase().includes('reporting load')
+      );
+      this.holidays = cleaned;
+      localStorage.setItem(this.storageKeyHolidays, JSON.stringify(cleaned));
     } catch (e) {
       console.error('Failed to save holidays to localStorage:', e);
     }
@@ -326,7 +367,11 @@ class ReleaseStore {
         this.releases = cloudData.releases.map(r => this.normalizeRelease(r));
         this.saveReleases();
         if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
-          this.holidays = cloudData.holidays;
+          this.holidays = cloudData.holidays.filter(h => 
+            !h.name?.toLowerCase().includes('reporting load') &&
+            !h.name?.toLowerCase().includes('month-end') &&
+            !h.notes?.toLowerCase().includes('reporting load')
+          );
           this.saveHolidays();
         }
         this.recalculateAllHolidayConflicts();
@@ -473,7 +518,11 @@ class ReleaseStore {
       if (cloudData && Array.isArray(cloudData.releases) && cloudData.releases.length > 0) {
         this.releases = cloudData.releases;
         if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
-          this.holidays = cloudData.holidays;
+          this.holidays = cloudData.holidays.filter(h => 
+            !h.name?.toLowerCase().includes('reporting load') &&
+            !h.name?.toLowerCase().includes('month-end') &&
+            !h.notes?.toLowerCase().includes('reporting load')
+          );
           this.saveHolidays();
         }
         this.saveReleases();
@@ -557,6 +606,15 @@ class ReleaseStore {
 
     for (const holiday of this.holidays) {
       if (!holiday.startDate) continue;
+      // Do not treat month-end reporting load as a conflict
+      if (
+        holiday.name?.toLowerCase().includes('reporting load') ||
+        holiday.name?.toLowerCase().includes('month-end') ||
+        holiday.notes?.toLowerCase().includes('reporting load')
+      ) {
+        continue;
+      }
+
       const start = holiday.startDate;
       const end = holiday.endDate || holiday.startDate;
       if (target >= start && target <= end) {

@@ -223,7 +223,12 @@ export async function fetchHolidaysFromSupabase() {
     throw error;
   }
 
-  return (data || []).map(mapDbToHoliday);
+  return (data || [])
+    .filter(row => 
+      !row.name?.toLowerCase().includes('reporting load') &&
+      !row.name?.toLowerCase().includes('month-end')
+    )
+    .map(mapDbToHoliday);
 }
 
 export async function upsertReleaseInSupabase(release) {
