@@ -1,13 +1,13 @@
 import { importFile } from './excelManager.js';
 
 export function openImportModal() {
-  let modalEl = document.getElementById('import-modal-overlay');
-  if (!modalEl) {
-    modalEl = document.createElement('div');
-    modalEl.id = 'import-modal-overlay';
-    modalEl.className = 'modal-overlay';
-    document.body.appendChild(modalEl);
-  }
+  const existing = document.getElementById('import-modal-overlay');
+  if (existing) existing.remove();
+
+  const modalEl = document.createElement('div');
+  modalEl.id = 'import-modal-overlay';
+  modalEl.className = 'modal-overlay';
+  document.body.appendChild(modalEl);
 
   modalEl.innerHTML = `
     <div class="modal-card">
@@ -72,7 +72,11 @@ export function openImportModal() {
 
   modalEl.classList.add('show');
 
-  const closeModal = () => modalEl.classList.remove('show');
+  const closeModal = () => {
+    modalEl.classList.remove('show');
+    modalEl.style.display = 'none';
+    modalEl.remove();
+  };
   modalEl.querySelector('#import-modal-close').addEventListener('click', closeModal);
   modalEl.querySelector('#import-cancel-btn').addEventListener('click', closeModal);
   modalEl.addEventListener('click', (e) => {

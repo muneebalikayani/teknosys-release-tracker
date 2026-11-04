@@ -278,14 +278,22 @@ window.addEventListener('keydown', (e) => {
   // If user is typing in an input or textarea, don't trigger global hotkeys
   if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
     if (e.key === 'Escape') {
-      document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+      document.querySelectorAll('.modal-overlay').forEach(m => {
+        m.classList.remove('show');
+        m.style.display = 'none';
+        m.remove();
+      });
     }
     return;
   }
 
   if (e.key === 'Escape') {
     closeMobileSidebar();
-    document.querySelectorAll('.modal-overlay.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.modal-overlay').forEach(m => {
+      m.classList.remove('show');
+      m.style.display = 'none';
+      m.remove();
+    });
   }
 
   // '[' or Ctrl+B / Cmd+B to toggle sidebar collapse

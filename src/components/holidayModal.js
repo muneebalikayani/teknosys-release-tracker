@@ -2,13 +2,13 @@ import { store } from '../data/store.js';
 import { showToast } from '../utils/toast.js';
 
 export function openHolidayModal({ mode = 'create', id = null } = {}) {
-  let modalEl = document.getElementById('holiday-modal-overlay');
-  if (!modalEl) {
-    modalEl = document.createElement('div');
-    modalEl.id = 'holiday-modal-overlay';
-    modalEl.className = 'modal-overlay';
-    document.body.appendChild(modalEl);
-  }
+  const existing = document.getElementById('holiday-modal-overlay');
+  if (existing) existing.remove();
+
+  const modalEl = document.createElement('div');
+  modalEl.id = 'holiday-modal-overlay';
+  modalEl.className = 'modal-overlay';
+  document.body.appendChild(modalEl);
 
   const isEdit = mode === 'edit' && id !== null;
   const hol = isEdit ? store.holidays.find(h => Number(h.id) === Number(id)) : null;
@@ -70,7 +70,11 @@ export function openHolidayModal({ mode = 'create', id = null } = {}) {
 
   modalEl.classList.add('show');
 
-  const closeModal = () => modalEl.classList.remove('show');
+  const closeModal = () => {
+    modalEl.classList.remove('show');
+    modalEl.style.display = 'none';
+    modalEl.remove();
+  };
   modalEl.querySelector('#holiday-modal-close').onclick = closeModal;
   modalEl.querySelector('#holiday-modal-cancel').onclick = closeModal;
 

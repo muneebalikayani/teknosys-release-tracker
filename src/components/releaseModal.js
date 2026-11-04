@@ -2,13 +2,14 @@ import { store } from '../data/store.js';
 import { showToast } from '../utils/toast.js';
 
 export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' } = {}) {
-  let modalEl = document.getElementById('release-modal-overlay');
-  if (!modalEl) {
-    modalEl = document.createElement('div');
-    modalEl.id = 'release-modal-overlay';
-    modalEl.className = 'modal-overlay';
-    document.body.appendChild(modalEl);
-  }
+  // Always clean up existing release modal overlay first to avoid lingering elements
+  const existing = document.getElementById('release-modal-overlay');
+  if (existing) existing.remove();
+
+  const modalEl = document.createElement('div');
+  modalEl.id = 'release-modal-overlay';
+  modalEl.className = 'modal-overlay';
+  document.body.appendChild(modalEl);
 
   const isEdit = mode === 'edit' && id !== null && id !== undefined;
   const rel = isEdit ? store.getReleaseById(id) : null;
@@ -268,6 +269,8 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
   // Close handlers
   const closeModal = () => {
     modalEl.classList.remove('show');
+    modalEl.style.display = 'none';
+    modalEl.remove();
   };
 
   modalEl.querySelector('#modal-close').onclick = closeModal;
@@ -329,39 +332,43 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
       return; // Block submission
     }
 
-    let resultRelease = null;
-    if (isEdit) {
-      resultRelease = store.updateRelease(id, data);
-      showToast({
-        title: 'RECORD UPDATED',
-        message: `Release "<strong>${escapeHtml(data.name)}</strong>" updated successfully.`,
-        type: 'success',
-        duration: 4000
-      });
-    } else {
-      resultRelease = store.addRelease(data);
-      showToast({
-        title: 'NEW RELEASE CREATED',
-        message: `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully.`,
-        type: 'success',
-        duration: 4000
-      });
-    }
+    try {
+      let resultRelease = null;
+      if (isEdit) {
+        resultRelease = store.updateRelease(id, data);
+        showToast({
+          title: 'RECORD UPDATED',
+          message: `Release "<strong>${escapeHtml(data.name)}</strong>" updated successfully.`,
+          type: 'success',
+          duration: 4000
+        });
+      } else {
+        resultRelease = store.addRelease(data);
+        showToast({
+          title: 'NEW RELEASE CREATED',
+          message: `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully.`,
+          type: 'success',
+          duration: 4000
+        });
+      }
 
-    // If the calendar is currently active, ensure it navigates to the release's month
-    if (resultRelease && resultRelease.targetDeploy && window._calState) {
-      const parts = resultRelease.targetDeploy.split('-');
-      if (parts.length >= 2) {
-        const relYear = parseInt(parts[0], 10);
-        const relMonth = parseInt(parts[1], 10);
-        if (window._calState.month !== relMonth || window._calState.year !== relYear) {
-          window._calState.month = relMonth;
-          window._calState.year = relYear;
+      // If the calendar is currently active, ensure it navigates to the release's month
+      if (resultRelease && resultRelease.targetDeploy && window._calState) {
+        const parts = resultRelease.targetDeploy.split('-');
+        if (parts.length >= 2) {
+          const relYear = parseInt(parts[0], 10);
+          const relMonth = parseInt(parts[1], 10);
+          if (window._calState.month !== relMonth || window._calState.year !== relYear) {
+            window._calState.month = relMonth;
+            window._calState.year = relYear;
+          }
         }
       }
+    } catch (err) {
+      console.error('Error during release save:', err);
+    } finally {
+      closeModal();
     }
-
-    closeModal();
   };
 }
 

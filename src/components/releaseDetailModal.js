@@ -3,13 +3,13 @@ import { store } from '../data/store.js';
 import { showToast } from '../utils/toast.js';
 
 export function openReleaseDetailModal(id) {
-  let modalEl = document.getElementById('release-detail-overlay');
-  if (!modalEl) {
-    modalEl = document.createElement('div');
-    modalEl.id = 'release-detail-overlay';
-    modalEl.className = 'modal-overlay';
-    document.body.appendChild(modalEl);
-  }
+  const existing = document.getElementById('release-detail-overlay');
+  if (existing) existing.remove();
+
+  const modalEl = document.createElement('div');
+  modalEl.id = 'release-detail-overlay';
+  modalEl.className = 'modal-overlay';
+  document.body.appendChild(modalEl);
 
   const rel = store.getReleaseById(id);
   if (!rel) return;
@@ -243,7 +243,11 @@ export function openReleaseDetailModal(id) {
 
   modalEl.classList.add('show');
 
-  const closeModal = () => modalEl.classList.remove('show');
+  const closeModal = () => {
+    modalEl.classList.remove('show');
+    modalEl.style.display = 'none';
+    modalEl.remove();
+  };
   modalEl.querySelector('#detail-modal-close').onclick = closeModal;
   modalEl.querySelector('#detail-done-btn').onclick = closeModal;
 
