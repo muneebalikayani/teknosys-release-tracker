@@ -344,12 +344,15 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
         });
       } else {
         resultRelease = store.addRelease(data);
-        showToast({
-          title: 'NEW RELEASE CREATED',
-          message: `Release "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully.`,
-          type: 'success',
-          duration: 4000
-        });
+        if (resultRelease) {
+          store.currentView = 'releases';
+          showToast({
+            title: 'NEW RELEASE CREATED',
+            message: `Release #${resultRelease.id} "<strong>${escapeHtml(data.name)}</strong>" scheduled successfully and added to list.`,
+            type: 'success',
+            duration: 4500
+          });
+        }
       }
 
       // If the calendar is currently active, ensure it navigates to the release's month

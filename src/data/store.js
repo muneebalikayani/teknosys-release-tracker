@@ -356,6 +356,35 @@ class ReleaseStore {
     }
   }
 
+  mergeWithLocalReleases(cloudReleases) {
+    if (!Array.isArray(cloudReleases) || cloudReleases.length === 0) {
+      return this.releases;
+    }
+
+    const normalizedCloud = cloudReleases.map(r => this.normalizeRelease(r));
+    const cloudIdMap = new Map(normalizedCloud.map(r => [Number(r.id), r]));
+
+    // Start with all cloud releases
+    const merged = [...normalizedCloud];
+
+    // Preserve any local releases that are not yet in cloud data
+    const localOnly = [];
+    for (const localRel of this.releases) {
+      const id = Number(localRel.id);
+      if (!cloudIdMap.has(id)) {
+        merged.unshift(localRel);
+        localOnly.push(localRel);
+      }
+    }
+
+    // If local has releases missing from cloud, push merged state to cloud
+    if (localOnly.length > 0) {
+      pushCloudStore(merged, this.holidays).catch(() => {});
+    }
+
+    return merged;
+  }
+
   // --- Zero-Config Live Cloud Sync (Vercel Global Storage) ---
   async initCloudSync() {
     try {
@@ -364,7 +393,7 @@ class ReleaseStore {
 
       const cloudData = await fetchCloudStore();
       if (cloudData && Array.isArray(cloudData.releases) && cloudData.releases.length > 0) {
-        this.releases = cloudData.releases.map(r => this.normalizeRelease(r));
+        this.releases = this.mergeWithLocalReleases(cloudData.releases);
         this.saveReleases();
         if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
           this.holidays = cloudData.holidays.filter(h => 
@@ -404,7 +433,7 @@ class ReleaseStore {
       ]);
 
       if (cloudReleases && cloudReleases.length > 0) {
-        this.releases = cloudReleases;
+        this.releases = this.mergeWithLocalReleases(cloudReleases);
         this.saveReleases();
       }
 
@@ -516,7 +545,7 @@ class ReleaseStore {
     try {
       const cloudData = await fetchCloudStore();
       if (cloudData && Array.isArray(cloudData.releases) && cloudData.releases.length > 0) {
-        this.releases = cloudData.releases;
+        this.releases = this.mergeWithLocalReleases(cloudData.releases);
         if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
           this.holidays = cloudData.holidays.filter(h => 
             !h.name?.toLowerCase().includes('reporting load') &&
@@ -556,11 +585,12 @@ class ReleaseStore {
           }
 
           const normalizedCloud = cloudData.releases.map(r => this.normalizeRelease(r));
+          const merged = this.mergeWithLocalReleases(normalizedCloud);
           const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
-          const newSummary = normalizedCloud.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
+          const newSummary = merged.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
           if (currSummary !== newSummary) {
             console.log('🔄 Live update received from team member, refreshing views...');
-            this.releases = normalizedCloud;
+            this.releases = merged;
             if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
               this.holidays = cloudData.holidays;
               this.saveHolidays();
@@ -699,9 +729,10 @@ class ReleaseStore {
       return null;
     }
 
-    this.releases.push(newRelease);
+    this.releases.unshift(newRelease);
     this.saveReleases();
     this.lastLocalMutation = Date.now();
+    this.resetFilters();
     this.notify();
 
     // Push to zero-config cloud store for all team members
@@ -1005,6 +1036,30 @@ class ReleaseStore {
       }
     });
     return Array.from(set).sort((a, b) => a.localeCompare(b));
+  }
+
+  resetFilters(notify = false) {
+    this.filters = {
+      search: '',
+      impactedObject: '',
+      platform: 'ALL',
+      type: 'ALL',
+      stage: 'ALL',
+      status: 'ALL',
+      owner: 'ALL',
+      developer: 'ALL',
+      month: 'ALL',
+      year: 'ALL',
+      hasConflict: false
+    };
+    this.searchMode = 'all';
+    this.sort = {
+      column: 'id',
+      direction: 'desc'
+    };
+    if (notify) {
+      this.notify();
+    }
   }
 
   setSort(column, direction = null, notify = false) {

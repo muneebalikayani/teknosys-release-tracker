@@ -209,21 +209,13 @@ export function renderReleaseList(container) {
 
   setupTableEvents(container);
 
-  // Restore cursor and focus if the user was typing in either search input
+  // Restore cursor and focus if the user was typing in the search input
   if (wasSearchFocused) {
     const newSearchInput = container.querySelector('#filter-search');
     if (newSearchInput) {
       newSearchInput.focus();
       if (typeof selStart === 'number' && typeof selEnd === 'number') {
         newSearchInput.setSelectionRange(selStart, selEnd);
-      }
-    }
-  } else if (wasImpactedFocused) {
-    const newImpactedInput = container.querySelector('#filter-impacted-object');
-    if (newImpactedInput) {
-      newImpactedInput.focus();
-      if (typeof impactedSelStart === 'number' && typeof impactedSelEnd === 'number') {
-        newImpactedInput.setSelectionRange(impactedSelStart, impactedSelEnd);
       }
     }
   }
