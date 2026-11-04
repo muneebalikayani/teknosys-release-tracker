@@ -5,6 +5,9 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -14,7 +17,14 @@ export default async function handler(req, res) {
 
   if (req.method === 'GET') {
     try {
-      const resp = await fetch(`${BLOB_URL}?t=${Date.now()}`, { cache: 'no-store' });
+      const nonce = `${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
+      const resp = await fetch(`${BLOB_URL}?t=${nonce}`, {
+        cache: 'no-store',
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+          'Pragma': 'no-cache'
+        }
+      });
       if (resp.ok) {
         const data = await resp.json();
         return res.status(200).json(data);
@@ -41,7 +51,8 @@ export default async function handler(req, res) {
       await put('teknosys_store.json', JSON.stringify(payload), {
         access: 'public',
         addRandomSuffix: false,
-        allowOverwrite: true
+        allowOverwrite: true,
+        cacheControlMaxAge: 0
       });
 
       return res.status(200).json({

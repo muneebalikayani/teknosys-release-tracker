@@ -868,7 +868,11 @@ function bindItemEvents(container) {
           return;
         }
       }
-      store.updateRelease(id, { stage: newStage });
+      if (newStage === 'Completed') {
+        store.updateRelease(id, { stage: 'Completed', status: 'Completed' });
+      } else {
+        store.updateRelease(id, { stage: newStage });
+      }
     });
   });
 
@@ -879,7 +883,7 @@ function bindItemEvents(container) {
       const newStatus = e.target.value;
       const release = store.getReleaseById(id);
       if (newStatus === 'Completed' && release) {
-        const check = store.validateDeploymentCompletion({ ...release, status: 'Completed' });
+        const check = store.validateDeploymentCompletion({ ...release, stage: 'Completed', status: 'Completed' });
         if (!check.valid) {
           showToast({
             title: 'DEPLOYMENT BLOCKED',
@@ -897,7 +901,11 @@ function bindItemEvents(container) {
           return;
         }
       }
-      store.updateRelease(id, { status: newStatus });
+      if (newStatus === 'Completed') {
+        store.updateRelease(id, { stage: 'Completed', status: 'Completed' });
+      } else {
+        store.updateRelease(id, { status: newStatus });
+      }
     });
   });
 

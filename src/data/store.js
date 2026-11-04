@@ -29,7 +29,11 @@ class ReleaseStore {
     this.isSupabaseConnected = false;
     this.isSyncing = false;
     this.unsubscribeRealtime = null;
-    this.lastLocalMutation = 0;
+    try {
+      this.lastLocalMutation = parseInt(localStorage.getItem('teknosys_last_local_mutation') || '0', 10) || 0;
+    } catch {
+      this.lastLocalMutation = 0;
+    }
 
     this.releases = this.loadReleases();
     this.saveReleases();
@@ -356,30 +360,98 @@ class ReleaseStore {
     }
   }
 
+  setLocalMutationTime() {
+    this.lastLocalMutation = Date.now();
+    try {
+      localStorage.setItem('teknosys_last_local_mutation', String(this.lastLocalMutation));
+    } catch (e) {}
+  }
+
   mergeWithLocalReleases(cloudReleases) {
     if (!Array.isArray(cloudReleases) || cloudReleases.length === 0) {
       return this.releases;
     }
 
+    const localMap = new Map(this.releases.map(r => [Number(r.id), r]));
     const normalizedCloud = cloudReleases.map(r => this.normalizeRelease(r));
     const cloudIdMap = new Map(normalizedCloud.map(r => [Number(r.id), r]));
 
-    // Start with all cloud releases
-    const merged = [...normalizedCloud];
+    const merged = [];
+    let localHasNewerChanges = false;
+
+    // Process all cloud releases with conflict protection
+    for (const cloudRel of normalizedCloud) {
+      const id = Number(cloudRel.id);
+      const localRel = localMap.get(id);
+
+      if (!localRel) {
+        merged.push(cloudRel);
+        continue;
+      }
+
+      const localTime = new Date(localRel.updatedAt || localRel.lastModified || 0).getTime() || 0;
+      const cloudTime = new Date(cloudRel.updatedAt || cloudRel.lastModified || 0).getTime() || 0;
+
+      const localStage = (localRel.stage || '').trim().toLowerCase();
+      const localStatus = (localRel.status || '').trim().toLowerCase();
+      const cloudStage = (cloudRel.stage || '').trim().toLowerCase();
+      const cloudStatus = (cloudRel.status || '').trim().toLowerCase();
+
+      const localIsCompleted = (localStage === 'completed' || localStatus === 'completed');
+      const cloudIsCompleted = (cloudStage === 'completed' || cloudStatus === 'completed');
+
+      let winner;
+
+      if (localTime > cloudTime) {
+        // Local has strictly newer timestamp
+        winner = { ...cloudRel, ...localRel };
+        localHasNewerChanges = true;
+      } else if (cloudTime > localTime) {
+        // Cloud has strictly newer timestamp
+        // CRITICAL PROTECTION: Never revert a local completion to an in-flight status
+        if (localIsCompleted && !cloudIsCompleted) {
+          winner = { ...cloudRel, ...localRel, stage: 'Completed', status: 'Completed' };
+          localHasNewerChanges = true;
+        } else {
+          winner = { ...localRel, ...cloudRel };
+        }
+      } else {
+        // Timestamps equal or not present
+        if (localIsCompleted && !cloudIsCompleted) {
+          // Local completion always wins over uncompleted cloud record
+          winner = { ...cloudRel, ...localRel, stage: 'Completed', status: 'Completed' };
+          localHasNewerChanges = true;
+        } else if (cloudIsCompleted && !localIsCompleted) {
+          winner = { ...localRel, ...cloudRel, stage: 'Completed', status: 'Completed' };
+        } else {
+          winner = { ...localRel, ...cloudRel };
+        }
+      }
+
+      // Synchronize stage and status if either is completed
+      if (
+        (winner.stage || '').trim().toLowerCase() === 'completed' ||
+        (winner.status || '').trim().toLowerCase() === 'completed'
+      ) {
+        winner.stage = 'Completed';
+        winner.status = 'Completed';
+      }
+
+      merged.push(this.normalizeRelease(winner));
+    }
 
     // Preserve any local releases that are not yet in cloud data
-    const localOnly = [];
     for (const localRel of this.releases) {
       const id = Number(localRel.id);
       if (!cloudIdMap.has(id)) {
         merged.unshift(localRel);
-        localOnly.push(localRel);
+        localHasNewerChanges = true;
       }
     }
 
-    // If local has releases missing from cloud, push merged state to cloud
-    if (localOnly.length > 0) {
-      pushCloudStore(merged, this.holidays).catch(() => {});
+    // If local had newer changes or completions, push the merged list back to cloud
+    if (localHasNewerChanges) {
+      this.syncCloud(merged);
     }
 
     return merged;
@@ -569,9 +641,9 @@ class ReleaseStore {
   startPolling() {
     this.stopPolling();
     this.pollInterval = setInterval(async () => {
-      // Don't poll while an active sync is running or if local changes occurred within 15s
+      // Don't poll while an active sync is running or if local changes occurred within 20s
       if (this.isSyncing) return;
-      if (Date.now() - (this.lastLocalMutation || 0) < 15000) return;
+      if (Date.now() - (this.lastLocalMutation || 0) < 20000) return;
 
       try {
         const cloudData = await fetchCloudStore();
@@ -586,8 +658,8 @@ class ReleaseStore {
 
           const normalizedCloud = cloudData.releases.map(r => this.normalizeRelease(r));
           const merged = this.mergeWithLocalReleases(normalizedCloud);
-          const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
-          const newSummary = merged.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}`).join('|');
+          const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}:${r.updatedAt || ''}`).join('|');
+          const newSummary = merged.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}:${r.updatedAt || ''}`).join('|');
           if (currSummary !== newSummary) {
             console.log('🔄 Live update received from team member, refreshing views...');
             this.releases = merged;
@@ -613,11 +685,13 @@ class ReleaseStore {
     }
   }
 
-  async syncCloud() {
+  async syncCloud(releasesToPush = null) {
+    const toPush = releasesToPush || this.releases;
     try {
       this.isSyncing = true;
       this.notify();
-      await pushCloudStore(this.releases, this.holidays);
+      await pushCloudStore(toPush, this.holidays);
+      this.setLocalMutationTime();
     } catch (err) {
       console.warn('Failed to push updates to cloud store:', err);
     } finally {
@@ -701,6 +775,7 @@ class ReleaseStore {
       : 1;
 
     const conflict = this.checkHolidayConflict(data.targetDeploy);
+    const nowIso = new Date().toISOString();
 
     const newRelease = {
       id: nextId,
@@ -719,8 +794,16 @@ class ReleaseStore {
       dbObjects: (data.dbObjects || '').trim(),
       notes: (data.notes || '').trim(),
       email: (data.email || '').trim(),
-      holidayConflict: conflict ? conflict.conflictText : ''
+      holidayConflict: conflict ? conflict.conflictText : '',
+      createdAt: nowIso,
+      updatedAt: nowIso,
+      lastModified: Date.now()
     };
+
+    if (newRelease.stage === 'Completed' || newRelease.status === 'Completed') {
+      newRelease.stage = 'Completed';
+      newRelease.status = 'Completed';
+    }
 
     // Governance policy check: cannot complete deployment if CR or RITM is empty
     const check = this.validateDeploymentCompletion(newRelease);
@@ -731,7 +814,7 @@ class ReleaseStore {
 
     this.releases.unshift(newRelease);
     this.saveReleases();
-    this.lastLocalMutation = Date.now();
+    this.setLocalMutationTime();
     this.resetFilters();
     this.notify();
 
@@ -756,7 +839,30 @@ class ReleaseStore {
     }
 
     const current = this.releases[index];
-    const updated = { ...current, ...updates };
+    const resolvedUpdates = { ...updates };
+
+    // Synchronize stage and status completion
+    if (resolvedUpdates.stage === 'Completed' && resolvedUpdates.status === undefined) {
+      resolvedUpdates.status = 'Completed';
+    }
+    if (resolvedUpdates.status === 'Completed' && resolvedUpdates.stage === undefined) {
+      resolvedUpdates.stage = 'Completed';
+    }
+    // If moving OUT of Completed
+    if (resolvedUpdates.stage && resolvedUpdates.stage !== 'Completed' && current.stage === 'Completed' && resolvedUpdates.status === undefined) {
+      resolvedUpdates.status = 'On Track';
+    }
+    if (resolvedUpdates.status && resolvedUpdates.status !== 'Completed' && current.status === 'Completed' && resolvedUpdates.stage === undefined) {
+      resolvedUpdates.stage = 'Production';
+    }
+
+    const nowIso = new Date().toISOString();
+    const updated = {
+      ...current,
+      ...resolvedUpdates,
+      updatedAt: nowIso,
+      lastModified: Date.now()
+    };
 
     // Governance policy check: cannot complete deployment if CR or RITM is empty
     if (!updates.bypassValidation) {
@@ -767,14 +873,14 @@ class ReleaseStore {
       }
     }
 
-    if (updates.targetDeploy !== undefined) {
+    if (resolvedUpdates.targetDeploy !== undefined) {
       const conflict = this.checkHolidayConflict(updated.targetDeploy);
       updated.holidayConflict = conflict ? conflict.conflictText : '';
     }
 
     this.releases[index] = updated;
     this.saveReleases();
-    this.lastLocalMutation = Date.now();
+    this.setLocalMutationTime();
     this.notify();
 
     // Push to zero-config cloud store for all team members
@@ -795,7 +901,7 @@ class ReleaseStore {
     if (index === -1) return false;
     this.releases.splice(index, 1);
     this.saveReleases();
-    this.lastLocalMutation = Date.now();
+    this.setLocalMutationTime();
     this.notify();
 
     // Push to zero-config cloud store for all team members

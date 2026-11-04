@@ -5,9 +5,16 @@ const BLOB_DIRECT_URL = 'https://ydlimtlndkdmvrwd.public.blob.vercel-storage.com
  * Fetch releases & holidays from the shared cloud store
  */
 export async function fetchCloudStore() {
+  const nonce = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
   // Try local API endpoint first (works on Vercel deployment)
   try {
-    const res = await fetch(`/api/sync?t=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch(`/api/sync?t=${nonce}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data.releases)) {
@@ -20,7 +27,13 @@ export async function fetchCloudStore() {
 
   // Direct Blob CDN fallback (guaranteed to work from any client browser)
   try {
-    const res = await fetch(`${BLOB_DIRECT_URL}?t=${Date.now()}`, { cache: 'no-store' });
+    const res = await fetch(`${BLOB_DIRECT_URL}?t=${nonce}`, {
+      cache: 'no-store',
+      headers: {
+        'Cache-Control': 'no-cache, no-store, must-revalidate',
+        'Pragma': 'no-cache'
+      }
+    });
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data.releases)) {

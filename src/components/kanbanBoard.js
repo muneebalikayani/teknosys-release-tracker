@@ -212,12 +212,16 @@ function setupKanbanEvents(container, groupBy) {
               return;
             }
           }
-          store.updateRelease(rawId, { stage: targetCol });
+          if (targetCol === 'Completed') {
+            store.updateRelease(rawId, { stage: 'Completed', status: 'Completed' });
+          } else {
+            store.updateRelease(rawId, { stage: targetCol });
+          }
         }
       } else {
         if (release.status !== targetCol) {
           if (targetCol === 'Completed') {
-            const check = store.validateDeploymentCompletion({ ...release, status: 'Completed' });
+            const check = store.validateDeploymentCompletion({ ...release, stage: 'Completed', status: 'Completed' });
             if (!check.valid) {
               showToast({
                 title: 'DEPLOYMENT BLOCKED',
@@ -235,7 +239,11 @@ function setupKanbanEvents(container, groupBy) {
               return;
             }
           }
-          store.updateRelease(rawId, { status: targetCol });
+          if (targetCol === 'Completed') {
+            store.updateRelease(rawId, { stage: 'Completed', status: 'Completed' });
+          } else {
+            store.updateRelease(rawId, { status: targetCol });
+          }
         }
       }
     });
