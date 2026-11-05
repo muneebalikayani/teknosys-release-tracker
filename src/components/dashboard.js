@@ -162,9 +162,7 @@ export function renderDashboard(container) {
         <div class="card analytics-chart-card">
           <div class="card-header chart-card-header">
             <div>
-              <span class="card-eyebrow">ANNUAL CADENCE</span>
-              <h3 class="card-title">Monthly Deployment Throughput (2026)</h3>
-              <p class="card-subtitle">Release volume scheduled and completed per month. Click any bar to inspect.</p>
+              <h3 class="card-title">Monthly Deployments</h3>
             </div>
             <div class="chart-legend">
               <span class="legend-item"><span class="legend-dot dot-completed"></span> Completed</span>
@@ -203,9 +201,7 @@ export function renderDashboard(container) {
         <div class="card analytics-stability-card">
           <div class="card-header">
             <div>
-              <span class="card-eyebrow">CHANGE GOVERNANCE</span>
-              <h3 class="card-title">Operational Stability Index</h3>
-              <p class="card-subtitle">Scheduled standard vs reactive emergency changes</p>
+              <h3 class="card-title">Operational Stability</h3>
             </div>
             <span class="stability-tag ${stabilityBadge.class}">
               ${stabilityBadge.icon} ${stabilityBadge.text}
