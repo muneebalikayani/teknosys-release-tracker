@@ -156,30 +156,6 @@ export function renderDashboard(container) {
         </div>
       </div>
 
-      <!-- Completion Velocity Progress Bar -->
-      <div class="card completion-card">
-        <div class="completion-header">
-          <div class="completion-title-group">
-            <span class="card-eyebrow">PROGRESS MILESTONE</span>
-            <h3 class="card-title">Release Completion Velocity</h3>
-          </div>
-          <div class="completion-stats">
-            <span class="pct-big">${completionPct}%</span>
-            <span class="fraction-text">${metrics.completed} of ${metrics.total} deployed</span>
-          </div>
-        </div>
-        <div class="progress-bar-container">
-          <div class="progress-bar-fill" style="width: ${completionPct}%"></div>
-        </div>
-        <div class="progress-ticks">
-          <span>0%</span>
-          <span>25%</span>
-          <span>50%</span>
-          <span>75%</span>
-          <span>100%</span>
-        </div>
-      </div>
-
       <!-- =========================================================
            ADVANCED ANALYTICS SECTION
            ========================================================= -->
