@@ -43,34 +43,13 @@ export function renderMonthlyReport(container) {
     const pCompleted = pRels.filter(r => (r.status || '').toLowerCase() === 'completed' || (r.stage || '').toLowerCase() === 'completed').length;
     const pRate = pRels.length > 0 ? Math.round((pCompleted / pRels.length) * 100) : 0;
 
-    // Lead time in days
-    const leadTimes = pRels
-      .filter(r => r.startDate && r.targetDeploy && r.targetDeploy >= r.startDate)
-      .map(r => {
-        const s = new Date(r.startDate + 'T00:00:00');
-        const t = new Date(r.targetDeploy + 'T00:00:00');
-        return Math.max(1, Math.round((t - s) / (1000 * 60 * 60 * 24)));
-      });
-    const avgLead = leadTimes.length > 0 ? (leadTimes.reduce((a, b) => a + b, 0) / leadTimes.length).toFixed(1) : '-';
-
     platformStats[plat] = {
       total: pRels.length,
       completed: pCompleted,
       inFlight: pRels.length - pCompleted,
-      rate: pRate,
-      avgLead
+      rate: pRate
     };
   }
-
-  // All lead times across entire platform for monthly overview
-  const allLeadTimes = monthlyReleases
-    .filter(r => r.startDate && r.targetDeploy && r.targetDeploy >= r.startDate)
-    .map(r => {
-      const s = new Date(r.startDate + 'T00:00:00');
-      const t = new Date(r.targetDeploy + 'T00:00:00');
-      return Math.max(1, Math.round((t - s) / (1000 * 60 * 60 * 24)));
-    });
-  const avgLeadTimeAll = allLeadTimes.length > 0 ? (allLeadTimes.reduce((a, b) => a + b, 0) / allLeadTimes.length).toFixed(1) : '-';
 
   // Breakdown by Type
   const scheduledCount = monthlyReleases.filter(r => r.type === 'Scheduled').length;
@@ -405,9 +384,8 @@ export function renderMonthlyReport(container) {
                   <tr>
                     <th>Platform</th>
                     <th style="text-align: right;">Scoped</th>
-                    <th style="text-align: right;">Shipped</th>
-                    <th style="text-align: right; white-space: nowrap;">Lead Time</th>
-                    <th style="width: 38%; text-align: left; padding-left: 1.25rem;">Delivery Rate</th>
+                    <th style="text-align: right;">Delivered</th>
+                    <th style="width: 44%; text-align: left; padding-left: 1.25rem;">Delivery Rate</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -417,7 +395,6 @@ export function renderMonthlyReport(container) {
                         <td><span class="platform-tag platform-${plat.toLowerCase()}">${plat}</span></td>
                         <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${stat.total}</td>
                         <td style="text-align: right; font-weight: 600; color: #10b981; font-family: var(--font-mono);">${stat.completed}</td>
-                        <td style="text-align: right; color: #94a3b8; font-family: var(--font-mono); font-size: 0.775rem; white-space: nowrap;">${stat.avgLead !== '-' ? `${stat.avgLead}d` : '-'}</td>
                         <td style="padding-left: 1.25rem;">
                           <div class="report-bar-wrap">
                             <div class="report-bar-track">
@@ -431,11 +408,6 @@ export function renderMonthlyReport(container) {
                   }).join('')}
                 </tbody>
               </table>
-            </div>
-
-            <div class="month-blackout-info mt-2">
-              <span class="text-xs text-muted font-semibold">Platform Lead Times:</span>
-              <span class="text-xs text-muted">Telecom production verification cycle averages <strong>${avgLeadTimeAll}d</strong> across active platforms</span>
             </div>
           </div>
 
