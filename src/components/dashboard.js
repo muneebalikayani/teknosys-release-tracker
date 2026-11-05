@@ -154,13 +154,7 @@ export function renderDashboard(container) {
         <!-- Monthly Deployment Velocity Chart -->
         <div class="card analytics-chart-card">
           <div class="card-header chart-card-header">
-            <div>
-              <h3 class="card-title">Monthly Deployments</h3>
-            </div>
-            <div class="chart-legend">
-              <span class="legend-item"><span class="legend-dot dot-completed"></span> Completed</span>
-              <span class="legend-item"><span class="legend-dot dot-open"></span> Open</span>
-            </div>
+            <h3 class="card-title">Monthly Deployments</h3>
           </div>
 
           <div class="chart-wrapper">
