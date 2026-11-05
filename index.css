@@ -5444,6 +5444,30 @@ body.kanban-dragging-active * {
   to { transform: rotate(360deg); }
 }
 
+/* Ledger cell base classes */
+.ledger-index-cell {
+  text-align: center;
+  font-family: var(--font-mono);
+  color: #64748b;
+  font-weight: 600;
+}
+
+.ledger-dev-cell {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.ledger-date-cell {
+  font-family: var(--font-mono);
+  color: #94a3b8;
+  font-size: 0.775rem;
+}
+
+/* Page 1 footer is hidden in standard portal screen view (shown only in PDF & print) */
+.report-page1-footer {
+  display: none;
+}
+
 /* Executive Confidentiality Footer */
 .report-exec-footer {
   display: flex;
@@ -5986,29 +6010,43 @@ body.kanban-dragging-active * {
 }
 
 /* Official Release Audit Ledger - Executive Table */
-.report-paper.pdf-light-theme .report-ledger-card {
+.report-paper.pdf-light-theme .report-ledger-card,
+[data-theme] .report-paper.pdf-light-theme .report-ledger-card {
+  page-break-before: always !important;
+  break-before: page !important;
   background: #ffffff !important;
+  background-color: #ffffff !important;
+  background-image: none !important;
   border: 1px solid #cbd5e1 !important;
   box-shadow: none !important;
-  padding: 10px 14px !important;
+  padding: 12px 16px !important;
   border-radius: 8px !important;
+  margin-top: 0 !important;
 }
 
-.report-paper.pdf-light-theme .ledger-header-bar {
+.report-paper.pdf-light-theme .ledger-header-bar,
+[data-theme] .report-paper.pdf-light-theme .ledger-header-bar {
   border-bottom: 1.5px solid #e2e8f0 !important;
-  margin-bottom: 6px !important;
-  padding-bottom: 6px !important;
+  margin-bottom: 8px !important;
+  padding-bottom: 8px !important;
 }
 
-.report-paper.pdf-light-theme .ledger-title {
+.report-paper.pdf-light-theme .ledger-title,
+[data-theme] .report-paper.pdf-light-theme .ledger-title {
   color: #0f172a !important;
-  font-size: 0.85rem !important;
-  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  font-weight: 800 !important;
 }
 
-.report-paper.pdf-light-theme .ledger-subtitle {
-  color: #64748b !important;
-  font-size: 0.675rem !important;
+.report-paper.pdf-light-theme .ledger-title svg,
+[data-theme] .report-paper.pdf-light-theme .ledger-title svg {
+  stroke: #1e40af !important;
+}
+
+.report-paper.pdf-light-theme .ledger-subtitle,
+[data-theme] .report-paper.pdf-light-theme .ledger-subtitle {
+  color: #475569 !important;
+  font-size: 0.725rem !important;
 }
 
 /* Strictly hide search bar in PDF */
@@ -6016,18 +6054,25 @@ body.kanban-dragging-active * {
   display: none !important;
 }
 
-.report-paper.pdf-light-theme .ledger-table-wrap {
+.report-paper.pdf-light-theme .ledger-table-wrap,
+[data-theme] .report-paper.pdf-light-theme .ledger-table-wrap {
   border: 1px solid #cbd5e1 !important;
   border-radius: 6px !important;
   overflow: hidden !important;
+  background: #ffffff !important;
 }
 
-.report-paper.pdf-light-theme .ledger-table {
+.report-paper.pdf-light-theme .ledger-table,
+[data-theme] .report-paper.pdf-light-theme .ledger-table {
   width: 100% !important;
+  border-collapse: collapse !important;
+  background: #ffffff !important;
 }
 
-.report-paper.pdf-light-theme .ledger-table th {
+.report-paper.pdf-light-theme .ledger-table th,
+[data-theme] .report-paper.pdf-light-theme .ledger-table th {
   background: #1e293b !important;
+  background-color: #1e293b !important;
   color: #ffffff !important;
   font-size: 0.625rem !important;
   font-weight: 700 !important;
@@ -6037,24 +6082,54 @@ body.kanban-dragging-active * {
   border-bottom: 2px solid #0f172a !important;
 }
 
-.report-paper.pdf-light-theme .ledger-row td {
-  padding: 5px 8px !important;
+.report-paper.pdf-light-theme .ledger-row td,
+[data-theme] .report-paper.pdf-light-theme .ledger-row td {
+  padding: 6px 8px !important;
   border-bottom: 1px solid #e2e8f0 !important;
   color: #0f172a !important;
-  font-size: 0.7rem !important;
-}
-
-.report-paper.pdf-light-theme .ledger-table tr:nth-child(even) td {
-  background: #f8fafc !important;
-}
-
-.report-paper.pdf-light-theme .ledger-release-name {
-  color: #0f172a !important;
   font-size: 0.725rem !important;
-  font-weight: 600 !important;
+  background: #ffffff !important;
+  background-color: #ffffff !important;
+  page-break-inside: avoid !important;
+  break-inside: avoid !important;
 }
 
-.report-paper.pdf-light-theme .ledger-db-badge {
+.report-paper.pdf-light-theme .ledger-table tr:nth-child(even) td,
+[data-theme] .report-paper.pdf-light-theme .ledger-table tr:nth-child(even) td {
+  background: #f8fafc !important;
+  background-color: #f8fafc !important;
+}
+
+.report-paper.pdf-light-theme .ledger-release-name,
+[data-theme] .report-paper.pdf-light-theme .ledger-release-name {
+  color: #0f172a !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+}
+
+.report-paper.pdf-light-theme .ledger-dev-cell,
+[data-theme] .report-paper.pdf-light-theme .ledger-dev-cell {
+  color: #334155 !important;
+  font-weight: 500 !important;
+}
+
+.report-paper.pdf-light-theme .ledger-date-cell,
+[data-theme] .report-paper.pdf-light-theme .ledger-date-cell {
+  color: #475569 !important;
+  font-family: var(--font-mono) !important;
+  font-size: 0.725rem !important;
+}
+
+.report-paper.pdf-light-theme .ledger-index-cell,
+[data-theme] .report-paper.pdf-light-theme .ledger-index-cell {
+  color: #64748b !important;
+  font-family: var(--font-mono) !important;
+  font-weight: 700 !important;
+  text-align: center !important;
+}
+
+.report-paper.pdf-light-theme .ledger-db-badge,
+[data-theme] .report-paper.pdf-light-theme .ledger-db-badge {
   background: #fff7ed !important;
   border: 1px solid #fed7aa !important;
   color: #c2410c !important;
@@ -6063,7 +6138,8 @@ body.kanban-dragging-active * {
   padding: 1px 4px !important;
 }
 
-.report-paper.pdf-light-theme .gov-chip-verified {
+.report-paper.pdf-light-theme .gov-chip-verified,
+[data-theme] .report-paper.pdf-light-theme .gov-chip-verified {
   background: #ecfdf5 !important;
   border: 1px solid #a7f3d0 !important;
   color: #065f46 !important;
@@ -6072,7 +6148,8 @@ body.kanban-dragging-active * {
   padding: 1px 5px !important;
 }
 
-.report-paper.pdf-light-theme .gov-chip-partial {
+.report-paper.pdf-light-theme .gov-chip-partial,
+[data-theme] .report-paper.pdf-light-theme .gov-chip-partial {
   background: #eff6ff !important;
   border: 1px solid #bfdbfe !important;
   color: #1d4ed8 !important;
@@ -6081,7 +6158,8 @@ body.kanban-dragging-active * {
   padding: 1px 5px !important;
 }
 
-.report-paper.pdf-light-theme .gov-chip-missing {
+.report-paper.pdf-light-theme .gov-chip-missing,
+[data-theme] .report-paper.pdf-light-theme .gov-chip-missing {
   background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
   color: #94a3b8 !important;
@@ -6089,20 +6167,28 @@ body.kanban-dragging-active * {
   padding: 1px 5px !important;
 }
 
-.report-paper.pdf-light-theme .report-exec-footer {
+.report-paper.pdf-light-theme .report-page1-footer,
+.report-paper.pdf-light-theme .report-page2-footer,
+.report-paper.pdf-light-theme .report-exec-footer,
+[data-theme] .report-paper.pdf-light-theme .report-page1-footer,
+[data-theme] .report-paper.pdf-light-theme .report-page2-footer,
+[data-theme] .report-paper.pdf-light-theme .report-exec-footer {
+  display: flex !important;
   border-top: 1px solid #cbd5e1 !important;
   padding-top: 8px !important;
-  margin-top: 4px !important;
+  margin-top: 6px !important;
   font-size: 0.65rem !important;
   color: #64748b !important;
 }
 
-.report-paper.pdf-light-theme .exec-footer-left {
+.report-paper.pdf-light-theme .exec-footer-left,
+[data-theme] .report-paper.pdf-light-theme .exec-footer-left {
   color: #475569 !important;
   font-weight: 600 !important;
 }
 
-.report-paper.pdf-light-theme .exec-footer-dot {
+.report-paper.pdf-light-theme .exec-footer-dot,
+[data-theme] .report-paper.pdf-light-theme .exec-footer-dot {
   background: #1e40af !important;
 }
 
@@ -6502,39 +6588,55 @@ body.kanban-dragging-active * {
 
   /* Ledger Print */
   .report-ledger-card {
+    page-break-before: always !important;
+    break-before: page !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
+    background-image: none !important;
     border: 1px solid #cbd5e1 !important;
     box-shadow: none !important;
-    padding: 10px 14px !important;
+    padding: 12px 16px !important;
     border-radius: 8px !important;
-    page-break-inside: auto !important;
+    margin-top: 0 !important;
   }
 
   .ledger-header-bar {
     border-bottom: 1.5px solid #e2e8f0 !important;
-    margin-bottom: 6px !important;
-    padding-bottom: 6px !important;
+    margin-bottom: 8px !important;
+    padding-bottom: 8px !important;
   }
 
   .ledger-title {
     color: #0f172a !important;
-    font-size: 0.85rem !important;
-    font-weight: 700 !important;
+    font-size: 0.95rem !important;
+    font-weight: 800 !important;
+  }
+
+  .ledger-title svg {
+    stroke: #1e40af !important;
   }
 
   .ledger-subtitle {
-    color: #64748b !important;
-    font-size: 0.675rem !important;
+    color: #475569 !important;
+    font-size: 0.725rem !important;
   }
 
   .ledger-table-wrap {
     border: 1px solid #cbd5e1 !important;
     border-radius: 6px !important;
     overflow: hidden !important;
+    background: #ffffff !important;
+  }
+
+  .ledger-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    background: #ffffff !important;
   }
 
   .ledger-table th {
     background: #1e293b !important;
+    background-color: #1e293b !important;
     color: #ffffff !important;
     font-size: 0.625rem !important;
     font-weight: 700 !important;
@@ -6545,22 +6647,43 @@ body.kanban-dragging-active * {
   }
 
   .ledger-row td {
-    padding: 5px 8px !important;
+    padding: 6px 8px !important;
     border-bottom: 1px solid #e2e8f0 !important;
     color: #0f172a !important;
-    font-size: 0.7rem !important;
+    font-size: 0.725rem !important;
+    background: #ffffff !important;
+    background-color: #ffffff !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
 
   .ledger-table tr:nth-child(even) td {
     background: #f8fafc !important;
+    background-color: #f8fafc !important;
   }
 
   .ledger-release-name {
     color: #0f172a !important;
+    font-size: 0.75rem !important;
+    font-weight: 700 !important;
+  }
+
+  .ledger-dev-cell {
+    color: #334155 !important;
+    font-weight: 500 !important;
+  }
+
+  .ledger-date-cell {
+    color: #475569 !important;
+    font-family: var(--font-mono) !important;
     font-size: 0.725rem !important;
-    font-weight: 600 !important;
+  }
+
+  .ledger-index-cell {
+    color: #64748b !important;
+    font-family: var(--font-mono) !important;
+    font-weight: 700 !important;
+    text-align: center !important;
   }
 
   .ledger-db-badge {
@@ -6598,10 +6721,13 @@ body.kanban-dragging-active * {
     padding: 1px 5px !important;
   }
 
+  .report-page1-footer,
+  .report-page2-footer,
   .report-exec-footer {
+    display: flex !important;
     border-top: 1px solid #cbd5e1 !important;
     padding-top: 8px !important;
-    margin-top: 4px !important;
+    margin-top: 6px !important;
     font-size: 0.65rem !important;
     color: #64748b !important;
   }
@@ -8220,13 +8346,9 @@ body.kanban-dragging-active * {
 }
 
 /* Cards & Surfaces */
-[data-theme="neumorphic"] .card,
-[data-theme="neumorphic"] .stat-card,
-[data-theme="neumorphic"] .chart-card,
-[data-theme="neumorphic"] .report-paper,
-[data-theme="neumorphic"] .card:not(.pdf-light-theme),
-[data-theme="neumorphic"] .stat-card:not(.pdf-light-theme),
-[data-theme="neumorphic"] .chart-card:not(.pdf-light-theme),
+[data-theme="neumorphic"] .card:not(.pdf-light-theme):not(.report-paper *),
+[data-theme="neumorphic"] .stat-card:not(.pdf-light-theme):not(.report-paper *),
+[data-theme="neumorphic"] .chart-card:not(.pdf-light-theme):not(.report-paper *),
 [data-theme="neumorphic"] .report-paper:not(.pdf-light-theme),
 [data-theme="neumorphic"] .kanban-card,
 [data-theme="neumorphic"] .calendar-card,
@@ -8237,8 +8359,7 @@ body.kanban-dragging-active * {
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
 }
 
-[data-theme="neumorphic"] .card:hover,
-[data-theme="neumorphic"] .card:not(.pdf-light-theme):hover,
+[data-theme="neumorphic"] .card:not(.pdf-light-theme):not(.report-paper *):hover,
 [data-theme="neumorphic"] .kanban-card:hover {
   box-shadow: var(--neu-hover) !important;
 }
@@ -8337,19 +8458,19 @@ body.kanban-dragging-active * {
   border: 1px solid rgba(255, 255, 255, 0.04) !important;
 }
 
-[data-theme="neumorphic"] th {
+[data-theme="neumorphic"] th:not(.pdf-light-theme *):not(.report-paper.pdf-light-theme *) {
   background: #14171b !important;
   box-shadow: var(--neu-pressed-sm) !important;
   color: var(--text-muted) !important;
   border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
 }
 
-[data-theme="neumorphic"] td {
+[data-theme="neumorphic"] td:not(.pdf-light-theme *):not(.report-paper.pdf-light-theme *) {
   border-bottom: 1px solid rgba(255, 255, 255, 0.03) !important;
   color: var(--text-main) !important;
 }
 
-[data-theme="neumorphic"] tr:hover td {
+[data-theme="neumorphic"] tr:not(.pdf-light-theme *):not(.report-paper.pdf-light-theme *):hover td {
   background: rgba(255, 255, 255, 0.02) !important;
 }
 
@@ -8420,291 +8541,6 @@ body.kanban-dragging-active * {
   color: #0a0a0a !important;
   font-weight: 500 !important;
   box-shadow: 3px 3px 8px rgba(0, 0, 0, 0.5) !important;
-}
-
-/* =========================================================
-   ABSOLUTE LIGHT THEME SPECIFICATION FOR PDF EXPORT & PRINT
-   Guaranteed Crisp 100% White Theme across ALL components
-   ========================================================= */
-.report-paper.pdf-light-theme,
-[data-theme] .report-paper.pdf-light-theme,
-[data-theme="neumorphic"] .report-paper.pdf-light-theme {
-  background: #ffffff !important;
-  color: #0f172a !important;
-  border: 1px solid #e2e8f0 !important;
-  box-shadow: none !important;
-  border-radius: 8px !important;
-  padding: 18px 22px !important;
-  max-width: 800px !important;
-  margin: 0 auto !important;
-}
-
-/* Remove any dark/extruded shadows inside the exported document */
-.report-paper.pdf-light-theme *,
-[data-theme] .report-paper.pdf-light-theme *,
-[data-theme="neumorphic"] .report-paper.pdf-light-theme * {
-  box-shadow: none !important;
-  text-shadow: none !important;
-}
-
-/* Header & Titles */
-.report-paper.pdf-light-theme .report-doc-header,
-[data-theme] .report-paper.pdf-light-theme .report-doc-header {
-  border-bottom: 1px solid #e2e8f0 !important;
-  padding-bottom: 8px !important;
-}
-
-.report-paper.pdf-light-theme .doc-corp-title,
-[data-theme] .report-paper.pdf-light-theme .doc-corp-title {
-  color: #0f172a !important;
-  font-size: 1.05rem !important;
-  font-weight: 700 !important;
-}
-
-.report-paper.pdf-light-theme .doc-dept-title,
-[data-theme] .report-paper.pdf-light-theme .doc-dept-title {
-  color: #64748b !important;
-  font-size: 0.7rem !important;
-}
-
-.report-paper.pdf-light-theme .doc-logo-box,
-[data-theme] .report-paper.pdf-light-theme .doc-logo-box {
-  background: #f0fdf4 !important;
-  border: 1px solid #bbf7d0 !important;
-}
-
-.report-paper.pdf-light-theme .doc-logo-box svg,
-[data-theme] .report-paper.pdf-light-theme .doc-logo-box svg {
-  stroke: #059669 !important;
-}
-
-.report-paper.pdf-light-theme .doc-badge,
-[data-theme] .report-paper.pdf-light-theme .doc-badge {
-  background: #0f172a !important;
-  color: #ffffff !important;
-  font-size: 0.6rem !important;
-  font-weight: 700 !important;
-  padding: 2px 7px !important;
-}
-
-.report-paper.pdf-light-theme .doc-period,
-[data-theme] .report-paper.pdf-light-theme .doc-period {
-  color: #0f172a !important;
-  font-size: 1rem !important;
-  font-weight: 700 !important;
-}
-
-.report-paper.pdf-light-theme .doc-date,
-[data-theme] .report-paper.pdf-light-theme .doc-date {
-  color: #64748b !important;
-  font-size: 0.675rem !important;
-}
-
-.report-paper.pdf-light-theme .doc-live-dot,
-[data-theme] .report-paper.pdf-light-theme .doc-live-dot {
-  background: #059669 !important;
-}
-
-/* Title Banner */
-.report-paper.pdf-light-theme .report-title-banner,
-[data-theme] .report-paper.pdf-light-theme .report-title-banner {
-  border-bottom: 1px solid #e2e8f0 !important;
-  padding-bottom: 6px !important;
-}
-
-.report-paper.pdf-light-theme .report-headline,
-[data-theme] .report-paper.pdf-light-theme .report-headline {
-  color: #0f172a !important;
-  font-size: 1.15rem !important;
-  font-weight: 700 !important;
-}
-
-.report-paper.pdf-light-theme .report-subline,
-[data-theme] .report-paper.pdf-light-theme .report-subline {
-  color: #475569 !important;
-  font-size: 0.725rem !important;
-}
-
-.report-paper.pdf-light-theme .report-scope-badge,
-[data-theme] .report-paper.pdf-light-theme .report-scope-badge {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-}
-
-.report-paper.pdf-light-theme .scope-badge-num,
-[data-theme] .report-paper.pdf-light-theme .scope-badge-num {
-  color: #0f172a !important;
-  font-size: 1.15rem !important;
-  font-weight: 800 !important;
-}
-
-.report-paper.pdf-light-theme .scope-badge-lbl,
-[data-theme] .report-paper.pdf-light-theme .scope-badge-lbl {
-  color: #64748b !important;
-  font-size: 0.575rem !important;
-}
-
-/* Narrative Box */
-.report-paper.pdf-light-theme .report-narrative-box,
-[data-theme] .report-paper.pdf-light-theme .report-narrative-box {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  border-left: 3.5px solid #059669 !important;
-  padding: 8px 12px !important;
-  border-radius: 6px !important;
-}
-
-.report-paper.pdf-light-theme .narrative-tag,
-[data-theme] .report-paper.pdf-light-theme .narrative-tag {
-  color: #047857 !important;
-  font-size: 0.65rem !important;
-  font-weight: 700 !important;
-}
-
-.report-paper.pdf-light-theme .narrative-period-pill,
-[data-theme] .report-paper.pdf-light-theme .narrative-period-pill {
-  background: #e2e8f0 !important;
-  color: #475569 !important;
-  font-size: 0.625rem !important;
-}
-
-.report-paper.pdf-light-theme .narrative-text,
-[data-theme] .report-paper.pdf-light-theme .narrative-text {
-  color: #1e293b !important;
-  font-size: 0.775rem !important;
-  line-height: 1.45 !important;
-}
-
-/* KPI Scorecard Cards */
-.report-paper.pdf-light-theme .report-kpi-card,
-[data-theme] .report-paper.pdf-light-theme .report-kpi-card {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 8px !important;
-  padding: 8px 10px !important;
-}
-
-.report-paper.pdf-light-theme .rkpi-label,
-[data-theme] .report-paper.pdf-light-theme .rkpi-label {
-  color: #64748b !important;
-  font-size: 0.6rem !important;
-  font-weight: 600 !important;
-}
-
-.report-paper.pdf-light-theme .rkpi-value,
-[data-theme] .report-paper.pdf-light-theme .rkpi-value {
-  color: #0f172a !important;
-  font-size: 1.4rem !important;
-  font-weight: 800 !important;
-}
-
-.report-paper.pdf-light-theme .rkpi-sub,
-[data-theme] .report-paper.pdf-light-theme .rkpi-sub {
-  color: #64748b !important;
-  font-size: 0.65rem !important;
-}
-
-.report-paper.pdf-light-theme .rkpi-rate-badge,
-[data-theme] .report-paper.pdf-light-theme .rkpi-rate-badge {
-  background: #ecfdf5 !important;
-  border: 1px solid #a7f3d0 !important;
-  color: #065f46 !important;
-  font-size: 0.675rem !important;
-}
-
-.report-paper.pdf-light-theme .rkpi-progress-bar-wrap,
-[data-theme] .report-paper.pdf-light-theme .rkpi-progress-bar-wrap {
-  background: #f1f5f9 !important;
-  border: 1px solid #e2e8f0 !important;
-  height: 4px !important;
-}
-
-.report-paper.pdf-light-theme .rkpi-progress-bar-fill,
-[data-theme] .report-paper.pdf-light-theme .rkpi-progress-bar-fill {
-  background: #059669 !important;
-}
-
-/* Subcards / Analytic Tables */
-.report-paper.pdf-light-theme .report-subcard,
-[data-theme] .report-paper.pdf-light-theme .report-subcard {
-  background: #ffffff !important;
-  border: 1px solid #e2e8f0 !important;
-  border-radius: 8px !important;
-  padding: 8px 12px !important;
-}
-
-.report-paper.pdf-light-theme .subcard-header-bar,
-[data-theme] .report-paper.pdf-light-theme .subcard-header-bar {
-  border-bottom: 1px solid #f1f5f9 !important;
-}
-
-.report-paper.pdf-light-theme .subcard-title,
-[data-theme] .report-paper.pdf-light-theme .subcard-title {
-  color: #0f172a !important;
-  font-size: 0.8rem !important;
-  font-weight: 700 !important;
-}
-
-.report-paper.pdf-light-theme .subcard-badge,
-[data-theme] .report-paper.pdf-light-theme .subcard-badge {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  color: #475569 !important;
-  font-size: 0.6rem !important;
-}
-
-/* Report Tables */
-.report-paper.pdf-light-theme .report-table,
-[data-theme] .report-paper.pdf-light-theme .report-table {
-  background: transparent !important;
-}
-
-.report-paper.pdf-light-theme .report-table th,
-[data-theme] .report-paper.pdf-light-theme .report-table th,
-[data-theme="neumorphic"] .report-paper.pdf-light-theme .report-table th {
-  background: #f8fafc !important;
-  color: #475569 !important;
-  border-bottom: 1px solid #e2e8f0 !important;
-  padding: 4px 6px !important;
-  font-size: 0.6rem !important;
-}
-
-.report-paper.pdf-light-theme .report-table td,
-[data-theme] .report-paper.pdf-light-theme .report-table td,
-[data-theme="neumorphic"] .report-paper.pdf-light-theme .report-table td {
-  background: transparent !important;
-  color: #0f172a !important;
-  border-bottom: 1px solid #f1f5f9 !important;
-  padding: 4px 6px !important;
-  font-size: 0.725rem !important;
-}
-
-.report-paper.pdf-light-theme .report-bar-track,
-[data-theme] .report-paper.pdf-light-theme .report-bar-track {
-  background: #f1f5f9 !important;
-  border: 1px solid #e2e8f0 !important;
-  height: 5px !important;
-}
-
-.report-paper.pdf-light-theme .report-bar-pct,
-[data-theme] .report-paper.pdf-light-theme .report-bar-pct {
-  color: #475569 !important;
-  font-size: 0.675rem !important;
-}
-
-.report-paper.pdf-light-theme .report-exec-footer,
-[data-theme] .report-paper.pdf-light-theme .report-exec-footer {
-  border-top: 1px solid #e2e8f0 !important;
-}
-
-.report-paper.pdf-light-theme .exec-footer-left,
-[data-theme] .report-paper.pdf-light-theme .exec-footer-left {
-  color: #64748b !important;
-}
-
-.report-paper.pdf-light-theme .exec-footer-right,
-[data-theme] .report-paper.pdf-light-theme .exec-footer-right {
-  color: #475569 !important;
 }
 
 /* =========================================================

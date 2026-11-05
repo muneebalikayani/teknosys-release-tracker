@@ -576,8 +576,19 @@ export function renderMonthlyReport(container) {
           </div>
         </div>
 
+        <!-- Page 1 Executive Footer (Visible on Page 1 in PDF / Print) -->
+        <div class="report-exec-footer report-page1-footer">
+          <div class="exec-footer-left">
+            <span class="exec-footer-dot"></span>
+            <span>Jazz World Data Platform · Executive Scorecard & Analytics · Core DW</span>
+          </div>
+          <div class="exec-footer-right">
+            <span>Page 1 of 2 · Confidential · Internal Executive Circulation</span>
+          </div>
+        </div>
+
         <!-- Official Deployment Manifest & Release Audit Ledger Table -->
-        <div class="report-ledger-card card">
+        <div class="report-ledger-card">
           <div class="ledger-header-bar">
             <div>
               <h3 class="ledger-title">
@@ -626,7 +637,7 @@ export function renderMonthlyReport(container) {
 
                   return `
                     <tr class="ledger-row ${isDone ? 'row-completed' : ''}" data-release-id="${r.id}">
-                      <td style="text-align: center; font-family: var(--font-mono); color: #64748b; font-weight: 600;">${idx + 1}</td>
+                      <td class="ledger-index-cell">${idx + 1}</td>
                       <td>
                         <div class="ledger-name-cell">
                           <span class="ledger-release-name font-semibold">${escapeHtml(r.name)}</span>
@@ -635,8 +646,8 @@ export function renderMonthlyReport(container) {
                       </td>
                       <td><span class="platform-tag platform-${(r.platform || 'gsm').toLowerCase()}">${r.platform || 'GSM'}</span></td>
                       <td><span class="type-pill type-${(r.type || 'scheduled').toLowerCase()}">${r.type || 'Scheduled'}</span></td>
-                      <td style="color: #cbd5e1; font-weight: 500;">${escapeHtml(r.developer || 'Unassigned')}</td>
-                      <td style="font-family: var(--font-mono); color: #94a3b8; font-size: 0.775rem;">${r.targetDeploy || '-'}</td>
+                      <td class="ledger-dev-cell">${escapeHtml(r.developer || 'Unassigned')}</td>
+                      <td class="ledger-date-cell">${r.targetDeploy || '-'}</td>
                       <td><span class="stage-tag stage-${stageSlug}">${r.stage || 'Development'}</span></td>
                       <td><span class="status-pill status-${statusSlug}">${r.status || 'Pending'}</span></td>
                       <td>
@@ -663,14 +674,14 @@ export function renderMonthlyReport(container) {
           </div>
         </div>
 
-        <!-- Executive Confidentiality Document Bar -->
-        <div class="report-exec-footer">
+        <!-- Page 2 Executive Footer (Visible on Page 2 in PDF / Print & Bottom of Report) -->
+        <div class="report-exec-footer report-page2-footer">
           <div class="exec-footer-left">
             <span class="exec-footer-dot"></span>
-            <span>Jazz World Data Platform · Executive Management Briefing · Enterprise Core DW</span>
+            <span>Jazz World Data Platform · Official Release Audit Ledger · Core DW</span>
           </div>
           <div class="exec-footer-right">
-            <span>Confidential · Internal Executive Circulation · Proprietary Record</span>
+            <span>Page 2 of 2 · Confidential · CAB & Governance Verified</span>
           </div>
         </div>
       </div>
@@ -785,6 +796,107 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
     // Apply PDF Light Theme to the clone
     clone.classList.add('pdf-light-theme');
     clone.classList.add('pdf-render-canvas');
+    clone.setAttribute('data-theme', 'light');
+
+    // Force strict 100% executive light theme styling on the clone DOM tree
+    clone.style.setProperty('background', '#ffffff', 'important');
+    clone.style.setProperty('background-color', '#ffffff', 'important');
+    clone.style.setProperty('color', '#0f172a', 'important');
+    clone.style.setProperty('box-shadow', 'none', 'important');
+
+    // Remove any dark gradients or shadows from cards in the clone
+    clone.querySelectorAll('.report-kpi-card, .report-subcard, .report-scope-badge').forEach(card => {
+      card.style.setProperty('background', '#ffffff', 'important');
+      card.style.setProperty('background-color', '#ffffff', 'important');
+      card.style.setProperty('background-image', 'none', 'important');
+      card.style.setProperty('box-shadow', 'none', 'important');
+      card.style.setProperty('border', '1px solid #cbd5e1', 'important');
+    });
+
+    // Enforce clean hard page break before the ledger card so it starts at the top of Page 2
+    const ledgerCard = clone.querySelector('.report-ledger-card');
+    if (ledgerCard) {
+      ledgerCard.style.setProperty('page-break-before', 'always', 'important');
+      ledgerCard.style.setProperty('break-before', 'page', 'important');
+      ledgerCard.style.setProperty('background', '#ffffff', 'important');
+      ledgerCard.style.setProperty('background-color', '#ffffff', 'important');
+      ledgerCard.style.setProperty('background-image', 'none', 'important');
+      ledgerCard.style.setProperty('box-shadow', 'none', 'important');
+      ledgerCard.style.setProperty('border', '1px solid #cbd5e1', 'important');
+      ledgerCard.style.setProperty('border-radius', '8px', 'important');
+      ledgerCard.style.setProperty('padding', '12px 14px', 'important');
+      ledgerCard.style.setProperty('margin-top', '0', 'important');
+    }
+
+    const ledgerTitle = clone.querySelector('.ledger-title');
+    if (ledgerTitle) {
+      ledgerTitle.style.setProperty('color', '#0f172a', 'important');
+      const svg = ledgerTitle.querySelector('svg');
+      if (svg) svg.style.setProperty('stroke', '#1e40af', 'important');
+    }
+    const ledgerSubtitle = clone.querySelector('.ledger-subtitle');
+    if (ledgerSubtitle) {
+      ledgerSubtitle.style.setProperty('color', '#475569', 'important');
+    }
+
+    // Ledger table styling in PDF
+    clone.querySelectorAll('.ledger-table-wrap').forEach(wrap => {
+      wrap.style.setProperty('background', '#ffffff', 'important');
+      wrap.style.setProperty('background-color', '#ffffff', 'important');
+      wrap.style.setProperty('border', '1px solid #cbd5e1', 'important');
+    });
+
+    clone.querySelectorAll('.ledger-table th').forEach(th => {
+      th.style.setProperty('background', '#1e293b', 'important');
+      th.style.setProperty('background-color', '#1e293b', 'important');
+      th.style.setProperty('color', '#ffffff', 'important');
+      th.style.setProperty('font-size', '0.625rem', 'important');
+      th.style.setProperty('font-weight', '700', 'important');
+      th.style.setProperty('border-bottom', '2px solid #0f172a', 'important');
+      th.style.setProperty('padding', '6px 8px', 'important');
+    });
+
+    // Explicit opaque backgrounds for every single row and cell (No transparent leaks!)
+    clone.querySelectorAll('.ledger-table tbody tr').forEach((tr, rIdx) => {
+      const isEven = rIdx % 2 === 1;
+      const rowBg = isEven ? '#f8fafc' : '#ffffff';
+      tr.style.setProperty('background', rowBg, 'important');
+      tr.style.setProperty('background-color', rowBg, 'important');
+      tr.querySelectorAll('td').forEach(td => {
+        td.style.setProperty('background', rowBg, 'important');
+        td.style.setProperty('background-color', rowBg, 'important');
+        td.style.setProperty('color', '#0f172a', 'important');
+        td.style.setProperty('border-bottom', '1px solid #e2e8f0', 'important');
+        td.style.setProperty('padding', '6px 8px', 'important');
+      });
+    });
+
+    clone.querySelectorAll('.ledger-release-name').forEach(el => {
+      el.style.setProperty('color', '#0f172a', 'important');
+      el.style.setProperty('font-weight', '700', 'important');
+    });
+    clone.querySelectorAll('.ledger-dev-cell').forEach(el => {
+      el.style.setProperty('color', '#334155', 'important');
+      el.style.setProperty('font-weight', '500', 'important');
+    });
+    clone.querySelectorAll('.ledger-date-cell').forEach(el => {
+      el.style.setProperty('color', '#475569', 'important');
+      el.style.setProperty('font-family', 'monospace', 'important');
+    });
+    clone.querySelectorAll('.ledger-index-cell').forEach(el => {
+      el.style.setProperty('color', '#64748b', 'important');
+      el.style.setProperty('font-weight', '700', 'important');
+      el.style.setProperty('font-family', 'monospace', 'important');
+      el.style.setProperty('text-align', 'center', 'important');
+    });
+
+    // Make both Page 1 and Page 2 footers visible and styled on the PDF clone
+    clone.querySelectorAll('.report-exec-footer').forEach(f => {
+      f.style.setProperty('display', 'flex', 'important');
+      f.style.setProperty('border-top', '1px solid #cbd5e1', 'important');
+      f.style.setProperty('color', '#64748b', 'important');
+      f.style.setProperty('font-size', '0.65rem', 'important');
+    });
 
     // Create an offscreen mount wrapper with exact standard A4 width (794px at 96 DPI)
     const mountWrapper = document.createElement('div');
@@ -815,7 +927,8 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
         pagebreak: {
           mode: ['css', 'legacy'],
-          avoid: ['.report-kpi-row', '.report-analytics-grid-3col', '.report-subcard', '.report-ledger-card', 'tr', '.ledger-row']
+          before: ['.report-ledger-card'],
+          avoid: ['.report-kpi-row', '.report-analytics-grid-3col', '.report-subcard', '.report-doc-header', '.report-title-banner', 'tr', '.ledger-row']
         }
       };
 
