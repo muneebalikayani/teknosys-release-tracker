@@ -56,7 +56,7 @@ class ReleaseStore {
     this.statuses = [...DEFAULT_STATUSES];
 
     // Filter and view state
-    this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'board' | 'calendar' | 'year' | 'holidays' | 'report'
+    this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'board' | 'calendar' | 'holidays' | 'report'
     this.boardGroupBy = 'stage'; // 'stage' | 'status'
     this.searchMode = 'all'; // 'all' | 'general' | 'dbObjects'
 

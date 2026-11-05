@@ -1,4 +1,5 @@
 import { store } from '../data/store.js';
+import { renderYearView } from './yearView.js';
 
 export function renderCalendarView(container) {
   // Use store dashboard filter or local calendar state
@@ -7,11 +8,17 @@ export function renderCalendarView(container) {
     window._calState = {
       month: today.getMonth() + 1, // 1-12
       year: today.getFullYear(),    // 2026
+      viewMode: 'month',           // 'month' | 'year'
       selectedDayDate: null
     };
   }
 
-  const { month, year, selectedDayDate } = window._calState;
+  const { month, year, viewMode = 'month', selectedDayDate } = window._calState;
+
+  if (viewMode === 'year') {
+    renderYearView(container);
+    return;
+  }
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -84,7 +91,7 @@ export function renderCalendarView(container) {
       <!-- Calendar Header & Navigation -->
       <div class="calendar-header-bar">
         <div>
-          <h1 class="page-title">Monthly Release Calendar</h1>
+          <h1 class="page-title">Release Calendar</h1>
           <p class="page-subtitle">Schedule showing start milestones, target deployments & public holidays</p>
         </div>
 
@@ -109,6 +116,11 @@ export function renderCalendarView(container) {
               <option value="2026" ${year === 2026 ? 'selected' : ''}>2026</option>
               <option value="2027" ${year === 2027 ? 'selected' : ''}>2027</option>
             </select>
+          </div>
+
+          <div class="btn-group cal-view-toggle">
+            <button class="btn btn-secondary ${viewMode === 'month' ? 'active font-bold' : ''}" id="cal-toggle-month">Month</button>
+            <button class="btn btn-secondary ${viewMode === 'year' ? 'active font-bold' : ''}" id="cal-toggle-year">Year</button>
           </div>
 
           <button class="btn btn-primary" id="btn-cal-new-release">
@@ -275,6 +287,16 @@ export function renderCalendarView(container) {
 }
 
 function setupCalendarEvents(container) {
+  container.querySelector('#cal-toggle-month')?.addEventListener('click', () => {
+    window._calState.viewMode = 'month';
+    renderCalendarView(container);
+  });
+
+  container.querySelector('#cal-toggle-year')?.addEventListener('click', () => {
+    window._calState.viewMode = 'year';
+    renderCalendarView(container);
+  });
+
   const mSelect = container.querySelector('#cal-month-select');
   const ySelect = container.querySelector('#cal-year-select');
 

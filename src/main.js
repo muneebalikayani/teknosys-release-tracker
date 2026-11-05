@@ -3,7 +3,6 @@ import { renderDashboard } from './components/dashboard.js';
 import { renderReleaseList } from './components/releaseList.js';
 import { renderKanbanBoard } from './components/kanbanBoard.js';
 import { renderCalendarView } from './components/calendarView.js';
-import { renderYearView } from './components/yearView.js';
 import { renderHolidayView } from './components/holidayView.js';
 import { openReleaseModal } from './components/releaseModal.js';
 import { openReleaseDetailModal } from './components/releaseDetailModal.js';
@@ -67,10 +66,12 @@ function renderActiveView() {
       renderKanbanBoard(viewContainer);
       break;
     case 'calendar':
-      renderCalendarView(viewContainer);
-      break;
     case 'year':
-      renderYearView(viewContainer);
+      if (store.currentView === 'year') {
+        if (!window._calState) window._calState = {};
+        window._calState.viewMode = 'year';
+      }
+      renderCalendarView(viewContainer);
       break;
     case 'holidays':
       renderHolidayView(viewContainer);

@@ -1,10 +1,17 @@
 import { store } from '../data/store.js';
+import { renderCalendarView } from './calendarView.js';
 
 export function renderYearView(container) {
-  if (!window._yearCalYear) {
-    window._yearCalYear = 2026;
+  if (!window._calState) {
+    window._calState = {
+      month: new Date().getMonth() + 1,
+      year: 2026,
+      viewMode: 'year',
+      selectedDayDate: null
+    };
   }
-  const year = window._yearCalYear;
+  const year = window._calState.year || window._yearCalYear || 2026;
+  window._yearCalYear = year;
 
   const monthNames = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -18,7 +25,7 @@ export function renderYearView(container) {
       <!-- Header -->
       <div class="year-header-bar">
         <div>
-          <h1 class="page-title">Year-at-a-Glance Calendar (${year})</h1>
+          <h1 class="page-title">Release Calendar (${year})</h1>
           <p class="page-subtitle">Annual distribution of deployments, milestones and telecom public holidays</p>
         </div>
 
@@ -31,6 +38,11 @@ export function renderYearView(container) {
             <button class="btn btn-secondary btn-icon" id="year-next-btn" title="Next Year">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </button>
+          </div>
+
+          <div class="btn-group cal-view-toggle">
+            <button class="btn btn-secondary" id="cal-toggle-month">Month</button>
+            <button class="btn btn-secondary active font-bold" id="cal-toggle-year">Year</button>
           </div>
 
           <button class="btn btn-primary" id="btn-year-new-release">
@@ -85,9 +97,9 @@ export function renderYearView(container) {
           }
 
           return `
-            <div class="mini-month-card card">
-              <div class="mini-month-header">
-                <h3 class="mini-month-title">${monthName}</h3>
+            <div class="mini-month-card card" data-month="${mNum}">
+              <div class="mini-month-header clickable-month-header" data-month="${mNum}" style="cursor: pointer;" title="Open ${monthName} Calendar">
+                <h3 class="mini-month-title">${monthName} →</h3>
                 <span class="mini-month-stat">
                   ${store.releases.filter(r => r.targetDeploy && r.targetDeploy.startsWith(`${year}-${String(mNum).padStart(2, '0')}`)).length} deploys
                 </span>
@@ -142,18 +154,41 @@ export function renderYearView(container) {
 }
 
 function setupYearEvents(container) {
+  container.querySelector('#cal-toggle-month')?.addEventListener('click', () => {
+    if (!window._calState) window._calState = {};
+    window._calState.viewMode = 'month';
+    renderCalendarView(container);
+  });
+
   container.querySelector('#year-prev-btn')?.addEventListener('click', () => {
-    window._yearCalYear -= 1;
-    renderYearView(container);
+    if (!window._calState) window._calState = {};
+    window._calState.year = (window._calState.year || window._yearCalYear || 2026) - 1;
+    window._yearCalYear = window._calState.year;
+    renderCalendarView(container);
   });
 
   container.querySelector('#year-next-btn')?.addEventListener('click', () => {
-    window._yearCalYear += 1;
-    renderYearView(container);
+    if (!window._calState) window._calState = {};
+    window._calState.year = (window._calState.year || window._yearCalYear || 2026) + 1;
+    window._yearCalYear = window._calState.year;
+    renderCalendarView(container);
   });
 
   container.querySelector('#btn-year-new-release')?.addEventListener('click', () => {
     window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'create' } }));
+  });
+
+  // Clicking any month header navigates directly to that month's full calendar
+  container.querySelectorAll('.clickable-month-header').forEach(header => {
+    header.addEventListener('click', () => {
+      const mNum = parseInt(header.dataset.month, 10);
+      if (mNum) {
+        if (!window._calState) window._calState = {};
+        window._calState.month = mNum;
+        window._calState.viewMode = 'month';
+        renderCalendarView(container);
+      }
+    });
   });
 
   // Clicking a day in year view
