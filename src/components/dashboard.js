@@ -47,13 +47,6 @@ export function renderDashboard(container) {
   // Maximum monthly releases for scaling the bar chart
   const maxMonthTotal = Math.max(1, ...analytics.monthlyTrend.map(m => m.total));
 
-  // Determine Stability rating badge
-  const stabilityBadge = analytics.plannedStabilityPct >= 80
-    ? { text: 'Optimal Control', class: 'stability-optimal', icon: '🟢' }
-    : analytics.plannedStabilityPct >= 65
-      ? { text: 'Moderate Hotfixes', class: 'stability-moderate', icon: '🟡' }
-      : { text: 'Elevated Emergency Risk', class: 'stability-risk', icon: '🔴' };
-
   container.innerHTML = `
     <div class="dashboard-container">
       <!-- Dashboard Controls & Breadcrumb -->
@@ -200,12 +193,7 @@ export function renderDashboard(container) {
         <!-- Operational Stability & Change Risk Card -->
         <div class="card analytics-stability-card">
           <div class="card-header">
-            <div>
-              <h3 class="card-title">Operational Stability</h3>
-            </div>
-            <span class="stability-tag ${stabilityBadge.class}">
-              ${stabilityBadge.icon} ${stabilityBadge.text}
-            </span>
+            <h3 class="card-title">Operational Stability</h3>
           </div>
 
           <div class="stability-content">
