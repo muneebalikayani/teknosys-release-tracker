@@ -243,7 +243,7 @@ export function renderDashboard(container) {
             <!-- Audit Readiness & Governance Bar -->
             <div class="audit-compliance-box">
               <div class="compliance-header">
-                <span class="compliance-label">CAB Audit Compliance (RITM / CR Linked)</span>
+                <span class="compliance-label">Change Governance (Tickets Linked)</span>
                 <span class="compliance-pct">${analytics.auditCompliancePct}% (${analytics.auditCompliantCount}/${metrics.total})</span>
               </div>
               <div class="compliance-bar-bg">
@@ -561,7 +561,7 @@ function setupDashboardEvents(container, analytics, metrics, monthLabel) {
         `• Open: ${metrics.open}`,
         `• Average Lead Time: ${analytics.avgLeadTime} days (Scheduled: ${analytics.avgScheduledLeadTime}d, Hotfix: ${analytics.avgHotfixLeadTime}d)`,
         `• Change Stability Index: ${analytics.plannedStabilityPct}% Scheduled vs ${analytics.reactivePct}% Reactive/Hotfixes`,
-        `• CAB Audit Compliance: ${analytics.auditCompliancePct}% (${analytics.auditCompliantCount} of ${metrics.total} with RITM/CR)`,
+        `• Change Governance: ${analytics.auditCompliancePct}% (${analytics.auditCompliantCount} of ${metrics.total} tickets linked)`,
         `• Schema Impact: ${analytics.dbChangesCount} releases modifying database objects (${analytics.dbChangesPct}%)`,
         `• Next Holiday: ${analytics.nextHoliday ? `${analytics.nextHoliday.name} (${analytics.daysToNextHoliday} days)` : 'None defined'}`,
         `=============================================================`,

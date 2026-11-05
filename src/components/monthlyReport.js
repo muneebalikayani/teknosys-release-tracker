@@ -339,7 +339,7 @@ export function renderMonthlyReport(container) {
             <span class="rkpi-sub">${scheduledCount} Scheduled · ${hotfixCount + emergencyCount} Reactive</span>
           </div>
 
-          <!-- CAB Audit Compliance -->
+          <!-- Change Governance -->
           <div class="report-kpi-card">
             <div class="rkpi-header">
               <div class="rkpi-icon-badge rkpi-badge-indigo">
@@ -348,7 +348,7 @@ export function renderMonthlyReport(container) {
                   <polyline points="14 2 14 8 20 8"></polyline>
                 </svg>
               </div>
-              <span class="rkpi-label">CAB AUDIT COMPLIANCE</span>
+              <span class="rkpi-label">CHANGE GOVERNANCE</span>
             </div>
             <div class="rkpi-value-row">
               <span class="rkpi-value ${auditCompliancePct >= 80 ? 'text-success' : 'text-accent'}">${auditCompliancePct}%</span>
@@ -357,7 +357,7 @@ export function renderMonthlyReport(container) {
             <div class="rkpi-progress-bar-wrap">
               <div class="rkpi-progress-bar-fill fill-emerald" style="width: ${auditCompliancePct}%;"></div>
             </div>
-            <span class="rkpi-sub">CR & RITM tickets verified</span>
+            <span class="rkpi-sub">Change tickets verified</span>
           </div>
         </div>
 
@@ -914,7 +914,7 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
     digest += `• Production Deployed: ${completed} (${completionRate}% Success Rate)\n`;
     digest += `• Open Deployments: ${inFlight} releases\n`;
     digest += `• Change Stability Index: ${plannedStabilityPct}% Planned Standard Changes\n`;
-    digest += `• CAB Audit Compliance: ${auditCompliancePct}% with verified CR & RITM tickets\n\n`;
+    digest += `• Change Governance: ${auditCompliancePct}% with verified change tickets\n\n`;
     
     digest += `*PLATFORM DELIVERY BREAKDOWN*\n`;
     for (const plat of store.platforms) {
@@ -974,7 +974,7 @@ function exportExecutiveReportExcel(monthName, year, monthlyReleases, metrics) {
     { 'Metric': 'Open Deployments', 'Value': metrics.inFlight },
     { 'Metric': 'Completion Rate', 'Value': `${metrics.completionRate}%` },
     { 'Metric': 'Planned Stability Index', 'Value': `${metrics.plannedStabilityPct}%` },
-    { 'Metric': 'CAB Audit Compliance', 'Value': `${metrics.auditCompliancePct}%` }
+    { 'Metric': 'Change Governance Compliance', 'Value': `${metrics.auditCompliancePct}%` }
   ];
 
   const wsSummary = XLSX.utils.json_to_sheet(summaryRows);
