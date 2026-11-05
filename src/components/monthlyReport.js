@@ -62,6 +62,16 @@ export function renderMonthlyReport(container) {
     };
   }
 
+  // All lead times across entire platform for monthly overview
+  const allLeadTimes = monthlyReleases
+    .filter(r => r.startDate && r.targetDeploy && r.targetDeploy >= r.startDate)
+    .map(r => {
+      const s = new Date(r.startDate + 'T00:00:00');
+      const t = new Date(r.targetDeploy + 'T00:00:00');
+      return Math.max(1, Math.round((t - s) / (1000 * 60 * 60 * 24)));
+    });
+  const avgLeadTimeAll = allLeadTimes.length > 0 ? (allLeadTimes.reduce((a, b) => a + b, 0) / allLeadTimes.length).toFixed(1) : '-';
+
   // Breakdown by Type
   const scheduledCount = monthlyReleases.filter(r => r.type === 'Scheduled').length;
   const hotfixCount = monthlyReleases.filter(r => r.type === 'Hotfix').length;
@@ -372,8 +382,8 @@ export function renderMonthlyReport(container) {
           </div>
         </div>
 
-        <!-- 3-Column Analytics Overview Grid -->
-        <div class="report-analytics-grid-3col">
+        <!-- 2-Column Balanced Analytics Overview -->
+        <div class="report-analytics-grid">
           <!-- Platform Delivery Matrix -->
           <div class="report-subcard">
             <div class="subcard-header-bar">
@@ -385,9 +395,9 @@ export function renderMonthlyReport(container) {
                     <polyline points="2 12 12 17 22 12"></polyline>
                   </svg>
                 </div>
-                <span>Platform Delivery Matrix</span>
+                <span>Platform Delivery Performance</span>
               </h4>
-              <span class="subcard-badge font-mono">${Object.values(platformStats).filter(p => p.total > 0).length} Active</span>
+              <span class="subcard-badge font-mono">${Object.values(platformStats).filter(p => p.total > 0).length} Active Domains</span>
             </div>
             <div class="subcard-table-wrap">
               <table class="report-table">
@@ -396,8 +406,8 @@ export function renderMonthlyReport(container) {
                     <th>Platform</th>
                     <th style="text-align: right;">Scoped</th>
                     <th style="text-align: right;">Shipped</th>
-                    <th style="text-align: right;">Lead Time</th>
-                    <th style="width: 32%; text-align: left; padding-left: 1rem;">Rate</th>
+                    <th style="text-align: right; white-space: nowrap;">Lead Time</th>
+                    <th style="width: 38%; text-align: left; padding-left: 1.25rem;">Delivery Rate</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -407,8 +417,8 @@ export function renderMonthlyReport(container) {
                         <td><span class="platform-tag platform-${plat.toLowerCase()}">${plat}</span></td>
                         <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${stat.total}</td>
                         <td style="text-align: right; font-weight: 600; color: #10b981; font-family: var(--font-mono);">${stat.completed}</td>
-                        <td style="text-align: right; color: #94a3b8; font-family: var(--font-mono); font-size: 0.75rem;">${stat.avgLead !== '-' ? `${stat.avgLead}d` : '-'}</td>
-                        <td style="padding-left: 1rem;">
+                        <td style="text-align: right; color: #94a3b8; font-family: var(--font-mono); font-size: 0.775rem; white-space: nowrap;">${stat.avgLead !== '-' ? `${stat.avgLead}d` : '-'}</td>
+                        <td style="padding-left: 1.25rem;">
                           <div class="report-bar-wrap">
                             <div class="report-bar-track">
                               <div class="report-bar-fill platform-fill-${plat.toLowerCase()}" style="width: ${stat.rate}%;"></div>
@@ -422,9 +432,14 @@ export function renderMonthlyReport(container) {
                 </tbody>
               </table>
             </div>
+
+            <div class="month-blackout-info mt-2">
+              <span class="text-xs text-muted font-semibold">Platform Lead Times:</span>
+              <span class="text-xs text-muted">Telecom production verification cycle averages <strong>${avgLeadTimeAll}d</strong> across active platforms</span>
+            </div>
           </div>
 
-          <!-- Change Classification & Stability -->
+          <!-- Change Classification & Architecture Profile -->
           <div class="report-subcard">
             <div class="subcard-header-bar">
               <h4 class="subcard-title">
@@ -433,24 +448,24 @@ export function renderMonthlyReport(container) {
                     <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
                   </svg>
                 </div>
-                <span>Change Classification</span>
+                <span>Change & Architecture Profile</span>
               </h4>
-              <span class="subcard-badge font-mono">${plannedStabilityPct}% Planned</span>
+              <span class="subcard-badge font-mono">${plannedStabilityPct}% Planned · ${dbChangesPct}% DB</span>
             </div>
             <div class="subcard-table-wrap">
               <table class="report-table">
                 <thead>
                   <tr>
-                    <th>Type</th>
+                    <th>Classification & Scope</th>
                     <th style="text-align: right;">Count</th>
-                    <th style="width: 44%; text-align: left; padding-left: 1rem;">Ratio</th>
+                    <th style="width: 44%; text-align: left; padding-left: 1.25rem;">Distribution</th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr>
-                    <td><span class="type-pill type-scheduled">Scheduled</span></td>
+                    <td><span class="type-pill type-scheduled">Scheduled Releases</span></td>
                     <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${scheduledCount}</td>
-                    <td style="padding-left: 1rem;">
+                    <td style="padding-left: 1.25rem;">
                       <div class="report-bar-wrap">
                         <div class="report-bar-track">
                           <div class="report-bar-fill fill-type-scheduled" style="width: ${total > 0 ? Math.round((scheduledCount / total) * 100) : 0}%;"></div>
@@ -460,9 +475,9 @@ export function renderMonthlyReport(container) {
                     </td>
                   </tr>
                   <tr>
-                    <td><span class="type-pill type-hotfix">Hotfix</span></td>
+                    <td><span class="type-pill type-hotfix">Hotfix Releases</span></td>
                     <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${hotfixCount}</td>
-                    <td style="padding-left: 1rem;">
+                    <td style="padding-left: 1.25rem;">
                       <div class="report-bar-wrap">
                         <div class="report-bar-track">
                           <div class="report-bar-fill fill-type-hotfix" style="width: ${total > 0 ? Math.round((hotfixCount / total) * 100) : 0}%;"></div>
@@ -472,9 +487,9 @@ export function renderMonthlyReport(container) {
                     </td>
                   </tr>
                   <tr>
-                    <td><span class="type-pill type-emergency">Emergency</span></td>
+                    <td><span class="type-pill type-emergency">Emergency Releases</span></td>
                     <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${emergencyCount}</td>
-                    <td style="padding-left: 1rem;">
+                    <td style="padding-left: 1.25rem;">
                       <div class="report-bar-wrap">
                         <div class="report-bar-track">
                           <div class="report-bar-fill fill-type-emergency" style="width: ${total > 0 ? Math.round((emergencyCount / total) * 100) : 0}%;"></div>
@@ -483,58 +498,10 @@ export function renderMonthlyReport(container) {
                       </div>
                     </td>
                   </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Public Holidays in this month -->
-            <div class="month-blackout-info mt-2">
-              <span class="text-xs text-muted font-semibold">Public Holidays in ${monthName}:</span>
-              ${monthlyHolidays.length === 0 ? `
-                <span class="text-xs text-muted"> None scheduled</span>
-              ` : `
-                <div class="holiday-badges-list">
-                  ${monthlyHolidays.map(h => `
-                    <span class="holiday-pill-sm">
-                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                      ${h.name} (${h.startDate}${h.endDate !== h.startDate ? ` to ${h.endDate}` : ''})
-                    </span>
-                  `).join('')}
-                </div>
-              `}
-            </div>
-          </div>
-
-          <!-- Architecture Footprint & Lifecycle Funnel -->
-          <div class="report-subcard">
-            <div class="subcard-header-bar">
-              <h4 class="subcard-title">
-                <div class="subcard-icon-badge subcard-badge-indigo">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                    <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
-                    <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
-                    <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
-                  </svg>
-                </div>
-                <span>Architecture Footprint</span>
-              </h4>
-              <span class="subcard-badge font-mono">${dbChangesPct}% DB Changes</span>
-            </div>
-
-            <div class="subcard-table-wrap">
-              <table class="report-table">
-                <thead>
                   <tr>
-                    <th>Layer / Scope</th>
-                    <th style="text-align: right;">Count</th>
-                    <th style="width: 44%; text-align: left; padding-left: 1rem;">Ratio</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td><span class="arch-tag arch-db">DDL / Schema</span></td>
+                    <td><span class="arch-tag arch-db">Database DDL / Schema</span></td>
                     <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${dbChangesCount}</td>
-                    <td style="padding-left: 1rem;">
+                    <td style="padding-left: 1.25rem;">
                       <div class="report-bar-wrap">
                         <div class="report-bar-track">
                           <div class="report-bar-fill fill-arch-db" style="width: ${total > 0 ? Math.round((dbChangesCount / total) * 100) : 0}%;"></div>
@@ -544,26 +511,14 @@ export function renderMonthlyReport(container) {
                     </td>
                   </tr>
                   <tr>
-                    <td><span class="arch-tag arch-app">App / ETL Only</span></td>
+                    <td><span class="arch-tag arch-app">App / ETL Pipeline Only</span></td>
                     <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${total - dbChangesCount}</td>
-                    <td style="padding-left: 1rem;">
+                    <td style="padding-left: 1.25rem;">
                       <div class="report-bar-wrap">
                         <div class="report-bar-track">
                           <div class="report-bar-fill fill-arch-app" style="width: ${total > 0 ? Math.round(((total - dbChangesCount) / total) * 100) : 0}%;"></div>
                         </div>
                         <span class="report-bar-pct font-mono">${total > 0 ? Math.round(((total - dbChangesCount) / total) * 100) : 0}%</span>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td><span class="arch-tag arch-cab">CAB Audited</span></td>
-                    <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${auditCompliantCount}</td>
-                    <td style="padding-left: 1rem;">
-                      <div class="report-bar-wrap">
-                        <div class="report-bar-track">
-                          <div class="report-bar-fill fill-arch-cab" style="width: ${total > 0 ? Math.round((auditCompliantCount / total) * 100) : 0}%;"></div>
-                        </div>
-                        <span class="report-bar-pct font-mono">${total > 0 ? Math.round((auditCompliantCount / total) * 100) : 0}%</span>
                       </div>
                     </td>
                   </tr>
@@ -573,7 +528,7 @@ export function renderMonthlyReport(container) {
 
             <!-- Pipeline Stages in this month -->
             <div class="month-blackout-info mt-2">
-              <span class="text-xs text-muted font-semibold">Pipeline Stages:</span>
+              <span class="text-xs text-muted font-semibold">Lifecycle Stages:</span>
               <div class="lifecycle-stage-chips">
                 <span class="lifecycle-chip">Dev: <strong>${stageCounts['Development']}</strong></span>
                 <span class="lifecycle-chip">UAT: <strong>${stageCounts['UAT']}</strong></span>
@@ -582,6 +537,20 @@ export function renderMonthlyReport(container) {
                 <span class="lifecycle-chip chip-done">Done: <strong>${stageCounts['Completed']}</strong></span>
               </div>
             </div>
+
+            ${monthlyHolidays.length > 0 ? `
+              <div class="month-blackout-info mt-1">
+                <span class="text-xs text-muted font-semibold">Holidays in ${monthName}:</span>
+                <div class="holiday-badges-list">
+                  ${monthlyHolidays.map(h => `
+                    <span class="holiday-pill-sm">
+                      <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                      ${h.name} (${h.startDate}${h.endDate !== h.startDate ? ` to ${h.endDate}` : ''})
+                    </span>
+                  `).join('')}
+                </div>
+              </div>
+            ` : ''}
           </div>
         </div>
 
@@ -937,7 +906,7 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
         pagebreak: {
           mode: ['css', 'legacy'],
           before: ['.report-ledger-card'],
-          avoid: ['.report-kpi-row', '.report-analytics-grid-3col', '.report-subcard', '.report-doc-header', '.report-title-banner', 'tr', '.ledger-row']
+          avoid: ['.report-kpi-row', '.report-analytics-grid', '.report-subcard', '.report-doc-header', '.report-title-banner', 'tr', '.ledger-row']
         }
       };
 

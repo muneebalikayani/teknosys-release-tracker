@@ -4916,13 +4916,7 @@ body.kanban-dragging-active * {
   background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(15, 23, 42, 0.8) 100%);
 }
 
-/* Analytics Grid - 3 Column Layout */
-.report-analytics-grid-3col {
-  display: grid;
-  grid-template-columns: 1.15fr 0.95fr 0.9fr;
-  gap: 1.15rem;
-}
-
+/* Analytics Grid - 2 Column Balanced Layout */
 .report-analytics-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -5102,6 +5096,29 @@ body.kanban-dragging-active * {
 
 .lifecycle-chip.chip-done strong {
   color: #34d399;
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+}
+
+.report-table th {
+  padding: 8px 12px;
+  font-size: 0.675rem;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  white-space: nowrap;
+}
+
+.report-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  color: #f8fafc;
 }
 
 /* Official Deployment Manifest & Release Audit Ledger */
@@ -5474,7 +5491,7 @@ body.kanban-dragging-active * {
   .report-kpi-row {
     grid-template-columns: repeat(2, 1fr);
   }
-  .report-analytics-grid-3col {
+  .report-analytics-grid {
     grid-template-columns: 1fr;
   }
   .report-briefing-grid {
@@ -5813,11 +5830,12 @@ body.kanban-dragging-active * {
   line-height: 1.3 !important;
 }
 
-/* Analytics Grid Light Theme (3 Columns) */
-.report-paper.pdf-light-theme .report-analytics-grid-3col {
+/* Analytics Grid Light Theme (2-Column Balanced Layout) */
+.report-paper.pdf-light-theme .report-analytics-grid,
+[data-theme] .report-paper.pdf-light-theme .report-analytics-grid {
   display: grid !important;
-  grid-template-columns: 1.15fr 0.95fr 0.9fr !important;
-  gap: 8px !important;
+  grid-template-columns: repeat(2, 1fr) !important;
+  gap: 12px !important;
   page-break-inside: avoid !important;
   break-inside: avoid !important;
 }
@@ -6432,11 +6450,11 @@ body.kanban-dragging-active * {
   .rkpi-badge-cyan { background: #eff6ff !important; border: 1px solid #bfdbfe !important; color: #1d4ed8 !important; }
   .rkpi-badge-rose { background: #fef2f2 !important; border: 1px solid #fecaca !important; color: #dc2626 !important; }
 
-  /* Analytics Print */
-  .report-analytics-grid-3col {
+  /* Analytics Print (2-Column Balanced) */
+  .report-analytics-grid {
     display: grid !important;
-    grid-template-columns: 1.15fr 0.95fr 0.9fr !important;
-    gap: 8px !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
   }
@@ -6750,7 +6768,7 @@ body.kanban-dragging-active * {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  .report-analytics-grid-3col {
+  .report-analytics-grid {
     grid-template-columns: 1fr;
   }
 
