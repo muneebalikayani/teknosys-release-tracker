@@ -156,17 +156,6 @@ export function renderDashboard(container) {
         </div>
       </div>
 
-      <!-- =========================================================
-           ADVANCED ANALYTICS SECTION
-           ========================================================= -->
-      <div class="analytics-section-header">
-        <div class="section-title-wrap">
-          <span class="analytics-badge">ENGINEERING METRICS</span>
-          <h2 class="section-heading">Delivery Throughput & Stability Analytics</h2>
-          <p class="section-subtext">Comprehensive cycle times, operational change health, contributor capacity & holiday calendar</p>
-        </div>
-      </div>
-
       <!-- Analytics Row 1: Monthly Throughput Chart + Operational Stability Gauge -->
       <div class="analytics-grid-two-col">
         <!-- Monthly Deployment Velocity Chart -->
