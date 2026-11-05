@@ -15,19 +15,9 @@ import { initChatbot, removeChatbot } from './components/chatbot.js';
 
 const viewContainer = document.getElementById('view-container');
 const navTabs = document.getElementById('main-nav-tabs');
-const releaseCountEl = document.getElementById('nav-release-count');
-const holidayCountEl = document.getElementById('nav-holiday-count');
 
 function updateTopBarBadges() {
   const total = store.releases.length;
-  const conflicts = store.getConflictingReleases().length;
-
-  if (releaseCountEl) {
-    releaseCountEl.textContent = `${total} Releases${conflicts > 0 ? ` (${conflicts} ⚠️)` : ''}`;
-  }
-  if (holidayCountEl) {
-    holidayCountEl.textContent = `${store.holidays.length} Holidays`;
-  }
 
   const releaseBadge = document.getElementById('nav-release-count-badge');
   if (releaseBadge) {
