@@ -76,19 +76,9 @@ export function renderDashboard(container) {
             </div>
           ` : ''}
 
-          <button class="btn btn-secondary" id="dash-copy-summary-btn" title="Copy Executive Analytics Briefing to Clipboard">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            <span class="btn-text">Copy Briefing</span>
-          </button>
-
           <button class="btn btn-secondary" id="dash-generate-report-btn" title="Generate Executive Summary Report">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
             Monthly Report
-          </button>
-
-          <button class="btn btn-primary" id="dash-new-release-btn">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            New Release
           </button>
         </div>
       </div>
@@ -513,14 +503,6 @@ export function renderDashboard(container) {
 }
 
 function setupDashboardEvents(container, analytics, metrics, monthLabel) {
-  // New release button
-  const newBtn = container.querySelector('#dash-new-release-btn');
-  if (newBtn) {
-    newBtn.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('open-release-modal', { detail: { mode: 'create' } }));
-    });
-  }
-
   // Monthly Report button
   const reportBtn = container.querySelector('#dash-generate-report-btn');
   if (reportBtn) {
@@ -532,38 +514,6 @@ function setupDashboardEvents(container, analytics, metrics, monthLabel) {
         };
       }
       window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'report' } }));
-    });
-  }
-
-  // Copy Analytics Briefing Button
-  const copyBtn = container.querySelector('#dash-copy-summary-btn');
-  if (copyBtn) {
-    copyBtn.addEventListener('click', () => {
-      const text = [
-        `📊 JAZZ WORLD DATA PLATFORM - EXECUTIVE RELEASE BRIEFING (${monthLabel})`,
-        `=============================================================`,
-        `• Total Releases: ${metrics.total}`,
-        `• Completed: ${metrics.completed} (${Math.round(metrics.completionRate * 100)}% Success Rate)`,
-        `• Open: ${metrics.open}`,
-        `• Average Lead Time: ${analytics.avgLeadTime} days (Scheduled: ${analytics.avgScheduledLeadTime}d, Hotfix: ${analytics.avgHotfixLeadTime}d)`,
-        `• Change Stability Index: ${analytics.plannedStabilityPct}% Scheduled vs ${analytics.reactivePct}% Reactive/Hotfixes`,
-        `• Change Governance: ${analytics.auditCompliancePct}% (${analytics.auditCompliantCount} of ${metrics.total} tickets linked)`,
-        `• Schema Impact: ${analytics.dbChangesCount} releases modifying database objects (${analytics.dbChangesPct}%)`,
-        `• Next Holiday: ${analytics.nextHoliday ? `${analytics.nextHoliday.name} (${analytics.daysToNextHoliday} days)` : 'None defined'}`,
-        `=============================================================`,
-        `Generated from Jazz World Data Platform Release Tracker`
-      ].join('\n');
-
-      navigator.clipboard.writeText(text).then(() => {
-        const btnText = copyBtn.querySelector('.btn-text');
-        if (btnText) {
-          const original = btnText.textContent;
-          btnText.textContent = 'Copied!';
-          setTimeout(() => { btnText.textContent = original; }, 2000);
-        }
-      }).catch(err => {
-        console.error('Clipboard copy failed:', err);
-      });
     });
   }
 
