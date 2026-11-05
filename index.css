@@ -4722,10 +4722,10 @@ body.kanban-dragging-active * {
   margin: 0;
 }
 
-/* KPI Scorecard Row (5 High-Density Cards) */
+/* KPI Scorecard Row (4 High-Density Cards) */
 .report-kpi-row {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
 }
 
@@ -5037,104 +5037,71 @@ body.kanban-dragging-active * {
 .platform-fill-eai  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
 .platform-fill-crm  { background: linear-gradient(90deg, #f97316, #f97316); }
 
-/* Change Type bar fills */
+/* Change Type & Architecture bar fills */
 .fill-type-scheduled { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
 .fill-type-hotfix    { background: linear-gradient(90deg, #f97316, #f97316); }
 .fill-type-emergency { background: linear-gradient(90deg, #ef4444, #f87171); }
 
-.report-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-}
+.fill-arch-db  { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.fill-arch-app { background: linear-gradient(90deg, #10b981, #34d399); }
+.fill-arch-cab { background: linear-gradient(90deg, #f97316, #fb923c); }
 
-.report-table th {
-  padding: 7px 10px;
-  font-size: 0.675rem;
-  color: #94a3b8;
-  background: rgba(15, 23, 42, 0.8);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.report-table td {
-  padding: 8px 10px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  color: #f8fafc;
-}
-
-/* Architecture Footprint sub-components */
-.arch-stats-row {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 8px;
-  margin-bottom: 0.75rem;
-}
-
-.arch-stat-box {
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 8px;
-  padding: 8px 6px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-}
-
-.arch-stat-val {
-  font-size: 1.25rem;
-  font-weight: 800;
-  font-family: var(--font-mono);
-  line-height: 1.1;
-}
-
-.arch-stat-lbl {
-  font-size: 0.625rem;
-  color: #94a3b8;
+.arch-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  font-size: 0.725rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-top: 3px;
+  border-radius: var(--radius-full);
+  white-space: nowrap;
 }
 
-.lifecycle-mini-funnel {
-  background: rgba(255, 255, 255, 0.02);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 8px 10px;
+.arch-db {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.25);
 }
 
-.funnel-stage-pills {
+.arch-app {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.25);
+}
+
+.arch-cab {
+  background: rgba(249, 115, 22, 0.15);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.25);
+}
+
+.lifecycle-stage-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
+  margin-top: 2px;
 }
 
-.funnel-pill {
+.lifecycle-chip {
   font-size: 0.675rem;
   color: #cbd5e1;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 6px;
   padding: 2px 7px;
-}
-
-.funnel-pill strong {
-  color: #60a5fa;
   font-family: var(--font-mono);
 }
 
-.funnel-pill.pill-success strong {
+.lifecycle-chip strong {
+  color: #60a5fa;
+}
+
+.lifecycle-chip.chip-done {
+  background: rgba(16, 185, 129, 0.12);
+  border-color: rgba(16, 185, 129, 0.25);
   color: #34d399;
 }
 
-.schema-governance-notice {
-  font-size: 0.725rem;
-  color: #94a3b8;
-  line-height: 1.4;
-  border-left: 2px solid #3b82f6;
-  padding-left: 8px;
+.lifecycle-chip.chip-done strong {
+  color: #34d399;
 }
 
 /* Official Deployment Manifest & Release Audit Ledger */
@@ -5505,7 +5472,7 @@ body.kanban-dragging-active * {
 
 @media (max-width: 1100px) {
   .report-kpi-row {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
   }
   .report-analytics-grid-3col {
     grid-template-columns: 1fr;
@@ -5527,12 +5494,6 @@ body.kanban-dragging-active * {
   }
   .report-paper {
     padding: 1.5rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .report-kpi-row {
-    grid-template-columns: 1fr;
   }
 }
 
@@ -5689,10 +5650,10 @@ body.kanban-dragging-active * {
   font-weight: 700 !important;
 }
 
-/* Executive KPI Scorecard Row (5 Uniform Cards) */
+/* Executive KPI Scorecard Row (4 Uniform Cards) */
 .report-paper.pdf-light-theme .report-kpi-row {
   display: grid !important;
-  grid-template-columns: repeat(5, 1fr) !important;
+  grid-template-columns: repeat(4, 1fr) !important;
   gap: 8px !important;
   page-break-inside: avoid !important;
   break-inside: avoid !important;
@@ -5936,54 +5897,74 @@ body.kanban-dragging-active * {
   font-weight: 600 !important;
 }
 
-.report-paper.pdf-light-theme .arch-stats-row {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 6px !important;
-  margin-bottom: 6px !important;
-}
-
-.report-paper.pdf-light-theme .arch-stat-box {
-  background: #f8fafc !important;
-  border: 1px solid #e2e8f0 !important;
-  padding: 4px 6px !important;
-  border-radius: 6px !important;
-}
-
-.report-paper.pdf-light-theme .arch-stat-val {
-  color: #0f172a !important;
-  font-size: 1.1rem !important;
-  font-weight: 800 !important;
-}
-
-.report-paper.pdf-light-theme .arch-stat-lbl {
-  color: #64748b !important;
-  font-size: 0.575rem !important;
+.report-paper.pdf-light-theme .arch-tag,
+[data-theme] .report-paper.pdf-light-theme .arch-tag {
+  display: inline-block !important;
+  padding: 1px 7px !important;
+  font-size: 0.65rem !important;
   font-weight: 700 !important;
+  border-radius: 12px !important;
+  white-space: nowrap !important;
 }
 
-.report-paper.pdf-light-theme .lifecycle-mini-funnel {
+.report-paper.pdf-light-theme .arch-db,
+[data-theme] .report-paper.pdf-light-theme .arch-db {
+  background: #eff6ff !important;
+  border: 1px solid #bfdbfe !important;
+  color: #1d4ed8 !important;
+}
+
+.report-paper.pdf-light-theme .arch-app,
+[data-theme] .report-paper.pdf-light-theme .arch-app {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #059669 !important;
+}
+
+.report-paper.pdf-light-theme .arch-cab,
+[data-theme] .report-paper.pdf-light-theme .arch-cab {
+  background: #fff7ed !important;
+  border: 1px solid #fed7aa !important;
+  color: #c2410c !important;
+}
+
+.report-paper.pdf-light-theme .fill-arch-db  { background: #3b82f6 !important; }
+.report-paper.pdf-light-theme .fill-arch-app { background: #10b981 !important; }
+.report-paper.pdf-light-theme .fill-arch-cab { background: #f97316 !important; }
+
+.report-paper.pdf-light-theme .lifecycle-stage-chips {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 4px !important;
+  margin-top: 2px !important;
+}
+
+.report-paper.pdf-light-theme .lifecycle-chip,
+[data-theme] .report-paper.pdf-light-theme .lifecycle-chip {
   background: #f8fafc !important;
   border: 1px solid #e2e8f0 !important;
-  padding: 5px 6px !important;
-  border-radius: 6px !important;
-}
-
-.report-paper.pdf-light-theme .funnel-pill {
-  background: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
-  color: #334155 !important;
+  color: #475569 !important;
   font-size: 0.625rem !important;
   padding: 1px 5px !important;
+  border-radius: 4px !important;
+  font-family: var(--font-mono) !important;
 }
 
-.report-paper.pdf-light-theme .schema-governance-notice {
-  color: #475569 !important;
-  font-size: 0.65rem !important;
-  border-left: 2px solid #2563eb !important;
-  background: #f8fafc !important;
-  padding: 3px 6px !important;
-  border-radius: 0 4px 4px 0 !important;
+.report-paper.pdf-light-theme .lifecycle-chip strong,
+[data-theme] .report-paper.pdf-light-theme .lifecycle-chip strong {
+  color: #1e40af !important;
+}
+
+.report-paper.pdf-light-theme .lifecycle-chip.chip-done,
+[data-theme] .report-paper.pdf-light-theme .lifecycle-chip.chip-done {
+  background: #ecfdf5 !important;
+  border: 1px solid #a7f3d0 !important;
+  color: #065f46 !important;
+}
+
+.report-paper.pdf-light-theme .lifecycle-chip.chip-done strong,
+[data-theme] .report-paper.pdf-light-theme .lifecycle-chip.chip-done strong {
+  color: #059669 !important;
 }
 
 .report-paper.pdf-light-theme .platform-fill-gsm  { background: #10b981 !important; }
@@ -6369,7 +6350,7 @@ body.kanban-dragging-active * {
   /* KPI Print */
   .report-kpi-row {
     display: grid !important;
-    grid-template-columns: repeat(5, 1fr) !important;
+    grid-template-columns: repeat(4, 1fr) !important;
     gap: 8px !important;
     page-break-inside: avoid !important;
     break-inside: avoid !important;
@@ -6518,50 +6499,66 @@ body.kanban-dragging-active * {
     font-weight: 600 !important;
   }
 
-  .arch-stats-row {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 6px !important;
-    margin-bottom: 6px !important;
-  }
-
-  .arch-stat-box {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 4px 6px !important;
-    border-radius: 6px !important;
-  }
-
-  .arch-stat-val {
-    color: #0f172a !important;
-    font-size: 1.1rem !important;
-    font-weight: 800 !important;
-  }
-
-  .arch-stat-lbl {
-    color: #64748b !important;
-    font-size: 0.575rem !important;
-  }
-
-  .lifecycle-mini-funnel {
-    background: #f8fafc !important;
-    border: 1px solid #e2e8f0 !important;
-    padding: 5px 6px !important;
-  }
-
-  .funnel-pill {
-    background: #ffffff !important;
-    border: 1px solid #cbd5e1 !important;
-    color: #334155 !important;
-    font-size: 0.625rem !important;
-  }
-
-  .schema-governance-notice {
-    color: #475569 !important;
+  .arch-tag {
+    display: inline-block !important;
+    padding: 1px 7px !important;
     font-size: 0.65rem !important;
-    border-left: 2px solid #2563eb !important;
+    font-weight: 700 !important;
+    border-radius: 12px !important;
+    white-space: nowrap !important;
+  }
+
+  .arch-db {
+    background: #eff6ff !important;
+    border: 1px solid #bfdbfe !important;
+    color: #1d4ed8 !important;
+  }
+
+  .arch-app {
+    background: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    color: #059669 !important;
+  }
+
+  .arch-cab {
+    background: #fff7ed !important;
+    border: 1px solid #fed7aa !important;
+    color: #c2410c !important;
+  }
+
+  .fill-arch-db  { background: #3b82f6 !important; }
+  .fill-arch-app { background: #10b981 !important; }
+  .fill-arch-cab { background: #f97316 !important; }
+
+  .lifecycle-stage-chips {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 4px !important;
+    margin-top: 2px !important;
+  }
+
+  .lifecycle-chip {
     background: #f8fafc !important;
-    padding: 3px 6px !important;
+    border: 1px solid #e2e8f0 !important;
+    color: #475569 !important;
+    font-size: 0.625rem !important;
+    padding: 1px 5px !important;
+    border-radius: 4px !important;
+    font-family: var(--font-mono) !important;
+  }
+
+  .lifecycle-chip strong {
+    color: #1e40af !important;
+  }
+
+  .lifecycle-chip.chip-done {
+    background: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    color: #065f46 !important;
+  }
+
+  .lifecycle-chip.chip-done strong {
+    color: #059669 !important;
   }
 
   .platform-fill-gsm  { background: #10b981 !important; }

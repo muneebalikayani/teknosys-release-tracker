@@ -370,29 +370,6 @@ export function renderMonthlyReport(container) {
             </div>
             <span class="rkpi-sub">CR & RITM tickets verified</span>
           </div>
-
-          <!-- Holiday Calendar Health -->
-          <div class="report-kpi-card ${isCompliant ? 'kpi-shield-compliant' : 'kpi-alert'}">
-            <div class="rkpi-header">
-              <div class="rkpi-icon-badge ${isCompliant ? 'rkpi-badge-emerald' : 'rkpi-badge-rose'}">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                  ${isCompliant ? `
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                    <polyline points="9 12 11 14 15 10"></polyline>
-                  ` : `
-                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
-                    <line x1="12" y1="9" x2="12" y2="13"></line>
-                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
-                  `}
-                </svg>
-              </div>
-              <span class="rkpi-label">CALENDAR HEALTH</span>
-            </div>
-            <span class="rkpi-value ${isCompliant ? 'text-success' : 'text-danger'}">
-              ${isCompliant ? '100%' : `${conflictsInMonth.length} Conflicts`}
-            </span>
-            <span class="rkpi-sub">${isCompliant ? '0 Holiday blackout breaches' : 'CAB rescheduling required'}</span>
-          </div>
         </div>
 
         <!-- 3-Column Analytics Overview Grid -->
@@ -544,34 +521,66 @@ export function renderMonthlyReport(container) {
               <span class="subcard-badge font-mono">${dbChangesPct}% DB Changes</span>
             </div>
 
-            <div class="arch-stats-row">
-              <div class="arch-stat-box">
-                <span class="arch-stat-val text-accent">${dbChangesCount}</span>
-                <span class="arch-stat-lbl">DDL/DML Releases</span>
-              </div>
-              <div class="arch-stat-box">
-                <span class="arch-stat-val text-success">${total - dbChangesCount}</span>
-                <span class="arch-stat-lbl">App / ETL Only</span>
-              </div>
-              <div class="arch-stat-box">
-                <span class="arch-stat-val text-amber">${auditCompliantCount}</span>
-                <span class="arch-stat-lbl">CAB Audited</span>
-              </div>
+            <div class="subcard-table-wrap">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Layer / Scope</th>
+                    <th style="text-align: right;">Count</th>
+                    <th style="width: 44%; text-align: left; padding-left: 1rem;">Ratio</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="arch-tag arch-db">DDL / Schema</span></td>
+                    <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${dbChangesCount}</td>
+                    <td style="padding-left: 1rem;">
+                      <div class="report-bar-wrap">
+                        <div class="report-bar-track">
+                          <div class="report-bar-fill fill-arch-db" style="width: ${total > 0 ? Math.round((dbChangesCount / total) * 100) : 0}%;"></div>
+                        </div>
+                        <span class="report-bar-pct font-mono">${total > 0 ? Math.round((dbChangesCount / total) * 100) : 0}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span class="arch-tag arch-app">App / ETL Only</span></td>
+                    <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${total - dbChangesCount}</td>
+                    <td style="padding-left: 1rem;">
+                      <div class="report-bar-wrap">
+                        <div class="report-bar-track">
+                          <div class="report-bar-fill fill-arch-app" style="width: ${total > 0 ? Math.round(((total - dbChangesCount) / total) * 100) : 0}%;"></div>
+                        </div>
+                        <span class="report-bar-pct font-mono">${total > 0 ? Math.round(((total - dbChangesCount) / total) * 100) : 0}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><span class="arch-tag arch-cab">CAB Audited</span></td>
+                    <td style="text-align: right; font-weight: 700; font-family: var(--font-mono);">${auditCompliantCount}</td>
+                    <td style="padding-left: 1rem;">
+                      <div class="report-bar-wrap">
+                        <div class="report-bar-track">
+                          <div class="report-bar-fill fill-arch-cab" style="width: ${total > 0 ? Math.round((auditCompliantCount / total) * 100) : 0}%;"></div>
+                        </div>
+                        <span class="report-bar-pct font-mono">${total > 0 ? Math.round((auditCompliantCount / total) * 100) : 0}%</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
-            <div class="lifecycle-mini-funnel mt-2">
-              <span class="text-xs text-muted font-semibold block mb-1">Lifecycle Pipeline Stages:</span>
-              <div class="funnel-stage-pills">
-                <span class="funnel-pill">Dev: <strong>${stageCounts['Development']}</strong></span>
-                <span class="funnel-pill">UAT: <strong>${stageCounts['UAT']}</strong></span>
-                <span class="funnel-pill">CAB: <strong>${stageCounts['CAB']}</strong></span>
-                <span class="funnel-pill">Prod: <strong>${stageCounts['Production']}</strong></span>
-                <span class="funnel-pill pill-success">Done: <strong>${stageCounts['Completed']}</strong></span>
+            <!-- Pipeline Stages in this month -->
+            <div class="month-blackout-info mt-2">
+              <span class="text-xs text-muted font-semibold">Pipeline Stages:</span>
+              <div class="lifecycle-stage-chips">
+                <span class="lifecycle-chip">Dev: <strong>${stageCounts['Development']}</strong></span>
+                <span class="lifecycle-chip">UAT: <strong>${stageCounts['UAT']}</strong></span>
+                <span class="lifecycle-chip">CAB: <strong>${stageCounts['CAB']}</strong></span>
+                <span class="lifecycle-chip">Prod: <strong>${stageCounts['Production']}</strong></span>
+                <span class="lifecycle-chip chip-done">Done: <strong>${stageCounts['Completed']}</strong></span>
               </div>
-            </div>
-
-            <div class="schema-governance-notice mt-2">
-              <span class="text-xs text-muted"><strong>Telecom DBA Policy:</strong> Core DW table impacts require DBA rollback scripts and automated regression verification prior to CAB window.</span>
             </div>
           </div>
         </div>
