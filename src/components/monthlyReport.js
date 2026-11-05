@@ -763,31 +763,63 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
     `;
 
     const element = document.getElementById('executive-report-document');
-    const rootEl = document.documentElement;
-    const originalTheme = rootEl.getAttribute('data-theme');
+    if (!element) return;
+
+    // Create an isolated clone specifically formatted for A4 PDF output
+    const clone = element.cloneNode(true);
+    clone.id = 'executive-report-document-pdf-clone';
+
+    // REMOVE the 3-pillar briefing grid entirely from the PDF
+    // (As requested: "remove this from PDF keep it only only in portal")
+    const briefingGrid = clone.querySelector('.report-briefing-grid');
+    if (briefingGrid) {
+      briefingGrid.remove();
+    }
+
+    // REMOVE the interactive search box from the ledger table in PDF
+    const searchBox = clone.querySelector('.ledger-search-box');
+    if (searchBox) {
+      searchBox.remove();
+    }
+
+    // Apply PDF Light Theme to the clone
+    clone.classList.add('pdf-light-theme');
+    clone.classList.add('pdf-render-canvas');
+
+    // Create an offscreen mount wrapper with exact standard A4 width (794px at 96 DPI)
+    const mountWrapper = document.createElement('div');
+    mountWrapper.id = 'pdf-mount-wrapper';
+    mountWrapper.style.position = 'fixed';
+    mountWrapper.style.left = '-10000px';
+    mountWrapper.style.top = '0';
+    mountWrapper.style.width = '794px';
+    mountWrapper.style.maxWidth = '794px';
+    mountWrapper.style.background = '#ffffff';
+    mountWrapper.style.zIndex = '-99999';
+    mountWrapper.appendChild(clone);
+    document.body.appendChild(mountWrapper);
 
     try {
-      if (originalTheme) rootEl.setAttribute('data-theme', 'light');
-      element.classList.add('pdf-light-theme');
-      element.style.setProperty('background-color', '#ffffff', 'important');
-      element.style.setProperty('color', '#0f172a', 'important');
-      element.style.setProperty('box-shadow', 'none', 'important');
-
       const opt = {
-        margin: [6, 8, 6, 8],
+        margin: [6, 6, 6, 6],
         filename: `Jazz_World_Data_Platform_Executive_Report_${monthName}_${year}.pdf`,
         image: { type: 'jpeg', quality: 0.98 },
         html2canvas: {
           scale: 2,
           useCORS: true,
           logging: false,
-          backgroundColor: '#ffffff'
+          backgroundColor: '#ffffff',
+          width: 794,
+          windowWidth: 794
         },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+        pagebreak: {
+          mode: ['css', 'legacy'],
+          avoid: ['.report-kpi-row', '.report-analytics-grid-3col', '.report-subcard', '.report-ledger-card', 'tr', '.ledger-row']
+        }
       };
 
-      await html2pdf().set(opt).from(element).save();
+      await html2pdf().set(opt).from(clone).save();
       btn.innerHTML = `<span>✓ PDF Exported!</span>`;
       setTimeout(() => {
         btn.innerHTML = originalHtml;
@@ -799,14 +831,8 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
       btn.innerHTML = originalHtml;
       btn.disabled = false;
     } finally {
-      element.classList.remove('pdf-light-theme');
-      element.style.removeProperty('background-color');
-      element.style.removeProperty('color');
-      element.style.removeProperty('box-shadow');
-      if (originalTheme) {
-        rootEl.setAttribute('data-theme', originalTheme);
-      } else {
-        rootEl.removeAttribute('data-theme');
+      if (document.body.contains(mountWrapper)) {
+        document.body.removeChild(mountWrapper);
       }
     }
   });
