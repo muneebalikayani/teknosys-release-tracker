@@ -663,52 +663,6 @@ export function renderMonthlyReport(container) {
           </div>
         </div>
 
-        <!-- Formal Executive Governance Sign-Off Section -->
-        <div class="report-signoff-card card">
-          <div class="signoff-header">
-            <div class="signoff-icon-badge">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-                <polyline points="9 12 11 14 15 10"></polyline>
-              </svg>
-            </div>
-            <span class="signoff-title">Release Governance & Compliance Verification</span>
-            <span class="signoff-doc-stamp font-mono">JWDP-AUDIT-STAMP-${year}M${monthStr}</span>
-          </div>
-
-          <div class="signoff-grid">
-            <div class="signoff-box">
-              <span class="signoff-role">PREPARED BY</span>
-              <strong class="signoff-name">DW Release Management Office</strong>
-              <span class="signoff-detail">Platform Scrum & Delivery Lead</span>
-              <div class="signoff-sig-line">
-                <span class="signoff-verified-pill font-mono">✓ DIGITALLY VERIFIED</span>
-              </div>
-              <span class="signoff-date">Audit Date: ${new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-            </div>
-
-            <div class="signoff-box">
-              <span class="signoff-role">REVIEWED BY</span>
-              <strong class="signoff-name">Change Advisory Board (CAB)</strong>
-              <span class="signoff-detail">Telecom QA & Security Secretariat</span>
-              <div class="signoff-sig-line">
-                <span class="signoff-verified-pill font-mono">✓ CAB COMPLIANT</span>
-              </div>
-              <span class="signoff-date">Review Date: ${new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-            </div>
-
-            <div class="signoff-box">
-              <span class="signoff-role">APPROVED BY</span>
-              <strong class="signoff-name">Head of Enterprise Data Platform</strong>
-              <span class="signoff-detail">Executive BI & Analytics Steering Committee</span>
-              <div class="signoff-sig-line">
-                <span class="signoff-verified-pill font-mono">✓ EXECUTIVE AUTHORIZED</span>
-              </div>
-              <span class="signoff-date">Approval Date: ${new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
-            </div>
-          </div>
-        </div>
-
         <!-- Executive Confidentiality Document Bar -->
         <div class="report-exec-footer">
           <div class="exec-footer-left">
