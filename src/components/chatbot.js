@@ -491,13 +491,6 @@ function processQuery(query) {
     };
   }
 
-  if (q.includes('timeline') || q.includes('gantt')) {
-    return {
-      text: `📈 Switching to the **Gantt Timeline** view...`,
-      actions: [{ action: 'switch_view', value: 'timeline', label: 'Open Gantt Timeline', icon: '📈' }]
-    };
-  }
-
   if (q.includes('report') || q.includes('monthly report')) {
     return {
       text: `📄 Opening the **Executive Monthly Summary Report** generator...`,

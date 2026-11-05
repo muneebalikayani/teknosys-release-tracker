@@ -3,7 +3,6 @@ import { renderDashboard } from './components/dashboard.js';
 import { renderReleaseList } from './components/releaseList.js';
 import { renderKanbanBoard } from './components/kanbanBoard.js';
 import { renderCalendarView } from './components/calendarView.js';
-import { renderTimelineView } from './components/timelineView.js';
 import { renderYearView } from './components/yearView.js';
 import { renderHolidayView } from './components/holidayView.js';
 import { openReleaseModal } from './components/releaseModal.js';
@@ -79,9 +78,6 @@ function renderActiveView() {
       break;
     case 'calendar':
       renderCalendarView(viewContainer);
-      break;
-    case 'timeline':
-      renderTimelineView(viewContainer);
       break;
     case 'year':
       renderYearView(viewContainer);
