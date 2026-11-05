@@ -403,7 +403,7 @@ function processQuery(query) {
       const list = devReleases.map(r => `• **#${r.id} ${r.name}** [${r.platform}] · Stage: *${r.stage}* · Status: **${r.status}** (Target: \`${r.targetDeploy}\`)`).join('\n');
 
       return {
-        text: `👤 **Developer Profile: ${devFullName}**\n\n• **Total Releases:** ${devReleases.length}\n• **Completed:** ${completedCount}\n• **In-Flight:** ${devReleases.length - completedCount}\n\n**Assigned Releases:**\n${list}`,
+        text: `👤 **Developer Profile: ${devFullName}**\n\n• **Total Releases:** ${devReleases.length}\n• **Completed:** ${completedCount}\n• **Open:** ${devReleases.length - completedCount}\n\n**Assigned Releases:**\n${list}`,
         actions: [
           { action: 'filter_dev', value: devFullName, label: `Filter ${devFullName}'s Releases`, icon: '👤' }
         ],
@@ -514,7 +514,7 @@ function processQuery(query) {
 
   // 10. Default General Summary / Overview
   return {
-    text: `📊 **Telecom DW Release Executive Briefing:**\n\n• **Total Releases:** ${metrics.total}\n• **Completed:** ${metrics.completed} (${Math.round(metrics.completionRate * 100)}% Success Rate)\n• **In-Flight / Active:** ${metrics.open}\n• **Due in ≤ 3 Days:** ${metrics.dueSoon}\n• **Planned Stability:** ${analytics.plannedStabilityPct}% Scheduled vs ${analytics.reactivePct}% Hotfixes\n• **Holiday Conflicts:** ${store.getConflictingReleases().length > 0 ? `⚠️ ${store.getConflictingReleases().length} conflicting!` : '✅ 0 conflicts'}\n\n*Need specific details? Ask about developers, platforms (GSM/DFS/APIs), stages (UAT/CAB), or lead times.*`,
+    text: `📊 **Telecom DW Release Executive Briefing:**\n\n• **Total Releases:** ${metrics.total}\n• **Completed:** ${metrics.completed} (${Math.round(metrics.completionRate * 100)}% Success Rate)\n• **Open / Active:** ${metrics.open}\n• **Due in ≤ 3 Days:** ${metrics.dueSoon}\n• **Planned Stability:** ${analytics.plannedStabilityPct}% Scheduled vs ${analytics.reactivePct}% Hotfixes\n• **Holiday Conflicts:** ${store.getConflictingReleases().length > 0 ? `⚠️ ${store.getConflictingReleases().length} conflicting!` : '✅ 0 conflicts'}\n\n*Need specific details? Ask about developers, platforms (GSM/DFS/APIs), stages (UAT/CAB), or lead times.*`,
     actions: [
       { action: 'switch_view', value: 'dashboard', label: 'Go to Dashboard', icon: '📊' },
       { action: 'switch_view', value: 'releases', label: 'Open Tracker List', icon: '📋' }

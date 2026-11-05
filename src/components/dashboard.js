@@ -134,7 +134,7 @@ export function renderDashboard(container) {
             <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           </div>
           <div class="metric-body">
-            <div class="metric-label">OPEN / IN-FLIGHT</div>
+            <div class="metric-label">OPEN</div>
             <div class="metric-value">${metrics.open}</div>
             <div class="metric-footer">
               <span class="sub-stat">${metrics.total > 0 ? Math.round((metrics.open / metrics.total) * 100) : 0}% of scope</span>
@@ -203,7 +203,7 @@ export function renderDashboard(container) {
             </div>
             <div class="chart-legend">
               <span class="legend-item"><span class="legend-dot dot-completed"></span> Completed</span>
-              <span class="legend-item"><span class="legend-dot dot-open"></span> In-Flight / Open</span>
+              <span class="legend-item"><span class="legend-dot dot-open"></span> Open</span>
             </div>
           </div>
 
@@ -624,7 +624,7 @@ function setupDashboardEvents(container, analytics, metrics, monthLabel) {
         `=============================================================`,
         `• Total Releases: ${metrics.total}`,
         `• Completed: ${metrics.completed} (${Math.round(metrics.completionRate * 100)}% Success Rate)`,
-        `• In-Flight / Open: ${metrics.open}`,
+        `• Open: ${metrics.open}`,
         `• Average Lead Time: ${analytics.avgLeadTime} days (Scheduled: ${analytics.avgScheduledLeadTime}d, Hotfix: ${analytics.avgHotfixLeadTime}d)`,
         `• Change Stability Index: ${analytics.plannedStabilityPct}% Scheduled vs ${analytics.reactivePct}% Reactive/Hotfixes`,
         `• CAB Audit Compliance: ${analytics.auditCompliancePct}% (${analytics.auditCompliantCount} of ${metrics.total} with RITM/CR)`,

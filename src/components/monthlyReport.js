@@ -8,7 +8,7 @@ export function renderMonthlyReport(container) {
     window._reportState = {
       month: today.getMonth() + 1, // e.g. 10 for October
       year: today.getFullYear(),   // e.g. 2026
-      statusFilter: 'ALL',         // 'ALL' | 'COMPLETED' | 'IN_FLIGHT'
+      statusFilter: 'ALL',         // 'ALL' | 'COMPLETED' | 'OPEN'
       searchQuery: ''
     };
   }
@@ -117,7 +117,7 @@ export function renderMonthlyReport(container) {
   let ledgerReleases = [...monthlyReleases];
   if (statusFilter === 'COMPLETED') {
     ledgerReleases = ledgerReleases.filter(r => (r.status || '').toLowerCase() === 'completed' || (r.stage || '').toLowerCase() === 'completed');
-  } else if (statusFilter === 'IN_FLIGHT') {
+  } else if (statusFilter === 'OPEN' || statusFilter === 'IN_FLIGHT') {
     ledgerReleases = ledgerReleases.filter(r => (r.status || '').toLowerCase() !== 'completed' && (r.stage || '').toLowerCase() !== 'completed');
   }
 
@@ -166,8 +166,8 @@ export function renderMonthlyReport(container) {
             <button class="report-filter-pill ${statusFilter === 'COMPLETED' ? 'active' : ''}" data-status="COMPLETED">
               Completed (${completed})
             </button>
-            <button class="report-filter-pill ${statusFilter === 'IN_FLIGHT' ? 'active' : ''}" data-status="IN_FLIGHT">
-              In-Flight (${inFlight})
+            <button class="report-filter-pill ${statusFilter === 'OPEN' || statusFilter === 'IN_FLIGHT' ? 'active' : ''}" data-status="OPEN">
+              Open (${inFlight})
             </button>
           </div>
         </div>
@@ -678,7 +678,7 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
     renderMonthlyReport(container);
   });
 
-  // Filter Pills (All, Completed, In-Flight)
+  // Filter Pills (All, Completed, Open)
   container.querySelectorAll('.report-filter-pill').forEach(pill => {
     pill.addEventListener('click', (e) => {
       const status = pill.dataset.status;
@@ -912,7 +912,7 @@ function setupReportEvents(container, { month, year, monthlyReleases, monthName,
     digest += `*EXECUTIVE SCORECARD*\n`;
     digest += `• Total Scoped Releases: ${total}\n`;
     digest += `• Production Deployed: ${completed} (${completionRate}% Success Rate)\n`;
-    digest += `• In-Flight Verification: ${inFlight} releases\n`;
+    digest += `• Open Deployments: ${inFlight} releases\n`;
     digest += `• Change Stability Index: ${plannedStabilityPct}% Planned Standard Changes\n`;
     digest += `• CAB Audit Compliance: ${auditCompliancePct}% with verified CR & RITM tickets\n\n`;
     
@@ -971,7 +971,7 @@ function exportExecutiveReportExcel(monthName, year, monthlyReleases, metrics) {
     { 'Metric': 'Generated On', 'Value': new Date().toISOString().slice(0, 10) },
     { 'Metric': 'Total Releases Scoped', 'Value': metrics.total },
     { 'Metric': 'Completed Deployments', 'Value': metrics.completed },
-    { 'Metric': 'In-Flight Deployments', 'Value': metrics.inFlight },
+    { 'Metric': 'Open Deployments', 'Value': metrics.inFlight },
     { 'Metric': 'Completion Rate', 'Value': `${metrics.completionRate}%` },
     { 'Metric': 'Planned Stability Index', 'Value': `${metrics.plannedStabilityPct}%` },
     { 'Metric': 'CAB Audit Compliance', 'Value': `${metrics.auditCompliancePct}%` }
@@ -989,7 +989,7 @@ function exportExecutiveReportExcel(monthName, year, monthlyReleases, metrics) {
       'Platform': plat,
       'Total Scoped': pRels.length,
       'Production Shipped': pDone,
-      'In-Flight': pRels.length - pDone,
+      'Open': pRels.length - pDone,
       'Success Rate': `${pRels.length > 0 ? Math.round((pDone / pRels.length) * 100) : 0}%`
     };
   });
