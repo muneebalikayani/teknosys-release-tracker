@@ -208,21 +208,6 @@ export function renderDashboard(container) {
               }).join('')}
             </div>
           </div>
-
-          <div class="chart-footer-stats">
-            <div class="footer-stat-pill">
-              <span class="fstat-label">Busiest Month</span>
-              <span class="fstat-val">October (18 releases)</span>
-            </div>
-            <div class="footer-stat-pill">
-              <span class="fstat-label">Active Capacity</span>
-              <span class="fstat-val">${analytics.monthlyTrend.reduce((acc, m) => acc + m.open, 0)} pipeline items</span>
-            </div>
-            <div class="footer-stat-pill">
-              <span class="fstat-label">Avg Throughput</span>
-              <span class="fstat-val">${(store.releases.length / 12).toFixed(1)} / month</span>
-            </div>
-          </div>
         </div>
 
         <!-- Operational Stability & Change Risk Card -->
