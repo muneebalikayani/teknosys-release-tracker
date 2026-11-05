@@ -364,12 +364,8 @@ export function renderDashboard(container) {
         <!-- Delivery Lead Time by Platform -->
         <div class="card analytics-lead-time-card">
           <div class="card-header">
-            <div>
-              <span class="card-eyebrow">VELOCITY BENCHMARK</span>
-              <h3 class="card-title">Turnaround Lead Time by Platform</h3>
-              <p class="card-subtitle">Average duration (days) from inception to target deploy</p>
-            </div>
-            <div class="badge-count">${analytics.avgLeadTime}d overall avg</div>
+            <h3 class="card-title">Delivery Time by Platform</h3>
+            <div class="badge-count">${analytics.avgLeadTime}d average</div>
           </div>
 
           <div class="platform-lead-list">
@@ -398,11 +394,7 @@ export function renderDashboard(container) {
         <!-- Database Objects & Schema Footprint Card -->
         <div class="card schema-footprint-card">
           <div class="card-header">
-            <div>
-              <span class="card-eyebrow">ARCHITECTURE FOOTPRINT</span>
-              <h3 class="card-title">Telecom DW Database Schema Impact</h3>
-              <p class="card-subtitle">Scope of database objects, tables, views and stored procedures modified</p>
-            </div>
+            <h3 class="card-title">Database Schema Changes</h3>
             <span class="badge-count">${analytics.dbChangesCount} DB Changes</span>
           </div>
 
