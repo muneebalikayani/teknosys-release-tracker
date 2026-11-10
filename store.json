@@ -20,7 +20,8 @@
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:47:38.523Z",
       "updatedAt": "2026-11-10T14:47:38.523Z",
-      "lastModified": 1794322058523
+      "lastModified": 1794322058523,
+      "gitlabUrl": ""
     },
     {
       "id": 57,
@@ -42,7 +43,8 @@
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:46:58.474Z",
       "updatedAt": "2026-11-10T14:46:58.474Z",
-      "lastModified": 1794322018474
+      "lastModified": 1794322018474,
+      "gitlabUrl": ""
     },
     {
       "id": 56,
@@ -64,7 +66,8 @@
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:38:05.538Z",
       "updatedAt": "2026-11-10T14:40:26.299Z",
-      "lastModified": 1794321626299
+      "lastModified": 1794321626299,
+      "gitlabUrl": ""
     },
     {
       "id": 55,
@@ -85,7 +88,8 @@
       "email": "",
       "holidayConflict": "",
       "updatedAt": "2026-11-05T10:49:28.784Z",
-      "lastModified": 1793875768784
+      "lastModified": 1793875768784,
+      "gitlabUrl": ""
     },
     {
       "id": 54,
@@ -106,7 +110,8 @@
       "email": "",
       "holidayConflict": "",
       "updatedAt": "2026-11-05T08:31:51.462Z",
-      "lastModified": 1793867511463
+      "lastModified": 1793867511463,
+      "gitlabUrl": ""
     },
     {
       "id": 53,
@@ -127,7 +132,8 @@
       "email": "",
       "holidayConflict": "",
       "updatedAt": "2026-11-05T10:49:38.817Z",
-      "lastModified": 1793875778817
+      "lastModified": 1793875778817,
+      "gitlabUrl": ""
     },
     {
       "id": 52,
@@ -146,7 +152,8 @@
       "dbObjects": "d_dfs.DAILY_KPI_SNAPSHOT, D_DFS.DAILY_KPI_PRODUCT_RPT",
       "notes": "No Blockers",
       "email": "waqar.saeed@jazz.com.pk",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 51,
@@ -167,7 +174,8 @@
       "email": "",
       "holidayConflict": "",
       "updatedAt": "2026-11-05T08:32:06.958Z",
-      "lastModified": 1793867526959
+      "lastModified": 1793867526959,
+      "gitlabUrl": ""
     },
     {
       "id": 50,
@@ -188,7 +196,8 @@
       "email": "",
       "holidayConflict": "",
       "updatedAt": "2026-11-04T10:25:11.796Z",
-      "lastModified": 1793787911796
+      "lastModified": 1793787911796,
+      "gitlabUrl": ""
     },
     {
       "id": 49,
@@ -207,7 +216,8 @@
       "dbObjects": "JTR_PRD_01_SHRD_STD_0_V.ADJUSTED_SUBSRIBER_BASE_REPORT_VIEW_SEPT_2025",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 48,
@@ -226,7 +236,8 @@
       "dbObjects": "jtr_prd_01_PRC_STD_0_V.TX_PRC_5018_INTM_RCHRG_MART_ACTL_1\njtr_prd_01_OPTM_STD_0_T.RCHRG_MART_MBU_WISE     ",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 47,
@@ -245,7 +256,8 @@
       "dbObjects": "JTR_PRD_01_OPTM_STD_0_V.Postpaid_lifecycle_revamp",
       "notes": "",
       "email": "Re: Postpaid Lifecycle Revamp view update",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 46,
@@ -267,29 +279,31 @@
       "holidayConflict": "",
       "createdAt": "2026-11-10T09:53:44.916Z",
       "updatedAt": "2026-11-10T09:53:44.916Z",
-      "lastModified": 1794304424916
+      "lastModified": 1794304424916,
+      "gitlabUrl": ""
     },
     {
       "id": 45,
-      "name": "Handover of CAB and GCG Jobs to DWH/Operations - Migration",
-      "ritm": "",
-      "cr": "",
-      "developer": "Ukasha Shafique",
+      "name": "Postpaid Revenue Fixture - Multiplay Marts (30 Day & 90 Day)",
+      "ritm": "RITM0167917",
+      "cr": "CHG0154162",
+      "developer": "Husinah Amir",
       "version": "v1",
       "platform": "GSM",
       "type": "Scheduled",
-      "startDate": "2026-11-10",
-      "targetDeploy": "2026-11-18",
-      "stage": "Development",
+      "startDate": "2026-10-26",
+      "targetDeploy": "2026-10-28",
+      "stage": "Completed",
       "owner": "Dev Team",
-      "status": "On Track",
-      "dbObjects": "",
+      "status": "Completed",
+      "dbObjects": "JTR_PRD_01_OPTM_STD_0_V.DWN_5079_POSTPAID_MULTIPLAY_90_DAYS, JTR_PRD_01_SHRD_STD_0_V.POSTPAID_MULTIPLAY_MONTHY",
       "notes": "",
       "email": "",
       "holidayConflict": "",
-      "updatedAt": "2026-11-10T10:09:09.669Z",
-      "lastModified": 1794305349669,
-      "createdAt": "2026-11-10T09:52:13.607Z"
+      "updatedAt": "2026-11-04T10:07:52.880Z",
+      "lastModified": 1793786872888,
+      "createdAt": "2026-11-10T09:52:13.607Z",
+      "gitlabUrl": ""
     },
     {
       "id": 44,
@@ -308,7 +322,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 43,
@@ -327,7 +342,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 42,
@@ -346,7 +362,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 41,
@@ -365,7 +382,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 40,
@@ -384,7 +402,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 39,
@@ -403,7 +422,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 38,
@@ -422,7 +442,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 37,
@@ -441,7 +462,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 36,
@@ -460,7 +482,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 35,
@@ -479,7 +502,8 @@
       "dbObjects": "JTR_PRD_01_SHRD_STD_0_V.MULTIPLAY_DAILY_FCT, JTR_PRD_01_SHRD_STD_0_V.PREPAID_MULTIPLAY_MONTHLY, JTR_PRD_01_OPTM_STD_0_V.DWN_5078_PREPAID_MULTIPLAY_90_DAYS, JTR_PRD_01_SHRD_STD_0_V.POSTPAID_MULTIPLAY_MONTHLY, JTR_PRD_01_OPTM_STD_0_V.DWN_5079_POSTPAID_MULTIPLAY_90_DAYS, JTR_PRD_01_shrd_STD_0_V.digital_funnel_daily",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 34,
@@ -498,7 +522,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 33,
@@ -517,7 +542,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 32,
@@ -536,7 +562,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 31,
@@ -555,7 +582,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 30,
@@ -574,7 +602,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 29,
@@ -593,7 +622,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 28,
@@ -612,7 +642,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 27,
@@ -631,7 +662,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 26,
@@ -650,7 +682,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 25,
@@ -669,7 +702,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 24,
@@ -688,7 +722,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 23,
@@ -707,7 +742,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 22,
@@ -726,7 +762,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 21,
@@ -745,7 +782,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 20,
@@ -764,7 +802,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "Re: Difference in Postpaid and ROX achievements in Datewise and in indivivdual reports | RM-1990",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 19,
@@ -783,7 +822,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 18,
@@ -802,7 +842,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "sbscrpn_key tagging fix in 3 views of new lifecycle.",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 17,
@@ -821,7 +862,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 16,
@@ -840,7 +882,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 15,
@@ -859,7 +902,8 @@
       "dbObjects": "",
       "notes": "",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 14,
@@ -878,7 +922,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 13,
@@ -897,7 +942,8 @@
       "dbObjects": "",
       "notes": "none",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 12,
@@ -916,7 +962,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 11,
@@ -935,7 +982,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 10,
@@ -954,7 +1002,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 9,
@@ -973,7 +1022,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 8,
@@ -992,7 +1042,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 7,
@@ -1011,7 +1062,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 6,
@@ -1030,7 +1082,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 5,
@@ -1049,7 +1102,8 @@
       "dbObjects": "",
       "notes": "NONE",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 4,
@@ -1068,7 +1122,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 3,
@@ -1087,7 +1142,8 @@
       "dbObjects": "",
       "notes": "None",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 2,
@@ -1106,7 +1162,8 @@
       "dbObjects": "",
       "notes": "NA",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     },
     {
       "id": 1,
@@ -1125,7 +1182,8 @@
       "dbObjects": "",
       "notes": "Nothing",
       "email": "",
-      "holidayConflict": ""
+      "holidayConflict": "",
+      "gitlabUrl": ""
     }
   ],
   "holidays": [
@@ -1277,5 +1335,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-10T15:59:28.918Z"
+  "updatedAt": "2026-11-10T16:01:26.670Z"
 }
