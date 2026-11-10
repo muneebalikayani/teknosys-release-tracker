@@ -139,47 +139,47 @@ export function renderReleaseList(container) {
           <div class="filter-item">
             <label class="filter-label">Platform</label>
             <select id="filter-platform" class="filter-select">
-              ${platforms.map(p => `<option value="${p}" ${store.filters.platform === p ? 'selected' : ''}>${p === 'ALL' ? 'All Platforms' : p}</option>`).join('')}
+              ${platforms.map(p => `<option value="${p}" ${store.filters.platform === p ? 'selected' : ''}>${p === 'ALL' ? 'All' : p}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Type</label>
             <select id="filter-type" class="filter-select">
-              ${types.map(t => `<option value="${t}" ${store.filters.type === t ? 'selected' : ''}>${t === 'ALL' ? 'All Types' : t}</option>`).join('')}
+              ${types.map(t => `<option value="${t}" ${store.filters.type === t ? 'selected' : ''}>${t === 'ALL' ? 'All' : t}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Stage</label>
             <select id="filter-stage" class="filter-select">
-              ${stages.map(s => `<option value="${s}" ${store.filters.stage === s ? 'selected' : ''}>${s === 'ALL' ? 'All Stages' : s}</option>`).join('')}
+              ${stages.map(s => `<option value="${s}" ${store.filters.stage === s ? 'selected' : ''}>${s === 'ALL' ? 'All' : s}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Status</label>
             <select id="filter-status" class="filter-select">
-              ${statuses.map(st => `<option value="${st}" ${store.filters.status === st ? 'selected' : ''}>${st === 'ALL' ? 'All Statuses' : st}</option>`).join('')}
+              ${statuses.map(st => `<option value="${st}" ${store.filters.status === st ? 'selected' : ''}>${st === 'ALL' ? 'All' : st}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Owner</label>
             <select id="filter-owner" class="filter-select">
-              ${owners.map(o => `<option value="${o}" ${store.filters.owner === o ? 'selected' : ''}>${o === 'ALL' ? 'All Owners' : o}</option>`).join('')}
+              ${owners.map(o => `<option value="${o}" ${store.filters.owner === o ? 'selected' : ''}>${o === 'ALL' ? 'All' : o}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Sort</label>
             <select id="filter-sort" class="filter-select">
-              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Descending)</option>
-              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (Ascending)</option>
+              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Desc)</option>
+              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (Asc)</option>
               <option value="targetDeploy-desc" ${currentSortKey === 'targetDeploy-desc' ? 'selected' : ''}>Timeline (Newest)</option>
               <option value="targetDeploy-asc" ${currentSortKey === 'targetDeploy-asc' ? 'selected' : ''}>Timeline (Oldest)</option>
-              <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Release Name (A → Z)</option>
-              <option value="name-desc" ${currentSortKey === 'name-desc' ? 'selected' : ''}>Release Name (Z → A)</option>
+              <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Name (A → Z)</option>
+              <option value="name-desc" ${currentSortKey === 'name-desc' ? 'selected' : ''}>Name (Z → A)</option>
               <option value="developer-asc" ${currentSortKey === 'developer-asc' ? 'selected' : ''}>Developer (A → Z)</option>
               <option value="platform-asc" ${currentSortKey === 'platform-asc' ? 'selected' : ''}>Platform</option>
               <option value="stage-asc" ${currentSortKey === 'stage-asc' ? 'selected' : ''}>Stage</option>
@@ -188,7 +188,7 @@ export function renderReleaseList(container) {
           </div>
 
           <div id="reset-filter-wrap" style="${hasActiveFilters ? 'display: inline-block;' : 'display: none;'}">
-            <button class="btn btn-ghost btn-sm reset-filter-link" id="btn-reset-filters" title="Reset all filters">Clear Filters</button>
+            <button class="btn btn-ghost btn-sm reset-filter-link" id="btn-reset-filters" title="Reset all filters">Clear</button>
           </div>
         </div>
       </div>
