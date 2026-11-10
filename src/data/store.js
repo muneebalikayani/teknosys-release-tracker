@@ -55,14 +55,12 @@ class ReleaseStore {
     // Auto-refresh when tab gains focus or laptop wakes from sleep
     if (typeof window !== 'undefined') {
       window.addEventListener('visibilitychange', () => {
-        if (document.visibilityState === 'visible' && this.isSupabaseConnected) {
-          this.refreshFromSupabase();
+        if (document.visibilityState === 'visible') {
+          this.syncNow();
         }
       });
       window.addEventListener('focus', () => {
-        if (this.isSupabaseConnected) {
-          this.refreshFromSupabase();
-        }
+        this.syncNow();
       });
     }
 
@@ -689,9 +687,9 @@ class ReleaseStore {
   startPolling() {
     this.stopPolling();
     this.pollInterval = setInterval(async () => {
-      // Don't poll while an active sync is running or if local changes occurred within 10s
+      // Don't poll while an active sync is running or if local changes occurred within 4s
       if (this.isSyncing) return;
-      if (Date.now() - (this.lastLocalMutation || 0) < 10000) return;
+      if (Date.now() - (this.lastLocalMutation || 0) < 4000) return;
 
       if (this.isSupabaseConnected) {
         await this.refreshFromSupabase();
@@ -701,6 +699,7 @@ class ReleaseStore {
       try {
         const cloudData = await fetchCloudStore();
         if (cloudData && Array.isArray(cloudData.releases)) {
+          this.isCloudConnected = true;
           // If a local mutation happened, ensure cloud response is strictly newer
           if (cloudData.updatedAt && this.lastLocalMutation) {
             const cloudTimestamp = new Date(cloudData.updatedAt).getTime();
@@ -728,7 +727,7 @@ class ReleaseStore {
       } catch (e) {
         // background poll catch
       }
-    }, 6000);
+    }, 4000);
   }
 
   stopPolling() {

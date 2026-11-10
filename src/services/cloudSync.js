@@ -1,12 +1,11 @@
-// Zero-Config Cloud Sync Service (Vercel Serverless + Vercel Blob)
-const BLOB_DIRECT_URL = 'https://ydlimtlndkdmvrwd.public.blob.vercel-storage.com/teknosys_store.json';
+// Zero-Config Cloud Database Sync Service
+// Communicates with /api/sync which connects to the dedicated cloud store
 
 /**
  * Fetch releases & holidays from the shared cloud store
  */
 export async function fetchCloudStore() {
   const nonce = `${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-  // Try local API endpoint first (works on Vercel deployment)
   try {
     const res = await fetch(`/api/sync?t=${nonce}`, {
       cache: 'no-store',
@@ -21,27 +20,24 @@ export async function fetchCloudStore() {
         return data;
       }
     }
-  } catch (e) {
-    // Fall back to direct Vercel Blob CDN URL
+  } catch (err) {
+    console.warn('Failed to fetch from cloud store:', err);
   }
 
-  // Direct Blob CDN fallback (guaranteed to work from any client browser)
+  // Fallback: Direct raw CDN
   try {
-    const res = await fetch(`${BLOB_DIRECT_URL}?t=${nonce}`, {
-      cache: 'no-store',
-      headers: {
-        'Cache-Control': 'no-cache, no-store, must-revalidate',
-        'Pragma': 'no-cache'
-      }
-    });
-    if (res.ok) {
-      const data = await res.json();
+    const fallbackRes = await fetch(
+      `https://raw.githubusercontent.com/muneebalikayani/teknosys-release-tracker/data-store/store.json?t=${nonce}`,
+      { cache: 'no-store' }
+    );
+    if (fallbackRes.ok) {
+      const data = await fallbackRes.json();
       if (Array.isArray(data.releases)) {
         return data;
       }
     }
-  } catch (err) {
-    console.warn('Failed to fetch from cloud store:', err);
+  } catch (e) {
+    // raw fallback catch
   }
 
   return null;
