@@ -1,6 +1,28 @@
 {
   "releases": [
     {
+      "id": 56,
+      "name": "Tamasha Definition Update",
+      "ritm": "",
+      "cr": "",
+      "developer": "Daniyal Ahmed",
+      "version": "v2",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-10",
+      "targetDeploy": "2026-11-11",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-10T14:38:05.538Z",
+      "updatedAt": "2026-11-10T14:38:05.538Z",
+      "lastModified": 1794321485538
+    },
+    {
       "id": 55,
       "name": "JazzPoint Transactions Tagging in Product Activation Fact",
       "ritm": "RITM0170587",
@@ -1207,5 +1229,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-10T13:49:59.574Z"
+  "updatedAt": "2026-11-10T14:38:06.071Z"
 }
