@@ -53,7 +53,7 @@ export function renderDashboard(container) {
       <div class="dashboard-header-bar">
         <div class="header-titles">
           <h1 class="page-title">Executive Release Dashboard</h1>
-          <p class="page-subtitle">Deployment governance, platform distribution, delivery velocity & schedule compliance</p>
+          <p class="page-subtitle">Deployment governance, platform distribution & schedule compliance</p>
         </div>
 
         <div class="dashboard-filter-controls">
