@@ -54,7 +54,7 @@ export function renderReleaseList(container) {
       <!-- Toolbar -->
       <div class="releases-toolbar">
         <div class="toolbar-title-group">
-          <h1 class="page-title">Release Calendar Tracker</h1>
+          <h1 class="page-title">Release Register</h1>
           <p class="page-subtitle" id="releases-count-subtitle">Showing ${filteredCount} of ${totalCount} releases tracked</p>
         </div>
 

@@ -510,7 +510,7 @@ function processQuery(query) {
     text: `📊 **Telecom DW Release Executive Briefing:**\n\n• **Total Releases:** ${metrics.total}\n• **Completed:** ${metrics.completed} (${Math.round(metrics.completionRate * 100)}% Success Rate)\n• **Open / Active:** ${metrics.open}\n• **Due in ≤ 3 Days:** ${metrics.dueSoon}\n• **Planned Stability:** ${analytics.plannedStabilityPct}% Scheduled vs ${analytics.reactivePct}% Hotfixes\n• **Holiday Conflicts:** ${store.getConflictingReleases().length > 0 ? `⚠️ ${store.getConflictingReleases().length} conflicting!` : '✅ 0 conflicts'}\n\n*Need specific details? Ask about developers, platforms (GSM/DFS/APIs), stages (UAT/CAB), or lead times.*`,
     actions: [
       { action: 'switch_view', value: 'dashboard', label: 'Go to Dashboard', icon: '📊' },
-      { action: 'switch_view', value: 'releases', label: 'Open Tracker List', icon: '📋' }
+      { action: 'switch_view', value: 'releases', label: 'Open Release Register', icon: '📋' }
     ],
     quickReplies: [
       '⚠️ Any holiday conflicts?',
