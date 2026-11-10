@@ -174,8 +174,8 @@ export function renderReleaseList(container) {
           <div class="filter-item">
             <label class="filter-label">Sort</label>
             <select id="filter-sort" class="filter-select">
-              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Reverse: 44 → 1)</option>
-              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (1 → 44)</option>
+              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Descending)</option>
+              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (Ascending)</option>
               <option value="targetDeploy-desc" ${currentSortKey === 'targetDeploy-desc' ? 'selected' : ''}>Timeline (Newest)</option>
               <option value="targetDeploy-asc" ${currentSortKey === 'targetDeploy-asc' ? 'selected' : ''}>Timeline (Oldest)</option>
               <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Release Name (A → Z)</option>
@@ -185,13 +185,6 @@ export function renderReleaseList(container) {
               <option value="stage-asc" ${currentSortKey === 'stage-asc' ? 'selected' : ''}>Stage</option>
               <option value="status-asc" ${currentSortKey === 'status-asc' ? 'selected' : ''}>Status</option>
             </select>
-          </div>
-
-          <div class="filter-item checkbox-filter">
-            <label class="checkbox-label" title="Show only releases with holiday conflict">
-              <input type="checkbox" id="filter-conflict" ${store.filters.hasConflict ? 'checked' : ''}>
-              <span>⚠️ Conflicts</span>
-            </label>
           </div>
 
           <div id="reset-filter-wrap" style="${hasActiveFilters ? 'display: inline-block;' : 'display: none;'}">
@@ -759,7 +752,6 @@ function setupTableEvents(container) {
   const stageSel = container.querySelector('#filter-stage');
   const statusSel = container.querySelector('#filter-status');
   const ownerSel = container.querySelector('#filter-owner');
-  const conflictCheck = container.querySelector('#filter-conflict');
 
   const updateFiltersAndRender = () => {
     updateActiveFilterBtn(container);
@@ -784,10 +776,6 @@ function setupTableEvents(container) {
   });
   ownerSel?.addEventListener('change', (e) => {
     store.filters.owner = e.target.value;
-    updateFiltersAndRender();
-  });
-  conflictCheck?.addEventListener('change', (e) => {
-    store.filters.hasConflict = e.target.checked;
     updateFiltersAndRender();
   });
 
