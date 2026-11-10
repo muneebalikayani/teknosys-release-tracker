@@ -1,6 +1,28 @@
 {
   "releases": [
     {
+      "id": 57,
+      "name": "Handover of CAB and GCG Jobs to DWH/Operations - Migration",
+      "ritm": "",
+      "cr": "",
+      "developer": "Ukasha Shafique",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-10",
+      "targetDeploy": "2026-11-18",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-10T14:46:58.474Z",
+      "updatedAt": "2026-11-10T14:46:58.474Z",
+      "lastModified": 1794322018474
+    },
+    {
       "id": 56,
       "name": "Tamasha Definition Update",
       "ritm": "RITM0171316",
@@ -1233,5 +1255,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-10T14:46:57.783Z"
+  "updatedAt": "2026-11-10T14:46:58.874Z"
 }
