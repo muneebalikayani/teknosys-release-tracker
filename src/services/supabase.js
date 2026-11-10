@@ -119,7 +119,7 @@ export async function testSupabaseConnection(overrideUrl, overrideKey) {
 // -------------------------------------------------------------
 // Data Mapping Helpers (JS camelCase <-> PostgreSQL snake_case)
 // -------------------------------------------------------------
-function mapReleaseToDb(rel) {
+export function mapReleaseToDb(rel) {
   const sanitizeDate = (d) => {
     if (!d || typeof d !== 'string') return null;
     const trimmed = d.trim();
@@ -147,7 +147,7 @@ function mapReleaseToDb(rel) {
   };
 }
 
-function mapDbToRelease(row) {
+export function mapDbToRelease(row) {
   return {
     id: Number(row.id),
     name: row.name || '',
@@ -169,9 +169,9 @@ function mapDbToRelease(row) {
   };
 }
 
-function mapHolidayToDb(h) {
+export function mapHolidayToDb(h) {
   return {
-    id: h.id,
+    id: Number(h.id),
     name: h.name || '',
     start_date: h.startDate,
     end_date: h.endDate || h.startDate,
@@ -179,7 +179,7 @@ function mapHolidayToDb(h) {
   };
 }
 
-function mapDbToHoliday(row) {
+export function mapDbToHoliday(row) {
   return {
     id: Number(row.id),
     name: row.name || '',
@@ -333,14 +333,26 @@ export function subscribeToSupabaseRealtime(onReleaseUpdate, onHolidayUpdate) {
   const channel = client
     .channel('teknosys-realtime')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'releases' }, payload => {
+      console.log('📡 [Supabase Realtime] releases event:', payload.eventType, payload.new || payload.old);
       if (onReleaseUpdate) onReleaseUpdate(payload);
     })
     .on('postgres_changes', { event: '*', schema: 'public', table: 'holidays' }, payload => {
+      console.log('📡 [Supabase Realtime] holidays event:', payload.eventType, payload.new || payload.old);
       if (onHolidayUpdate) onHolidayUpdate(payload);
     })
-    .subscribe();
+    .subscribe((status, err) => {
+      if (err) {
+        console.warn('📡 [Supabase Realtime] Subscription error:', err);
+      } else {
+        console.log('📡 [Supabase Realtime] Channel status:', status);
+      }
+    });
 
   return () => {
-    client.removeChannel(channel);
+    try {
+      client.removeChannel(channel);
+    } catch (e) {
+      console.warn('Error removing realtime channel:', e);
+    }
   };
 }

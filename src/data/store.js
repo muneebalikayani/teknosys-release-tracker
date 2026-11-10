@@ -15,7 +15,10 @@ import {
   deleteReleaseInSupabase,
   upsertHolidayInSupabase,
   deleteHolidayInSupabase,
-  subscribeToSupabaseRealtime
+  subscribeToSupabaseRealtime,
+  seedSupabaseFromLocal,
+  mapDbToRelease,
+  mapDbToHoliday
 } from '../services/supabase.js';
 import { fetchCloudStore, pushCloudStore } from '../services/cloudSync.js';
 
@@ -48,6 +51,20 @@ class ReleaseStore {
 
     // Auto-connect to Supabase if custom credentials exist
     this.initSupabase();
+
+    // Auto-refresh when tab gains focus or laptop wakes from sleep
+    if (typeof window !== 'undefined') {
+      window.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && this.isSupabaseConnected) {
+          this.refreshFromSupabase();
+        }
+      });
+      window.addEventListener('focus', () => {
+        if (this.isSupabaseConnected) {
+          this.refreshFromSupabase();
+        }
+      });
+    }
 
     this.platforms = DEFAULT_PLATFORMS.filter(p => p !== 'JLV');
     this.deploymentTypes = [...DEFAULT_DEPLOYMENT_TYPES];
@@ -444,14 +461,22 @@ class ReleaseStore {
     for (const localRel of this.releases) {
       const id = Number(localRel.id);
       if (!cloudIdMap.has(id)) {
-        merged.unshift(localRel);
+        merged.push(this.normalizeRelease(localRel));
         localHasNewerChanges = true;
       }
     }
 
-    // If local had newer changes or completions, push the merged list back to cloud
+    // Ensure sorted descending by ID
+    merged.sort((a, b) => Number(b.id) - Number(a.id));
+
+    // If local had newer changes or completions, push the merged list back to cloud & Supabase
     if (localHasNewerChanges) {
       this.syncCloud(merged);
+      if (this.isSupabaseConnected || isSupabaseConfigured()) {
+        seedSupabaseFromLocal(merged, this.holidays).catch(err => {
+          console.warn('Auto-seed to Supabase error during merge:', err);
+        });
+      }
     }
 
     return merged;
@@ -504,6 +529,10 @@ class ReleaseStore {
         fetchHolidaysFromSupabase()
       ]);
 
+      // Check if Supabase is missing any local releases
+      const cloudReleaseIds = new Set((cloudReleases || []).map(r => Number(r.id)));
+      const missingReleasesInCloud = this.releases.filter(r => !cloudReleaseIds.has(Number(r.id)));
+
       if (cloudReleases && cloudReleases.length > 0) {
         this.releases = this.mergeWithLocalReleases(cloudReleases);
         this.saveReleases();
@@ -512,6 +541,13 @@ class ReleaseStore {
       if (cloudHolidays && cloudHolidays.length > 0) {
         this.holidays = cloudHolidays;
         this.saveHolidays();
+      }
+
+      // If Supabase was missing local records (e.g. Laptop 1 has 55 releases, but DB has 37 or 0),
+      // automatically seed the full merged dataset to Supabase so other laptops immediately get them!
+      if (missingReleasesInCloud.length > 0 || !cloudReleases || cloudReleases.length === 0) {
+        console.log(`🚀 Auto-seeding ${this.releases.length} releases and ${this.holidays.length} holidays to Supabase PostgreSQL...`);
+        await seedSupabaseFromLocal(this.releases, this.holidays);
       }
 
       this.recalculateAllHolidayConflicts();
@@ -538,52 +574,35 @@ class ReleaseStore {
   handleRealtimeRelease(payload) {
     if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
       const row = payload.new;
-      const mapped = {
-        id: Number(row.id),
-        name: row.name || '',
-        ritm: row.ritm || '',
-        cr: row.cr || '',
-        developer: row.developer || '',
-        version: row.version || '',
-        platform: row.platform || 'GSM',
-        type: row.type || 'Scheduled',
-        startDate: row.start_date || '',
-        targetDeploy: row.target_deploy || '',
-        stage: row.stage || 'Development',
-        owner: row.owner || 'Dev Team',
-        status: row.status || 'On Track',
-        dbObjects: row.db_objects || '',
-        notes: row.notes || '',
-        email: row.email || '',
-        holidayConflict: row.holiday_conflict || ''
-      };
-      const idx = this.releases.findIndex(r => r.id === mapped.id);
+      if (!row || !row.id) return;
+      const mapped = this.normalizeRelease(mapDbToRelease(row));
+      const idx = this.releases.findIndex(r => Number(r.id) === Number(mapped.id));
       if (idx >= 0) {
         this.releases[idx] = mapped;
       } else {
         this.releases.unshift(mapped);
       }
+      this.releases.sort((a, b) => Number(b.id) - Number(a.id));
       this.saveReleases();
+      this.recalculateAllHolidayConflicts();
       this.notify();
     } else if (payload.eventType === 'DELETE') {
-      const id = Number(payload.old.id);
-      this.releases = this.releases.filter(r => r.id !== id);
-      this.saveReleases();
-      this.notify();
+      const id = Number(payload.old?.id);
+      if (id) {
+        this.releases = this.releases.filter(r => Number(r.id) !== id);
+        this.saveReleases();
+        this.recalculateAllHolidayConflicts();
+        this.notify();
+      }
     }
   }
 
   handleRealtimeHoliday(payload) {
     if (payload.eventType === 'INSERT' || payload.eventType === 'UPDATE') {
       const row = payload.new;
-      const mapped = {
-        id: Number(row.id),
-        name: row.name || '',
-        startDate: row.start_date || '',
-        endDate: row.end_date || row.start_date || '',
-        notes: row.notes || ''
-      };
-      const idx = this.holidays.findIndex(h => h.id === mapped.id);
+      if (!row || !row.id) return;
+      const mapped = mapDbToHoliday(row);
+      const idx = this.holidays.findIndex(h => Number(h.id) === Number(mapped.id));
       if (idx >= 0) {
         this.holidays[idx] = mapped;
       } else {
@@ -593,11 +612,13 @@ class ReleaseStore {
       this.recalculateAllHolidayConflicts();
       this.notify();
     } else if (payload.eventType === 'DELETE') {
-      const id = Number(payload.old.id);
-      this.holidays = this.holidays.filter(h => h.id !== id);
-      this.saveHolidays();
-      this.recalculateAllHolidayConflicts();
-      this.notify();
+      const id = Number(payload.old?.id);
+      if (id) {
+        this.holidays = this.holidays.filter(h => Number(h.id) !== id);
+        this.saveHolidays();
+        this.recalculateAllHolidayConflicts();
+        this.notify();
+      }
     }
   }
 
@@ -638,12 +659,44 @@ class ReleaseStore {
     }
   }
 
+  async refreshFromSupabase() {
+    if (!this.isSupabaseConnected || this.isSyncing) return;
+    try {
+      const [cloudReleases, cloudHolidays] = await Promise.all([
+        fetchReleasesFromSupabase(),
+        fetchHolidaysFromSupabase()
+      ]);
+      if (cloudReleases && cloudReleases.length > 0) {
+        const merged = this.mergeWithLocalReleases(cloudReleases);
+        const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}:${r.updatedAt || ''}`).join('|');
+        const newSummary = merged.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}:${r.updatedAt || ''}`).join('|');
+        if (currSummary !== newSummary) {
+          this.releases = merged;
+          if (Array.isArray(cloudHolidays) && cloudHolidays.length > 0) {
+            this.holidays = cloudHolidays;
+            this.saveHolidays();
+          }
+          this.saveReleases();
+          this.recalculateAllHolidayConflicts();
+          this.notify();
+        }
+      }
+    } catch (e) {
+      console.warn('Background Supabase refresh error:', e);
+    }
+  }
+
   startPolling() {
     this.stopPolling();
     this.pollInterval = setInterval(async () => {
-      // Don't poll while an active sync is running or if local changes occurred within 20s
+      // Don't poll while an active sync is running or if local changes occurred within 10s
       if (this.isSyncing) return;
-      if (Date.now() - (this.lastLocalMutation || 0) < 20000) return;
+      if (Date.now() - (this.lastLocalMutation || 0) < 10000) return;
+
+      if (this.isSupabaseConnected) {
+        await this.refreshFromSupabase();
+        return;
+      }
 
       try {
         const cloudData = await fetchCloudStore();
@@ -821,7 +874,7 @@ class ReleaseStore {
     // Push to zero-config cloud store for all team members
     this.syncCloud();
 
-    if (this.isSupabaseConnected) {
+    if (this.isSupabaseConnected || isSupabaseConfigured()) {
       upsertReleaseInSupabase(newRelease).catch(err => {
         console.error('Failed to sync new release to Supabase:', err);
       });
@@ -886,7 +939,7 @@ class ReleaseStore {
     // Push to zero-config cloud store for all team members
     this.syncCloud();
 
-    if (this.isSupabaseConnected) {
+    if (this.isSupabaseConnected || isSupabaseConfigured()) {
       upsertReleaseInSupabase(updated).catch(err => {
         console.error('Failed to sync updated release to Supabase:', err);
       });
@@ -907,7 +960,7 @@ class ReleaseStore {
     // Push to zero-config cloud store for all team members
     this.syncCloud();
 
-    if (this.isSupabaseConnected) {
+    if (this.isSupabaseConnected || isSupabaseConfigured()) {
       deleteReleaseInSupabase(targetId).catch(err => {
         console.error('Failed to sync deleted release from Supabase:', err);
       });
@@ -953,7 +1006,7 @@ class ReleaseStore {
     // Push to zero-config cloud store for all team members
     pushCloudStore(this.releases, this.holidays).catch(() => {});
 
-    if (this.isSupabaseConnected) {
+    if (this.isSupabaseConnected || isSupabaseConfigured()) {
       upsertHolidayInSupabase(newHoliday).catch(err => {
         console.error('Failed to sync new holiday to Supabase:', err);
       });
@@ -974,7 +1027,7 @@ class ReleaseStore {
     // Push to zero-config cloud store for all team members
     pushCloudStore(this.releases, this.holidays).catch(() => {});
 
-    if (this.isSupabaseConnected) {
+    if (this.isSupabaseConnected || isSupabaseConfigured()) {
       upsertHolidayInSupabase(this.holidays[index]).catch(err => {
         console.error('Failed to sync updated holiday to Supabase:', err);
       });
@@ -994,7 +1047,7 @@ class ReleaseStore {
     // Push to zero-config cloud store for all team members
     pushCloudStore(this.releases, this.holidays).catch(() => {});
 
-    if (this.isSupabaseConnected) {
+    if (this.isSupabaseConnected || isSupabaseConfigured()) {
       deleteHolidayInSupabase(id).catch(err => {
         console.error('Failed to sync deleted holiday from Supabase:', err);
       });

@@ -170,7 +170,19 @@ INSERT INTO public.releases (id, name, ritm, cr, developer, version, platform, t
 (34, 'ROX base view update - Key Attribute', 'RITM0748810', '', 'Adeel Ahmad', '', 'GSM', 'Scheduled', '2026-08-27', '2026-08-31', 'Production', 'Dev Team', 'Completed', '', 'Signoff is available', '', ''),
 (35, '5G attribution in SDS Mart v2', 'RITM0748811', '', 'M. Huzaifa', '', 'GSM', 'Scheduled', '2026-08-27', '2026-08-31', 'Production', 'Dev Team', 'Completed', '', 'Signoff is available', '', ''),
 (36, 'Multiplay 90 Days view update v2', 'RITM0748812', '', 'Adeel Ahmad', '', 'GSM', 'Scheduled', '2026-08-27', '2026-08-31', 'Production', 'Dev Team', 'Completed', '', 'Signoff is available', '', ''),
-(37, 'NBO API Sourcing in NBO Base Fact', 'RITM0748813', '', 'Adeel Ahmad', '', 'APIs', 'Scheduled', '2026-08-27', '2026-08-31', 'Production', 'Dev Team', 'Completed', '', 'Signoff is available', '')
+(37, 'NBO API Sourcing in NBO Base Fact', 'RITM0748813', '', 'Adeel Ahmad', '', 'APIs', 'Scheduled', '2026-08-27', '2026-08-31', 'Production', 'Dev Team', 'Completed', '', 'Signoff is available', '', ''),
+(38, 'Registered base KPI addition in daily KPI product rpt', '', '', 'Waqar Saeed', 'V11', 'DFS', 'Scheduled', '2026-10-13', '2026-10-14', 'Production', 'Dev Team', 'Completed', '', '', '', ''),
+(39, 'Readycash inhouse commutative recovery', '', '', 'Waqar Saeed', 'V1', 'DFS', 'Scheduled', '2026-10-13', '2026-10-14', 'Production', 'Dev Team', 'Completed', '', '', '', ''),
+(40, 'RM-2005 Update the SIT_MTD_BTEQ Script', '', 'RM-2005', 'HASSAM KHAN', 'v1', 'GSM', 'Emergency', '2026-10-13', '2026-10-14', 'Production', 'Dev Team', 'Completed', '', '', '', ''),
+(41, 'Ref Data Sourcing', '', '', 'Shamyl', '', 'DFS', 'Scheduled', '2026-10-12', '2026-10-14', 'Production', 'Dev Team', 'Completed', '', '', '', ''),
+(42, 'Prepaid Lifecycle Traffic Active Fixture', '', '', 'Rabia Qayyum', 'v1', 'GSM', 'Scheduled', '2026-10-05', '2026-10-21', 'UAT', 'Dev Team', 'Completed', '', '', '', ''),
+(43, 'NBO API Deployment (new API)', '', '', 'Hafsa Malik', 'v1', 'APIs', 'Scheduled', '2026-10-19', '2026-10-19', 'Production', 'Dev Team', 'Completed', '', '', '', ''),
+(44, 'Recharge View Update for Mwallet Correct Reporting', '', '', 'Bilal Siddiqui', 'v1', 'GSM', 'Scheduled', '2026-10-19', '2026-10-21', 'Production', 'Dev Team', 'Completed', '', '', '', ''),
+(45, 'Handover of CAB and GCG Jobs to DWH/Operations - Migration', '', '', 'Ukasha Shafique', 'v1', 'GSM', 'Scheduled', '2026-11-10', '2026-11-18', 'Development', 'Dev Team', 'On Track', '', '', '', ''),
+(46, 'CVM Sourcing', '', '', 'Ukasha Shafique', 'v1', 'GSM', 'Scheduled', '2026-11-13', '2026-11-18', 'Development', 'Dev Team', 'On Track', '', '', '', ''),
+(53, 'Digital Lifecycle Tamasha Defination Update', 'RITM0169215', 'CHG0155564', 'Daniyal Ahmed', 'v1', 'GSM', 'Scheduled', '2026-10-30', '2026-11-25', 'Completed', 'Dev Team', 'Completed', '', '', '', ''),
+(54, 'postpaid lifecycle live', 'RITM0170039', 'CHG0150376', 'Moeiz bhatti', 'v2', 'GSM', 'Scheduled', '2026-11-03', '2026-11-03', 'Completed', 'Dev Team', 'Completed', '', '', '', ''),
+(55, 'JazzPoint Transactions Tagging in Product Activation Fact', 'RITM0170587', 'CHG0155575', 'Bilal Siddiqui', 'v1', 'GSM', 'Scheduled', '2026-11-05', '2026-11-05', 'Completed', 'Dev Team', 'Completed', '', '', '', '')
 ON CONFLICT (id) DO UPDATE SET
   name = EXCLUDED.name,
   ritm = EXCLUDED.ritm,
