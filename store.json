@@ -1,6 +1,28 @@
 {
   "releases": [
     {
+      "id": 58,
+      "name": "CVM Sourcing",
+      "ritm": "",
+      "cr": "",
+      "developer": "Ukasha Shafique",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-13",
+      "targetDeploy": "2026-11-18",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-10T14:47:38.523Z",
+      "updatedAt": "2026-11-10T14:47:38.523Z",
+      "lastModified": 1794322058523
+    },
+    {
       "id": 57,
       "name": "Handover of CAB and GCG Jobs to DWH/Operations - Migration",
       "ritm": "",
@@ -1255,5 +1277,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-10T14:47:37.707Z"
+  "updatedAt": "2026-11-10T14:47:38.944Z"
 }
