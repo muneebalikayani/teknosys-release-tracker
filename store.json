@@ -3,8 +3,8 @@
     {
       "id": 56,
       "name": "Tamasha Definition Update",
-      "ritm": "",
-      "cr": "",
+      "ritm": "RITM0171316",
+      "cr": "CHG0156056",
       "developer": "Daniyal Ahmed",
       "version": "v2",
       "platform": "GSM",
@@ -19,8 +19,8 @@
       "email": "",
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:38:05.538Z",
-      "updatedAt": "2026-11-10T14:38:05.538Z",
-      "lastModified": 1794321485538
+      "updatedAt": "2026-11-10T14:38:53.459Z",
+      "lastModified": 1794321533459
     },
     {
       "id": 55,
@@ -1229,5 +1229,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-10T14:38:06.071Z"
+  "updatedAt": "2026-11-10T14:38:53.934Z"
 }
