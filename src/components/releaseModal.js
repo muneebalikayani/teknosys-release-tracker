@@ -61,7 +61,7 @@ export function openReleaseModal({ mode = 'create', id = null, defaultDate = '' 
             <div class="form-group">
               <label class="form-label required">Developer Name</label>
               <input type="text" name="developer" class="form-input" required maxlength="100" 
-                     placeholder="e.g. Rabia Qayyum" 
+                     placeholder="Enter developer name" 
                      value="${escapeHtml(rel ? rel.developer : '')}">
             </div>
 
