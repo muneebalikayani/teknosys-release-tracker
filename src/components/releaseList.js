@@ -22,13 +22,13 @@ export function renderReleaseList(container) {
 
   const searchMode = store.searchMode || 'all';
   let hintText = 'Search across releases, developers, tickets & database objects';
-  let placeholderText = 'Search releases, developers, CR, RITM, or database objects...';
+  let placeholderText = 'Search releases, CR, DB...';
   if (searchMode === 'general') {
     hintText = 'Release name, developer, CR, RITM, version';
-    placeholderText = 'Search releases, developers, CR, RITM...';
+    placeholderText = 'Search releases, developers, CR...';
   } else if (searchMode === 'dbObjects') {
     hintText = `${allDbObjects.length} database objects available`;
-    placeholderText = 'Search database object (e.g. JTR_PRD_..., DW_...)';
+    placeholderText = 'Search DB object (e.g. DW_..., SP_...)';
   }
 
   const platforms = ['ALL', ...store.platforms];
@@ -105,17 +105,17 @@ export function renderReleaseList(container) {
       <div class="filter-bar card">
         <div class="unified-search-wrapper" id="unified-search-wrapper">
           <div class="segmented-control search-mode-control" title="Choose Search Scope">
-            <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all">
+            <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all" title="Search all fields">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              All Search
+              All
             </button>
-            <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general">
+            <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general" title="Search releases, developers, CR, RITM">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-              General Search
+              General
             </button>
-            <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects">
+            <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects" title="Search database objects">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
-              Database Objects
+              DB Objects
             </button>
           </div>
 
@@ -625,7 +625,7 @@ function setupTableEvents(container) {
       if (newMode === 'general') {
         if (hintEl) hintEl.textContent = 'Release name, developer, CR, RITM, version';
         if (searchInput) {
-          searchInput.placeholder = 'Search releases, developers, CR, RITM...';
+          searchInput.placeholder = 'Search releases, CR, RITM...';
           searchInput.classList.remove('font-mono', 'search-input-impacted');
         }
         searchBox?.classList.remove('search-box-impacted');
@@ -637,7 +637,7 @@ function setupTableEvents(container) {
       } else if (newMode === 'dbObjects') {
         if (hintEl) hintEl.textContent = `${allDbObjects.length} database objects available`;
         if (searchInput) {
-          searchInput.placeholder = 'Search database object (e.g. JTR_PRD_..., DW_...)';
+          searchInput.placeholder = 'Search DB object (e.g. DW_..., SP_...)';
           searchInput.classList.add('font-mono', 'search-input-impacted');
         }
         searchBox?.classList.add('search-box-impacted');
@@ -649,7 +649,7 @@ function setupTableEvents(container) {
       } else {
         if (hintEl) hintEl.textContent = 'Search across releases, developers, tickets & database objects';
         if (searchInput) {
-          searchInput.placeholder = 'Search releases, developers, CR, RITM, or database objects...';
+          searchInput.placeholder = 'Search releases, CR, DB...';
           searchInput.classList.remove('font-mono', 'search-input-impacted');
         }
         searchBox?.classList.remove('search-box-impacted');

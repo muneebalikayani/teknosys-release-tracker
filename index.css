@@ -1431,13 +1431,16 @@ body {
 }
 
 .filter-bar {
-  padding: 0.55rem 0.75rem;
+  padding: 0.45rem 0.65rem;
   margin-bottom: 0.75rem;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 0.45rem;
   position: relative;
   z-index: 30;
+  flex-wrap: nowrap;
+  overflow-x: auto;
 }
 
 .search-box {
@@ -1445,11 +1448,12 @@ body {
   display: flex;
   align-items: center;
   width: 100%;
+  min-width: 110px;
 }
 
 .search-icon {
   position: absolute;
-  left: 12px;
+  left: 9px;
   color: var(--text-dim);
 }
 
@@ -1458,10 +1462,10 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
   color: #fff;
-  padding: 8px 36px 8px 36px;
-  border-radius: var(--radius-md);
-  font-size: 0.85rem;
-  height: 38px;
+  padding: 4px 26px 4px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  height: 28px;
   box-sizing: border-box;
   outline: none;
   transition: border-color 0.2s ease;
@@ -1469,27 +1473,30 @@ body {
 
 .search-input:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
 .clear-input-btn {
   position: absolute;
-  right: 12px;
+  right: 8px;
   background: transparent;
   border: none;
   color: var(--text-muted);
   cursor: pointer;
-  font-size: 1.1rem;
+  font-size: 1rem;
   line-height: 1;
   z-index: 2;
+  padding: 0;
 }
 
 .unified-search-wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.65rem;
-  width: 100%;
+  gap: 0.35rem;
+  flex: 1 1 200px;
+  min-width: 160px;
+  max-width: 360px;
   position: relative;
   z-index: 40;
 }
@@ -1499,10 +1506,10 @@ body {
   align-items: center;
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 3px;
-  gap: 3px;
-  height: 38px;
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+  height: 28px;
   box-sizing: border-box;
   flex-shrink: 0;
 }
@@ -1510,12 +1517,12 @@ body {
 .search-mode-control .seg-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 0 11px;
-  height: 30px;
-  font-size: 0.75rem;
+  gap: 3px;
+  padding: 0 7px;
+  height: 22px;
+  font-size: 0.7rem;
   font-weight: 500;
-  border-radius: calc(var(--radius-md) - 2px);
+  border-radius: calc(var(--radius-sm) - 1px);
   color: var(--text-muted);
   background: transparent;
   border: none;
@@ -1705,7 +1712,8 @@ body {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .filter-item {
