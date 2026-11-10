@@ -283,6 +283,7 @@ class ReleaseStore {
     const item = { ...r };
     if (item.platform === 'JLV') item.platform = 'GSM';
     if (item.type === 'Urgent') item.type = 'Emergency';
+    item.gitlabUrl = (item.gitlabUrl || item.gitlab || '').trim();
     if (item.stage === 'On Hold') {
       item.status = 'On Hold';
       item.stage = 'Development';
@@ -846,6 +847,7 @@ class ReleaseStore {
       dbObjects: (data.dbObjects || '').trim(),
       notes: (data.notes || '').trim(),
       email: (data.email || '').trim(),
+      gitlabUrl: (data.gitlabUrl || data.gitlab || '').trim(),
       holidayConflict: conflict ? conflict.conflictText : '',
       createdAt: nowIso,
       updatedAt: nowIso,

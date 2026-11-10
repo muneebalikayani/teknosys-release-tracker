@@ -250,6 +250,11 @@ export function getReleasesListHTML(releases, viewMode) {
                 <div class="m-card-tags">
                   <span class="platform-tag platform-${platformSlug}">${rel.platform || '-'}</span>
                   <span class="type-pill type-${typeSlug}">${rel.type || '-'}</span>
+                  ${(rel.gitlabUrl || rel.gitlab) ? `
+                    <a href="${escapeHtml(rel.gitlabUrl || rel.gitlab)}" target="_blank" rel="noopener noreferrer" class="badge-ticket" style="background: rgba(252, 109, 38, 0.12); color: #fc6d26; border-color: rgba(252, 109, 38, 0.35); text-decoration: none;" title="Open GitLab Deployment Pipeline" onclick="event.stopPropagation()">
+                      GitLab ↗
+                    </a>
+                  ` : ''}
                 </div>
                 <div class="m-card-status">
                   <span class="status-pill status-${statusSlug}">${rel.status || 'Pending'}</span>
@@ -347,6 +352,11 @@ export function getReleasesListHTML(releases, viewMode) {
                       ${rel.version ? `<span class="badge-version">${escapeHtml(rel.version)}</span>` : ''}
                       ${rel.ritm ? `<span class="badge-ticket">RITM: ${escapeHtml(rel.ritm)}</span>` : ''}
                       ${rel.cr ? `<span class="badge-ticket">CR: ${escapeHtml(rel.cr)}</span>` : ''}
+                      ${(rel.gitlabUrl || rel.gitlab) ? `
+                        <a href="${escapeHtml(rel.gitlabUrl || rel.gitlab)}" target="_blank" rel="noopener noreferrer" class="badge-ticket" style="background: rgba(252, 109, 38, 0.12); color: #fc6d26; border-color: rgba(252, 109, 38, 0.35); text-decoration: none;" title="Open GitLab Deployment Pipeline" onclick="event.stopPropagation()">
+                          GitLab ↗
+                        </a>
+                      ` : ''}
                     </div>
                   </div>
                 </td>

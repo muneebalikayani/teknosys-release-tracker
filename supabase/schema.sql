@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS public.releases (
   db_objects TEXT DEFAULT '',
   notes TEXT DEFAULT '',
   email TEXT DEFAULT '',
+  gitlab_url TEXT DEFAULT '',
   holiday_conflict TEXT DEFAULT '',
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()

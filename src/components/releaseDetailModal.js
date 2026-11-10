@@ -192,6 +192,28 @@ export function openReleaseDetailModal(id) {
           </div>
         </div>
 
+        <!-- GitLab Deployment Link -->
+        ${(rel.gitlabUrl || rel.gitlab) ? `
+          <div class="card detail-section-card" style="border-left: 3px solid #fc6d26;">
+            <div class="section-card-header">
+              <span class="section-title" style="display: flex; align-items: center; gap: 6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fc6d26" stroke-width="2">
+                  <path d="M22.65 14.39L12 22.13 1.35 14.39a.84.84 0 0 1-.3-.94l1.22-3.78 2.44-7.51A.42.42 0 0 1 4.82 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.49h8.1l2.44-7.51A.42.42 0 0 1 18.6 2a.43.43 0 0 1 .58 0 .42.42 0 0 1 .11.18l2.44 7.51L23 13.45a.84.84 0 0 1-.35.94z"></path>
+                </svg>
+                GitLab Deployment Pipeline
+              </span>
+              <a href="${escapeHtml(rel.gitlabUrl || rel.gitlab)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-secondary" style="font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;">
+                Open in GitLab ↗
+              </a>
+            </div>
+            <div class="gitlab-link-content font-mono text-xs" style="word-break: break-all; padding: 4px 0;">
+              <a href="${escapeHtml(rel.gitlabUrl || rel.gitlab)}" target="_blank" rel="noopener noreferrer" style="color: #60a5fa; text-decoration: underline;">
+                ${escapeHtml(rel.gitlabUrl || rel.gitlab)}
+              </a>
+            </div>
+          </div>
+        ` : ''}
+
         <!-- Notes / Blockers -->
         ${rel.notes ? `
           <div class="card detail-section-card">

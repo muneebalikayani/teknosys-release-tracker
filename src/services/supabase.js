@@ -143,6 +143,7 @@ export function mapReleaseToDb(rel) {
     db_objects: rel.dbObjects || '',
     notes: rel.notes || '',
     email: rel.email || '',
+    gitlab_url: rel.gitlabUrl || rel.gitlab || '',
     holiday_conflict: rel.holidayConflict || ''
   };
 }
@@ -165,6 +166,7 @@ export function mapDbToRelease(row) {
     dbObjects: row.db_objects || '',
     notes: row.notes || '',
     email: row.email || '',
+    gitlabUrl: row.gitlab_url || '',
     holidayConflict: row.holiday_conflict || ''
   };
 }
