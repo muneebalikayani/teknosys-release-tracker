@@ -1,29 +1,6 @@
 {
   "releases": [
     {
-      "id": 61,
-      "name": "Tamasha Definition Update (Copy)",
-      "ritm": "RITM0171316",
-      "cr": "CHG0156056",
-      "developer": "Daniyal Ahmed",
-      "version": "v2",
-      "platform": "GSM",
-      "type": "Scheduled",
-      "startDate": "2026-11-10",
-      "targetDeploy": "2026-11-11",
-      "stage": "CAB",
-      "owner": "Dev Team",
-      "status": "On Track",
-      "dbObjects": "",
-      "notes": "",
-      "email": "",
-      "gitlabUrl": "",
-      "holidayConflict": "",
-      "createdAt": "2026-11-11T05:46:35.343Z",
-      "updatedAt": "2026-11-11T05:46:35.343Z",
-      "lastModified": 1794375995343
-    },
-    {
       "id": 60,
       "name": "Yango and Tamasha - Transactional Data Sourcing",
       "ritm": "",
@@ -1406,5 +1383,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T07:19:24.506Z"
+  "updatedAt": "2026-11-11T07:22:34.684Z"
 }
