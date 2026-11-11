@@ -1380,6 +1380,12 @@ body {
   gap: 0.85rem;
 }
 
+.guidelines-card .guidelines-list {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem 1.5rem;
+}
+
 .guideline-item {
   display: flex;
   gap: 0.75rem;
@@ -10079,6 +10085,172 @@ body.kanban-dragging-active * {
   color: #c2410c !important;
   border-color: #fed7aa !important;
 }
+
+/* =========================================================
+   Upcoming Deployments View
+   ========================================================= */
+.upcoming-view-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.upcoming-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.upcoming-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.upcoming-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.upcoming-header-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.upcoming-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.upcoming-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-width: 240px;
+}
+
+.upcoming-search-input {
+  height: 34px;
+  padding: 6px 12px 6px 34px;
+  font-size: 0.8125rem;
+}
+
+.upcoming-timing-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.upcoming-timing-pill.timing-today {
+  background: rgba(16, 185, 129, 0.16);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.upcoming-timing-pill.timing-soon {
+  background: rgba(59, 130, 246, 0.14);
+  color: #60a5fa;
+  border: 1px solid rgba(59, 130, 246, 0.32);
+}
+
+.upcoming-timing-pill.timing-later {
+  background: rgba(148, 163, 184, 0.12);
+  color: var(--text-muted);
+  border: 1px solid var(--border-subtle);
+}
+
+.upcoming-timing-pill.timing-overdue {
+  background: rgba(239, 68, 68, 0.14);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.32);
+}
+
+.upcoming-item-conflict {
+  border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+[data-theme="neumorphic"] .upcoming-item {
+  background: #14171b !important;
+  box-shadow: var(--neu-flat-xs) !important;
+  border: 1px solid rgba(255, 255, 255, 0.04) !important;
+}
+
+[data-theme="neumorphic"] .upcoming-item:hover {
+  background: #1d2127 !important;
+  box-shadow: var(--neu-flat-sm) !important;
+}
+
+[data-theme="neumorphic"] .upcoming-date-box {
+  background: #181b20 !important;
+  box-shadow: var(--neu-pressed-sm) !important;
+  border: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-theme="light"] .upcoming-timing-pill.timing-today {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+[data-theme="light"] .upcoming-timing-pill.timing-soon {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+}
+
+[data-theme="light"] .upcoming-timing-pill.timing-later {
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
+}
+
+[data-theme="light"] .upcoming-timing-pill.timing-overdue {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fecaca !important;
+}
+
+@media (max-width: 768px) {
+  .guidelines-card .guidelines-list {
+    grid-template-columns: 1fr;
+  }
+
+  .upcoming-controls,
+  .upcoming-search-wrap {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .upcoming-header-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .upcoming-header-actions {
+    width: 100%;
+  }
+
+  .upcoming-header-actions .btn {
+    flex: 1;
+    justify-content: center;
+  }
+}
+
 
 
 

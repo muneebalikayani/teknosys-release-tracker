@@ -76,7 +76,7 @@ class ReleaseStore {
     this.statuses = [...DEFAULT_STATUSES];
 
     // Filter and view state
-    this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'board' | 'calendar' | 'holidays' | 'report'
+    this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'upcoming' | 'board' | 'calendar' | 'holidays' | 'report'
     this.boardGroupBy = 'stage'; // 'stage' | 'status'
     this.searchMode = 'all'; // 'all' | 'general' | 'dbObjects'
 
@@ -1647,6 +1647,25 @@ class ReleaseStore {
       daysToNextHoliday,
       releasesNearHoliday
     };
+  }
+
+  // Get all active non-completed releases scheduled for deployment
+  getUpcomingReleases() {
+    return this.releases
+      .filter(r => {
+        if (!r.targetDeploy) return false;
+        const status = (r.status || '').trim().toLowerCase();
+        const stage = (r.stage || '').trim().toLowerCase();
+        // Exclude completed, on hold, and pending items (including empty/unset status which defaults to Pending)
+        if (!status || status === 'pending' || status === 'completed' || status === 'on hold') {
+          return false;
+        }
+        if (stage === 'completed' || stage === 'on hold' || stage === 'pending') {
+          return false;
+        }
+        return true;
+      })
+      .sort((a, b) => a.targetDeploy.localeCompare(b.targetDeploy));
   }
 
   // Get all conflicts for report

@@ -26,24 +26,6 @@ export function renderDashboard(container) {
 
   const completionPct = Math.round(metrics.completionRate * 100);
 
-  // Upcoming active non-completed releases sorted by target deploy (excluding On Hold and Pending items)
-  const upcomingReleases = store.releases
-    .filter(r => {
-      if (!r.targetDeploy) return false;
-      const status = (r.status || '').trim().toLowerCase();
-      const stage = (r.stage || '').trim().toLowerCase();
-      // Exclude completed, on hold, and pending items (including empty/unset status which defaults to Pending)
-      if (!status || status === 'pending' || status === 'completed' || status === 'on hold') {
-        return false;
-      }
-      if (stage === 'completed' || stage === 'on hold' || stage === 'pending') {
-        return false;
-      }
-      return true;
-    })
-    .sort((a, b) => a.targetDeploy.localeCompare(b.targetDeploy))
-    .slice(0, 5);
-
   // Maximum monthly releases for scaling the bar chart
   const maxMonthTotal = Math.max(1, ...analytics.monthlyTrend.map(m => m.total));
 
@@ -409,88 +391,41 @@ export function renderDashboard(container) {
         </div>
       </div>
 
-      <!-- Quick Action Feeds & Overview Panels -->
-      <div class="dashboard-bottom-grid">
-        <!-- Upcoming Releases Feed -->
-        <div class="card feed-card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">Upcoming Target Deployments</h3>
-              <p class="card-subtitle">Active releases scheduled for production deployment</p>
-            </div>
-            <button class="btn btn-sm btn-ghost" id="view-all-releases-link">View All →</button>
-          </div>
-          <div class="feed-content">
-            ${upcomingReleases.length === 0 ? `
-              <div class="empty-feed">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 14 14"></polyline></svg>
-                <p>No active upcoming releases scheduled</p>
-              </div>
-            ` : `
-              <div class="upcoming-list">
-                ${upcomingReleases.map(rel => `
-                  <div class="upcoming-item" data-release-id="${rel.id}">
-                    <div class="upcoming-date-box">
-                      <span class="date-month">${formatMonth(rel.targetDeploy)}</span>
-                      <span class="date-day">${formatDay(rel.targetDeploy)}</span>
-                    </div>
-                    <div class="upcoming-info">
-                      <div class="upcoming-title-row">
-                        <span class="upcoming-name">${rel.name}</span>
-                        <span class="platform-tag platform-${(rel.platform || '').toLowerCase()}">${rel.platform}</span>
-                      </div>
-                      <div class="upcoming-meta">
-                        <span>Dev: <strong>${rel.developer || 'Unassigned'}</strong></span>
-                        <span>Stage: <strong>${rel.stage}</strong></span>
-                        <span class="status-pill status-${(rel.status || '').toLowerCase().replace(/\s+/g, '-')}">${rel.status || 'Pending'}</span>
-                      </div>
-                    </div>
-                    <button class="btn btn-sm btn-icon open-rel-detail" data-release-id="${rel.id}" title="View Details">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                    </button>
-                  </div>
-                `).join('')}
-              </div>
-            `}
+      <!-- Telecom DW Release Guidelines -->
+      <div class="card guidelines-card">
+        <div class="card-header">
+          <div>
+            <h3 class="card-title">Release Process Guidelines</h3>
+            <p class="card-subtitle">Telecom DW Deployment standard operating procedure</p>
           </div>
         </div>
-
-        <!-- Telecom DW Release Guidelines & Quick Stats -->
-        <div class="card guidelines-card">
-          <div class="card-header">
-            <div>
-              <h3 class="card-title">Release Process Guidelines</h3>
-              <p class="card-subtitle">Telecom DW Deployment standard operating procedure</p>
+        <div class="guidelines-list">
+          <div class="guideline-item">
+            <div class="guideline-num">1</div>
+            <div class="guideline-text">
+              <strong>Target Deploy Validation</strong>
+              <p>Target deploy dates are checked automatically against Pakistani public holiday dates.</p>
             </div>
           </div>
-          <div class="guidelines-list">
-            <div class="guideline-item">
-              <div class="guideline-num">1</div>
-              <div class="guideline-text">
-                <strong>Target Deploy Validation</strong>
-                <p>Target deploy dates are checked automatically against Pakistani public holiday dates.</p>
-              </div>
+          <div class="guideline-item">
+            <div class="guideline-num">2</div>
+            <div class="guideline-text">
+              <strong>Lifecycle Progression</strong>
+              <p>Development ➜ UAT ➜ CAB ➜ Production ➜ Completed.</p>
             </div>
-            <div class="guideline-item">
-              <div class="guideline-num">2</div>
-              <div class="guideline-text">
-                <strong>Lifecycle Progression</strong>
-                <p>Development ➜ UAT ➜ CAB ➜ Production ➜ Completed.</p>
-              </div>
+          </div>
+          <div class="guideline-item">
+            <div class="guideline-num">3</div>
+            <div class="guideline-text">
+              <strong>Audit & DB Objects</strong>
+              <p>Document changed tables, views, and stored procedures in the release record for CAB sign-off.</p>
             </div>
-            <div class="guideline-item">
-              <div class="guideline-num">3</div>
-              <div class="guideline-text">
-                <strong>Audit & DB Objects</strong>
-                <p>Document changed tables, views, and stored procedures in the release record for CAB sign-off.</p>
-              </div>
-            </div>
-            <div class="guideline-item">
-              <div class="guideline-num">4</div>
-              <div class="guideline-text">
-                <strong>Sync with Excel</strong>
-                <p>Export directly to <code>.xlsx</code> or import modified spreadsheets at any time using the Topbar controls.</p>
-              </div>
+          </div>
+          <div class="guideline-item">
+            <div class="guideline-num">4</div>
+            <div class="guideline-text">
+              <strong>Sync with Excel</strong>
+              <p>Export directly to <code>.xlsx</code> or import modified spreadsheets at any time using the Topbar controls.</p>
             </div>
           </div>
         </div>
@@ -571,14 +506,6 @@ function setupDashboardEvents(container, analytics, metrics, monthLabel) {
     });
   }
 
-  // View all releases link
-  const viewAllLink = container.querySelector('#view-all-releases-link');
-  if (viewAllLink) {
-    viewAllLink.addEventListener('click', () => {
-      window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'releases' } }));
-    });
-  }
-
   // Interactive breakdown items (click to filter release list)
   container.querySelectorAll('.interactive-item').forEach(item => {
     item.addEventListener('click', () => {
@@ -590,26 +517,4 @@ function setupDashboardEvents(container, analytics, metrics, monthLabel) {
       }
     });
   });
-
-  // Upcoming items click
-  container.querySelectorAll('.upcoming-item, .open-rel-detail').forEach(el => {
-    el.addEventListener('click', (e) => {
-      const id = parseInt(el.dataset.releaseId, 10);
-      if (id) {
-        window.dispatchEvent(new CustomEvent('open-release-detail', { detail: { id } }));
-      }
-    });
-  });
-}
-
-function formatMonth(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.toLocaleString('en-US', { month: 'short' });
-}
-
-function formatDay(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(dateStr + 'T00:00:00');
-  return d.getDate();
 }

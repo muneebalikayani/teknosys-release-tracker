@@ -1,6 +1,7 @@
 import { store } from './data/store.js';
 import { renderDashboard } from './components/dashboard.js';
 import { renderReleaseList } from './components/releaseList.js';
+import { renderUpcomingView } from './components/upcomingView.js';
 import { renderKanbanBoard } from './components/kanbanBoard.js';
 import { renderCalendarView } from './components/calendarView.js';
 import { renderHolidayView } from './components/holidayView.js';
@@ -21,6 +22,10 @@ function updateTopBarBadges() {
   const releaseBadge = document.getElementById('nav-release-count-badge');
   if (releaseBadge) {
     releaseBadge.textContent = total;
+  }
+  const upcomingBadge = document.getElementById('nav-upcoming-count-badge');
+  if (upcomingBadge) {
+    upcomingBadge.textContent = store.getUpcomingReleases().length;
   }
   const holidayBadge = document.getElementById('nav-holiday-count-badge');
   if (holidayBadge) {
@@ -61,6 +66,9 @@ function renderActiveView() {
       break;
     case 'releases':
       renderReleaseList(viewContainer);
+      break;
+    case 'upcoming':
+      renderUpcomingView(viewContainer);
       break;
     case 'board':
       renderKanbanBoard(viewContainer);
@@ -199,7 +207,7 @@ document.getElementById('btn-sync-cloud')?.addEventListener('click', async (e) =
   }
 });
 
-// Theme Management (Dark Soft UI / White Light / Mintlify Dark)
+// Theme Management (Dark Soft UI / White Light)
 const themeToggleBtn = document.getElementById('btn-theme-toggle');
 const themeToggleLabel = document.getElementById('theme-toggle-label');
 const themeToggleIcon = document.getElementById('theme-toggle-icon');
@@ -212,16 +220,11 @@ const THEME_CONFIG = {
   },
   light: {
     label: 'White Light',
-    title: 'Theme: White Light · Click for Mintlify Dark',
+    title: 'Theme: White Light · Click for Dark Soft UI',
     iconHtml: '<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>'
-  },
-  mintlify: {
-    label: 'Mintlify Dark',
-    title: 'Theme: Mintlify Dark · Click for Dark Soft UI',
-    iconHtml: '<rect x="3" y="3" width="18" height="18" rx="4"></rect><path d="M9 3v18"></path>'
   }
 };
-const THEME_ORDER = ['neumorphic', 'light', 'mintlify'];
+const THEME_ORDER = ['neumorphic', 'light'];
 
 function applyTheme(theme) {
   const resolvedTheme = THEME_CONFIG[theme] ? theme : 'neumorphic';
