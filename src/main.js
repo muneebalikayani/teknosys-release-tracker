@@ -13,6 +13,7 @@ import { openSupabaseModal } from './components/supabaseModal.js';
 import { openImportModal } from './components/importModal.js';
 import { renderMonthlyReport } from './components/monthlyReport.js';
 import { initChatbot, removeChatbot } from './components/chatbot.js';
+import { closeActiveCustomSelect, observeCustomSelects, upgradeAllSelects } from './utils/customSelect.js';
 
 const viewContainer = document.getElementById('view-container');
 const navTabs = document.getElementById('main-nav-tabs');
@@ -61,6 +62,7 @@ function updateTopBarBadges() {
 }
 
 function renderActiveView() {
+  closeActiveCustomSelect();
   updateTopBarBadges();
 
   // Update nav tabs active state
@@ -101,6 +103,8 @@ function renderActiveView() {
     default:
       renderDashboard(viewContainer);
   }
+
+  upgradeAllSelects(viewContainer);
 }
 
 // Sidebar Collapse & Expand Management (Desktop)
@@ -301,8 +305,10 @@ window.addEventListener('open-import-modal', () => {
 
 // Global Keyboard Shortcuts
 window.addEventListener('keydown', (e) => {
-  // If user is typing in an input or textarea, don't trigger global hotkeys
-  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement.tagName)) {
+  // If user is typing in an input, textarea, select, or custom combobox, don't trigger global hotkeys
+  const activeTag = document.activeElement?.tagName;
+  const activeRole = document.activeElement?.getAttribute?.('role');
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeTag) || activeRole === 'combobox') {
     if (e.key === 'Escape') {
       document.querySelectorAll('.modal-overlay').forEach(m => {
         m.classList.remove('show');
@@ -352,7 +358,8 @@ store.subscribe(() => {
   renderActiveView();
 });
 
-// Initial boot
+// Initial boot & automatic custom select observation
+observeCustomSelects(document.body);
 renderActiveView();
 
 // Chatbot is hidden for now per user request. Easily re-enabled anytime.
