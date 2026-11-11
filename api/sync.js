@@ -99,9 +99,26 @@ export default async function handler(req, res) {
         );
 
         let sha = null;
+        let existingPayload = null;
         if (metaRes.ok) {
           const meta = await metaRes.json();
           sha = meta.sha;
+          if (meta.content) {
+            try {
+              existingPayload = JSON.parse(Buffer.from(meta.content, 'base64').toString('utf8'));
+            } catch {}
+          }
+        }
+
+        // Skip redundant commits if dataset has not actually changed
+        if (
+          existingPayload &&
+          JSON.stringify(existingPayload.releases) === JSON.stringify(payload.releases) &&
+          JSON.stringify(existingPayload.holidays) === JSON.stringify(payload.holidays)
+        ) {
+          memoryCache = existingPayload;
+          lastCacheTime = Date.now();
+          return true;
         }
 
         const bodyData = {

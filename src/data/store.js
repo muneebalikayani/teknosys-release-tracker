@@ -415,6 +415,7 @@ class ReleaseStore {
 
       const localIsCompleted = (localStage === 'completed' || localStatus === 'completed');
       const cloudIsCompleted = (cloudStage === 'completed' || cloudStatus === 'completed');
+      const sameReleaseName = (localRel.name || '').trim().toLowerCase() === (cloudRel.name || '').trim().toLowerCase();
 
       let winner;
 
@@ -424,8 +425,8 @@ class ReleaseStore {
         localHasNewerChanges = true;
       } else if (cloudTime > localTime) {
         // Cloud has strictly newer timestamp
-        // CRITICAL PROTECTION: Never revert a local completion to an in-flight status
-        if (localIsCompleted && !cloudIsCompleted) {
+        // Protect completion status only when comparing the exact same release record
+        if (sameReleaseName && localIsCompleted && !cloudIsCompleted) {
           winner = { ...cloudRel, ...localRel, stage: 'Completed', status: 'Completed' };
           localHasNewerChanges = true;
         } else {
@@ -433,8 +434,8 @@ class ReleaseStore {
         }
       } else {
         // Timestamps equal or not present
-        if (localIsCompleted && !cloudIsCompleted) {
-          // Local completion always wins over uncompleted cloud record
+        if (sameReleaseName && localIsCompleted && !cloudIsCompleted) {
+          // Local completion wins over uncompleted cloud record for the same release
           winner = { ...cloudRel, ...localRel, stage: 'Completed', status: 'Completed' };
           localHasNewerChanges = true;
         } else if (cloudIsCompleted && !localIsCompleted) {
@@ -468,13 +469,20 @@ class ReleaseStore {
     // Ensure sorted descending by ID
     merged.sort((a, b) => Number(b.id) - Number(a.id));
 
-    // If local had newer changes or completions, push the merged list back to cloud & Supabase
+    // Only push back to cloud if local changes actually altered the merged cloud dataset
     if (localHasNewerChanges) {
-      this.syncCloud(merged);
-      if (this.isSupabaseConnected || isSupabaseConfigured()) {
-        seedSupabaseFromLocal(merged, this.holidays).catch(err => {
-          console.warn('Auto-seed to Supabase error during merge:', err);
-        });
+      const serializeDigest = (arr) =>
+        [...arr]
+          .sort((a, b) => Number(b.id) - Number(a.id))
+          .map(r => `${r.id}:${r.name}:${r.stage}:${r.status}:${r.targetDeploy}:${r.gitlabUrl || ''}:${r.updatedAt || ''}`)
+          .join('|');
+      if (serializeDigest(normalizedCloud) !== serializeDigest(merged)) {
+        this.syncCloud(merged);
+        if (this.isSupabaseConnected || isSupabaseConfigured()) {
+          seedSupabaseFromLocal(merged, this.holidays).catch(err => {
+            console.warn('Auto-seed to Supabase error during merge:', err);
+          });
+        }
       }
     }
 
@@ -688,7 +696,8 @@ class ReleaseStore {
   startPolling() {
     this.stopPolling();
     this.pollInterval = setInterval(async () => {
-      // Don't poll while an active sync is running or if local changes occurred within 4s
+      // Skip polling while tab is hidden or an active sync/recent local mutation is in progress
+      if (typeof document !== 'undefined' && document.hidden) return;
       if (this.isSyncing) return;
       if (Date.now() - (this.lastLocalMutation || 0) < 4000) return;
 
