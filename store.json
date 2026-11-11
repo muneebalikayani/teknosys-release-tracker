@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 63,
+      "name": "Multiplay postpaid Dependency Changes",
+      "ritm": "",
+      "cr": "",
+      "developer": "Moiez Bhatti",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Emergency",
+      "startDate": "2026-11-11",
+      "targetDeploy": "2026-11-11",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-11T07:56:03.079Z",
+      "updatedAt": "2026-11-11T07:56:03.079Z",
+      "lastModified": 1794383763079
+    },
+    {
       "id": 62,
       "name": "null sbscrpn_key update postpaid lifecycle",
       "ritm": "",
@@ -1431,5 +1454,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T07:53:18.792Z"
+  "updatedAt": "2026-11-11T07:56:03.564Z"
 }
