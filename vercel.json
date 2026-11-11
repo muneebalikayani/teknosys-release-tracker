@@ -1,0 +1,8 @@
+{
+  "git": {
+    "deploymentEnabled": {
+      "main": true,
+      "data-store": false
+    }
+  }
+}
