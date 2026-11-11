@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 62,
+      "name": "null sbscrpn_key update postpaid lifecycle",
+      "ritm": "",
+      "cr": "",
+      "developer": "Moiez Bhatti",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Hotfix",
+      "startDate": "2026-11-11",
+      "targetDeploy": "2026-11-11",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-11T07:30:54.526Z",
+      "updatedAt": "2026-11-11T07:30:54.526Z",
+      "lastModified": 1794382254526
+    },
+    {
       "id": 61,
       "name": "Tamasha Definition Update (Copy)",
       "ritm": "RITM0171316",
@@ -1406,5 +1429,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T07:23:12.670Z"
+  "updatedAt": "2026-11-11T07:30:55.119Z"
 }
