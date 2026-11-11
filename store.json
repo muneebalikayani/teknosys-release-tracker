@@ -908,8 +908,8 @@
     {
       "id": 14,
       "name": "Simosa Parent Child Sourcing",
-      "ritm": "",
-      "cr": "",
+      "ritm": " RITM0153686",
+      "cr": "CHG0147481",
       "developer": "Daniyal Ahmed",
       "version": "V1",
       "platform": "GSM",
@@ -924,8 +924,8 @@
       "email": "",
       "holidayConflict": "",
       "gitlabUrl": "",
-      "updatedAt": "2026-11-11T04:33:06.369Z",
-      "lastModified": 1794371586369
+      "updatedAt": "2026-11-11T04:35:12.745Z",
+      "lastModified": 1794371712745
     },
     {
       "id": 13,
@@ -1337,5 +1337,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T04:34:47.994Z"
+  "updatedAt": "2026-11-11T04:35:14.388Z"
 }
