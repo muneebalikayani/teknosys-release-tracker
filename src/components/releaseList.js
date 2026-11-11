@@ -38,16 +38,7 @@ export function renderReleaseList(container) {
   const owners = ['ALL', ...store.owners];
   const currentSortKey = `${store.sort?.column || 'id'}-${store.sort?.direction || 'desc'}`;
 
-  const hasActiveFilters = Boolean(
-    store.filters.search || 
-    (store.filters.impactedObject && store.filters.impactedObject !== 'ALL') ||
-    store.filters.platform !== 'ALL' || 
-    store.filters.type !== 'ALL' || 
-    store.filters.stage !== 'ALL' || 
-    store.filters.status !== 'ALL' || 
-    store.filters.owner !== 'ALL' || 
-    store.filters.hasConflict
-  );
+  const hasActiveFilters = hasActiveReleaseFilters();
 
   container.innerHTML = `
     <div class="releases-view-container">
@@ -55,7 +46,7 @@ export function renderReleaseList(container) {
       <div class="releases-toolbar">
         <div class="toolbar-title-group">
           <h1 class="page-title">Release Register</h1>
-          <p class="page-subtitle" id="releases-count-subtitle">Showing ${filteredCount} of ${totalCount} releases tracked</p>
+          <p class="page-subtitle" id="releases-count-subtitle">${formatReleaseCountSubtitle(filteredCount, totalCount)}</p>
         </div>
 
         <div class="toolbar-actions">
@@ -452,7 +443,7 @@ function renderListResults(container) {
   const viewMode = window._releaseListMode || 'table';
 
   if (countSubtitle) {
-    countSubtitle.textContent = `Showing ${filteredCount} of ${totalCount} releases tracked`;
+    countSubtitle.textContent = formatReleaseCountSubtitle(filteredCount, totalCount);
   }
 
   contentArea.innerHTML = getReleasesListHTML(releases, viewMode);
@@ -463,18 +454,7 @@ function updateActiveFilterBtn(container) {
   const resetWrap = container.querySelector('#reset-filter-wrap');
   if (!resetWrap) return;
 
-  const hasActiveFilters = Boolean(
-    store.filters.search || 
-    (store.filters.impactedObject && store.filters.impactedObject !== 'ALL') || 
-    store.filters.platform !== 'ALL' || 
-    store.filters.type !== 'ALL' || 
-    store.filters.stage !== 'ALL' || 
-    store.filters.status !== 'ALL' || 
-    store.filters.owner !== 'ALL' || 
-    store.filters.hasConflict
-  );
-
-  resetWrap.style.display = hasActiveFilters ? 'inline-block' : 'none';
+  resetWrap.style.display = hasActiveReleaseFilters() ? 'inline-block' : 'none';
 }
 
 function setupTableEvents(container) {
@@ -789,19 +769,7 @@ function setupTableEvents(container) {
   // Reset filters
   const resetBtn = container.querySelector('#btn-reset-filters');
   resetBtn?.addEventListener('click', () => {
-    store.filters = {
-      search: '',
-      impactedObject: '',
-      platform: 'ALL',
-      type: 'ALL',
-      stage: 'ALL',
-      status: 'ALL',
-      owner: 'ALL',
-      month: 'ALL',
-      year: 'ALL',
-      hasConflict: false
-    };
-    store.searchMode = 'all';
+    store.resetFilters(false);
     renderReleaseList(container);
   });
 
@@ -825,19 +793,7 @@ function bindItemEvents(container) {
 
   // Empty state reset button
   container.querySelector('#empty-reset-filters')?.addEventListener('click', () => {
-    store.filters = {
-      search: '',
-      impactedObject: '',
-      platform: 'ALL',
-      type: 'ALL',
-      stage: 'ALL',
-      status: 'ALL',
-      owner: 'ALL',
-      month: 'ALL',
-      year: 'ALL',
-      hasConflict: false
-    };
-    store.searchMode = 'all';
+    store.resetFilters(false);
     renderReleaseList(container);
   });
 
@@ -961,4 +917,39 @@ function getSortIcon(col) {
     return '↕';
   }
   return store.sort.direction === 'asc' ? '▲' : '▼';
+}
+
+function hasActiveReleaseFilters() {
+  return Boolean(
+    store.filters.search ||
+    (store.filters.impactedObject && store.filters.impactedObject !== 'ALL') ||
+    store.filters.platform !== 'ALL' ||
+    store.filters.type !== 'ALL' ||
+    store.filters.stage !== 'ALL' ||
+    store.filters.status !== 'ALL' ||
+    store.filters.owner !== 'ALL' ||
+    (store.filters.developer && store.filters.developer !== 'ALL') ||
+    (store.filters.month && store.filters.month !== 'ALL') ||
+    (store.filters.year && store.filters.year !== 'ALL') ||
+    store.filters.hasConflict
+  );
+}
+
+function formatReleaseCountSubtitle(filteredCount, totalCount) {
+  const parts = [`Showing ${filteredCount} of ${totalCount} releases tracked`];
+  if (store.filters.month && store.filters.month !== 'ALL') {
+    const monthNames = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
+    const mName = monthNames[parseInt(store.filters.month, 10) - 1] || store.filters.month;
+    const yStr = (store.filters.year && store.filters.year !== 'ALL') ? ` ${store.filters.year}` : '';
+    parts.push(`Period: ${mName}${yStr}`);
+  } else if (store.filters.year && store.filters.year !== 'ALL') {
+    parts.push(`Year: ${store.filters.year}`);
+  }
+  if (store.filters.hasConflict) {
+    parts.push('Holiday Conflicts');
+  }
+  return parts.join(' · ');
 }

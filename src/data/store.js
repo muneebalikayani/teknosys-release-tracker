@@ -76,7 +76,7 @@ class ReleaseStore {
     this.statuses = [...DEFAULT_STATUSES];
 
     // Filter and view state
-    this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'upcoming' | 'board' | 'calendar' | 'holidays' | 'report'
+    this.currentView = 'dashboard'; // 'dashboard' | 'releases' | 'upcoming' | 'production' | 'board' | 'calendar' | 'holidays' | 'report'
     this.boardGroupBy = 'stage'; // 'stage' | 'status'
     this.searchMode = 'all'; // 'all' | 'general' | 'dbObjects'
 
@@ -1305,13 +1305,15 @@ class ReleaseStore {
       }
 
       // Month
-      if (this.filters.month !== 'ALL' && rel.targetDeploy) {
+      if (this.filters.month !== 'ALL') {
+        if (!rel.targetDeploy) return false;
         const m = parseInt(rel.targetDeploy.split('-')[1], 10);
         if (m !== parseInt(this.filters.month, 10)) return false;
       }
 
       // Year
-      if (this.filters.year !== 'ALL' && rel.targetDeploy) {
+      if (this.filters.year !== 'ALL') {
+        if (!rel.targetDeploy) return false;
         const y = parseInt(rel.targetDeploy.split('-')[0], 10);
         if (y !== parseInt(this.filters.year, 10)) return false;
       }
@@ -1649,23 +1651,38 @@ class ReleaseStore {
     };
   }
 
-  // Get all active non-completed releases scheduled for deployment
+  // Get all active pre-production releases scheduled for deployment
   getUpcomingReleases() {
     return this.releases
       .filter(r => {
         if (!r.targetDeploy) return false;
         const status = (r.status || '').trim().toLowerCase();
         const stage = (r.stage || '').trim().toLowerCase();
-        // Exclude completed, on hold, and pending items (including empty/unset status which defaults to Pending)
+        // Exclude completed, already-in-production, on hold, and pending items
         if (!status || status === 'pending' || status === 'completed' || status === 'on hold') {
           return false;
         }
-        if (stage === 'completed' || stage === 'on hold' || stage === 'pending') {
+        if (stage === 'completed' || stage === 'production' || stage === 'on hold' || stage === 'pending') {
           return false;
         }
         return true;
       })
       .sort((a, b) => a.targetDeploy.localeCompare(b.targetDeploy));
+  }
+
+  // Get active (non-completed) deployments currently in Production awaiting governance compliance / closure
+  getProductionGovernanceReleases() {
+    return this.releases
+      .filter(r => {
+        const status = (r.status || '').trim().toLowerCase();
+        const stage = (r.stage || '').trim().toLowerCase();
+        if (stage !== 'production') return false;
+        if (!status || status === 'pending' || status === 'completed' || status === 'on hold') {
+          return false;
+        }
+        return true;
+      })
+      .sort((a, b) => (a.targetDeploy || '9999-99-99').localeCompare(b.targetDeploy || '9999-99-99') || (b.id - a.id));
   }
 
   // Get all conflicts for report

@@ -180,28 +180,28 @@ export function renderDashboard(container) {
               </div>
 
               <div class="gauge-indicators">
-                <div class="indicator-row">
+                <div class="indicator-row interactive-item" data-filter-type="type" data-filter-val="Scheduled" role="button" tabindex="0" title="Click to list Scheduled Standard deployments">
                   <div class="indicator-key">
                     <span class="key-square key-scheduled"></span>
                     <span>Scheduled Standard</span>
                   </div>
-                  <strong class="indicator-value">${analytics.scheduledCount} (${analytics.plannedStabilityPct}%)</strong>
+                  <strong class="indicator-value">${analytics.scheduledCount} (${analytics.plannedStabilityPct}%) <span class="indicator-arrow" aria-hidden="true">→</span></strong>
                 </div>
 
-                <div class="indicator-row">
+                <div class="indicator-row interactive-item" data-filter-type="type" data-filter-val="Hotfix" role="button" tabindex="0" title="Click to list Hotfixes & Patches deployments">
                   <div class="indicator-key">
                     <span class="key-square key-hotfix"></span>
                     <span>Hotfixes & Patches</span>
                   </div>
-                  <strong class="indicator-value text-amber">${analytics.hotfixCount}</strong>
+                  <strong class="indicator-value text-amber">${analytics.hotfixCount} <span class="indicator-arrow" aria-hidden="true">→</span></strong>
                 </div>
 
-                <div class="indicator-row">
+                <div class="indicator-row interactive-item" data-filter-type="type" data-filter-val="Emergency" role="button" tabindex="0" title="Click to list Emergency deployments">
                   <div class="indicator-key">
                     <span class="key-square key-emergency"></span>
                     <span>Emergency</span>
                   </div>
-                  <strong class="indicator-value text-danger">${analytics.emergencyCount}</strong>
+                  <strong class="indicator-value text-danger">${analytics.emergencyCount} <span class="indicator-arrow" aria-hidden="true">→</span></strong>
                 </div>
               </div>
             </div>
@@ -501,19 +501,33 @@ function setupDashboardEvents(container, analytics, metrics, monthLabel) {
   const viewConflictsBtn = container.querySelector('#view-conflicts-btn');
   if (viewConflictsBtn) {
     viewConflictsBtn.addEventListener('click', () => {
+      store.resetFilters(false);
       store.filters.hasConflict = true;
       window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'releases' } }));
     });
   }
 
-  // Interactive breakdown items (click to filter release list)
+  // Interactive breakdown & stability items (click/keyboard to filter release list)
   container.querySelectorAll('.interactive-item').forEach(item => {
-    item.addEventListener('click', () => {
+    const activateFilter = () => {
       const type = item.dataset.filterType;
       const val = item.dataset.filterVal;
-      if (type && val) {
-        store.filters[type] = val;
-        window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'releases' } }));
+      if (!type || !val) return;
+
+      store.resetFilters(false);
+      if (store.dashboardFilter.month !== 'ALL') {
+        store.filters.month = store.dashboardFilter.month;
+        store.filters.year = store.dashboardFilter.year;
+      }
+      store.filters[type] = val;
+      window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'releases' } }));
+    };
+
+    item.addEventListener('click', activateFilter);
+    item.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        activateFilter();
       }
     });
   });

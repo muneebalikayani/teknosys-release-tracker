@@ -1,34 +1,5 @@
 import { store } from '../data/store.js';
-
-/** Format a local Date object as YYYY-MM-DD. */
-function toLocalDateStr(date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
-}
-
-/** Escape HTML special characters for safe template interpolation. */
-function escapeHtml(str) {
-  if (!str) return '';
-  return String(str)
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
-}
-
-function formatMonth(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(`${dateStr}T00:00:00`);
-  return d.toLocaleString('en-US', { month: 'short' });
-}
-
-function formatDay(dateStr) {
-  if (!dateStr) return '';
-  const d = new Date(`${dateStr}T00:00:00`);
-  return d.getDate();
-}
+import { escapeHtml, formatDay, formatMonth, toLocalDateStr } from '../utils/format.js';
 
 /** Compute a concise relative schedule pill label & CSS modifier for a YYYY-MM-DD target date. */
 function getRelativeTimingBadge(targetDeploy, todayStr) {
@@ -44,7 +15,7 @@ function getRelativeTimingBadge(targetDeploy, todayStr) {
   return { label: `${Math.abs(diffDays)}d overdue`, cls: 'timing-overdue' };
 }
 
-/** Render the dedicated Upcoming Target Deployments tab view. */
+/** Render the dedicated Upcoming Target Deployments tab view (pre-production only). */
 export function renderUpcomingView(container) {
   if (!window._upcomingFilters) {
     window._upcomingFilters = { search: '', platform: 'ALL' };
@@ -58,6 +29,7 @@ export function renderUpcomingView(container) {
   const selEnd = wasSearchFocused ? activeEl.selectionEnd : null;
 
   const allUpcoming = store.getUpcomingReleases();
+  const productionCount = store.getProductionGovernanceReleases().length;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -69,9 +41,7 @@ export function renderUpcomingView(container) {
   const dueWithinWeekCount = allUpcoming.filter(
     r => r.targetDeploy >= todayStr && r.targetDeploy <= weekAheadStr
   ).length;
-  const cabProdCount = allUpcoming.filter(
-    r => r.stage === 'CAB' || r.stage === 'Production'
-  ).length;
+  const cabCount = allUpcoming.filter(r => r.stage === 'CAB').length;
   const conflictsCount = allUpcoming.filter(
     r => r.holidayConflict && r.holidayConflict.startsWith('Conflict:')
   ).length;
@@ -87,8 +57,8 @@ export function renderUpcomingView(container) {
     const haystack = [
       rel.name,
       rel.developer,
-      rel.crNumber,
-      rel.ritmNumber,
+      rel.cr,
+      rel.ritm,
       rel.platform,
       rel.stage,
       rel.status,
@@ -109,10 +79,15 @@ export function renderUpcomingView(container) {
       <div class="upcoming-header-bar">
         <div>
           <h1 class="page-title">Upcoming Target Deployments</h1>
-          <p class="page-subtitle">Active releases scheduled for production deployment</p>
+          <p class="page-subtitle">Pre-production active releases scheduled for deployment</p>
         </div>
 
         <div class="upcoming-header-actions">
+          ${productionCount > 0 ? `
+            <button class="btn btn-secondary" id="upcoming-view-production-btn" title="View deployments in Production requiring Governance Compliance">
+              🛡️ Production Governance (${productionCount}) →
+            </button>
+          ` : ''}
           <button class="btn btn-secondary" id="upcoming-view-register-btn" title="Open full Release Register">
             View All in Register →
           </button>
@@ -128,7 +103,7 @@ export function renderUpcomingView(container) {
         <div class="card stat-mini-card card-glow-indigo">
           <span class="stat-mini-label">SCHEDULED UPCOMING</span>
           <span class="stat-mini-val">${allUpcoming.length}</span>
-          <span class="stat-mini-sub">${cabProdCount} in CAB or Production</span>
+          <span class="stat-mini-sub">${cabCount} in CAB review</span>
         </div>
 
         <div class="card stat-mini-card">
@@ -243,6 +218,10 @@ export function renderUpcomingView(container) {
 }
 
 function setupUpcomingEvents(container) {
+  container.querySelector('#upcoming-view-production-btn')?.addEventListener('click', () => {
+    window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'production' } }));
+  });
+
   container.querySelector('#upcoming-view-register-btn')?.addEventListener('click', () => {
     window.dispatchEvent(new CustomEvent('switch-view', { detail: { view: 'releases' } }));
   });

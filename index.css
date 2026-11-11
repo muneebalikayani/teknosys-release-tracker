@@ -7155,6 +7155,39 @@ body.kanban-dragging-active * {
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
+.indicator-row.interactive-item {
+  cursor: pointer;
+  padding: 6px 8px;
+  margin: 0 -8px;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s ease;
+}
+
+.indicator-row.interactive-item:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.indicator-row.interactive-item:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+.indicator-arrow {
+  display: inline-block;
+  margin-left: 4px;
+  opacity: 0.45;
+  transition: transform 0.15s ease, opacity 0.15s ease;
+}
+
+.indicator-row.interactive-item:hover .indicator-arrow {
+  opacity: 1;
+  transform: translateX(2px);
+}
+
+[data-theme="light"] .indicator-row.interactive-item:hover {
+  background: #f1f5f9 !important;
+}
+
 .indicator-key {
   display: flex;
   align-items: center;
@@ -10224,6 +10257,74 @@ body.kanban-dragging-active * {
   border-color: #fecaca !important;
 }
 
+/* =========================================================
+   Production Governance View
+   ========================================================= */
+.sidebar-badge.governance-badge.has-alerts {
+  background: rgba(249, 115, 22, 0.14) !important;
+  border-color: rgba(249, 115, 22, 0.35) !important;
+  color: #fb923c !important;
+}
+
+[data-theme="light"] .sidebar-badge.governance-badge.has-alerts {
+  background: #fff7ed !important;
+  border-color: #fdba74 !important;
+  color: #c2410c !important;
+}
+
+.governance-req-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.69rem;
+  font-weight: 700;
+  background: rgba(249, 115, 22, 0.14);
+  color: #fb923c;
+  border: 1px solid rgba(249, 115, 22, 0.35);
+}
+
+.governance-ok-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 9px;
+  border-radius: var(--radius-full);
+  font-size: 0.69rem;
+  font-weight: 700;
+  background: rgba(16, 185, 129, 0.14);
+  color: #34d399;
+  border: 1px solid rgba(16, 185, 129, 0.35);
+}
+
+.production-item-gov-required {
+  border-color: rgba(249, 115, 22, 0.35) !important;
+}
+
+.production-item-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+[data-theme="light"] .governance-req-pill {
+  background: #fff7ed !important;
+  color: #c2410c !important;
+  border-color: #fdba74 !important;
+}
+
+[data-theme="light"] .governance-ok-pill {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+[data-theme="light"] .production-item-gov-required {
+  border-color: #fdba74 !important;
+}
+
 @media (max-width: 768px) {
   .guidelines-card .guidelines-list {
     grid-template-columns: 1fr;
@@ -10232,6 +10333,15 @@ body.kanban-dragging-active * {
   .upcoming-controls,
   .upcoming-search-wrap {
     width: 100%;
+  }
+
+  .production-gov-item {
+    flex-wrap: wrap;
+  }
+
+  .production-item-actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }
 

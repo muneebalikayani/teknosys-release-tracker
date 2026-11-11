@@ -1,10 +1,20 @@
 import { store } from '../data/store.js';
 import { showToast } from '../utils/toast.js';
 
+/** Filter and sort releases scheduled in the given reference month. */
+export function getCurrentMonthDeployments(releases, referenceDate = new Date()) {
+  const monthPrefix = `${referenceDate.getFullYear()}-${String(referenceDate.getMonth() + 1).padStart(2, '0')}`;
+  return releases
+    .filter(rel => rel.targetDeploy && rel.targetDeploy.trim().startsWith(monthPrefix))
+    .sort((a, b) => a.targetDeploy.localeCompare(b.targetDeploy) || (b.id - a.id));
+}
+
 export function renderKanbanBoard(container) {
   const groupBy = store.boardGroupBy || 'stage'; // 'stage' or 'status'
   const columns = groupBy === 'stage' ? store.stages : store.statuses;
-  const filteredReleases = store.getFilteredReleases();
+  const now = new Date();
+  const currentMonthLabel = now.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  const filteredReleases = getCurrentMonthDeployments(store.releases, now);
 
   container.innerHTML = `
     <div class="kanban-view-container">
@@ -12,7 +22,7 @@ export function renderKanbanBoard(container) {
       <div class="kanban-header-bar">
         <div>
           <h1 class="page-title">Release Workflow Board</h1>
-          <p class="page-subtitle">Visual pipeline view grouped by ${groupBy === 'stage' ? 'Lifecycle Stage' : 'Delivery Status'}</p>
+          <p class="page-subtitle">${currentMonthLabel} deployments (${filteredReleases.length}) · Grouped by ${groupBy === 'stage' ? 'Lifecycle Stage' : 'Delivery Status'}</p>
         </div>
 
         <div class="kanban-controls">

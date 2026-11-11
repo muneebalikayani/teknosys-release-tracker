@@ -2,6 +2,7 @@ import { store } from './data/store.js';
 import { renderDashboard } from './components/dashboard.js';
 import { renderReleaseList } from './components/releaseList.js';
 import { renderUpcomingView } from './components/upcomingView.js';
+import { renderProductionView } from './components/productionView.js';
 import { renderKanbanBoard } from './components/kanbanBoard.js';
 import { renderCalendarView } from './components/calendarView.js';
 import { renderHolidayView } from './components/holidayView.js';
@@ -26,6 +27,13 @@ function updateTopBarBadges() {
   const upcomingBadge = document.getElementById('nav-upcoming-count-badge');
   if (upcomingBadge) {
     upcomingBadge.textContent = store.getUpcomingReleases().length;
+  }
+  const productionBadge = document.getElementById('nav-production-count-badge');
+  if (productionBadge) {
+    const prodReleases = store.getProductionGovernanceReleases();
+    const missingCount = prodReleases.filter(r => !store.validateDeploymentCompletion({ ...r, stage: 'Completed', status: 'Completed' }).valid).length;
+    productionBadge.textContent = prodReleases.length;
+    productionBadge.classList.toggle('has-alerts', missingCount > 0);
   }
   const holidayBadge = document.getElementById('nav-holiday-count-badge');
   if (holidayBadge) {
@@ -69,6 +77,9 @@ function renderActiveView() {
       break;
     case 'upcoming':
       renderUpcomingView(viewContainer);
+      break;
+    case 'production':
+      renderProductionView(viewContainer);
       break;
     case 'board':
       renderKanbanBoard(viewContainer);
