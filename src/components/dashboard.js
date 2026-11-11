@@ -217,7 +217,7 @@ export function renderDashboard(container) {
                 <div class="indicator-row">
                   <div class="indicator-key">
                     <span class="key-square key-emergency"></span>
-                    <span>Emergency Outages</span>
+                    <span>Emergency</span>
                   </div>
                   <strong class="indicator-value text-danger">${analytics.emergencyCount}</strong>
                 </div>

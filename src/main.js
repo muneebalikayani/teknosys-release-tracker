@@ -199,29 +199,54 @@ document.getElementById('btn-sync-cloud')?.addEventListener('click', async (e) =
   }
 });
 
-// Theme Management (Mintlify Dark vs Dark Neumorphic Soft UI)
+// Theme Management (Dark Soft UI / White Light / Mintlify Dark)
 const themeToggleBtn = document.getElementById('btn-theme-toggle');
 const themeToggleLabel = document.getElementById('theme-toggle-label');
+const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+const THEME_CONFIG = {
+  neumorphic: {
+    label: 'Dark Soft UI',
+    title: 'Theme: Dark Neumorphic (Soft UI) · Click for White Light',
+    iconHtml: '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>'
+  },
+  light: {
+    label: 'White Light',
+    title: 'Theme: White Light · Click for Mintlify Dark',
+    iconHtml: '<circle cx="12" cy="12" r="5"></circle><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>'
+  },
+  mintlify: {
+    label: 'Mintlify Dark',
+    title: 'Theme: Mintlify Dark · Click for Dark Soft UI',
+    iconHtml: '<rect x="3" y="3" width="18" height="18" rx="4"></rect><path d="M9 3v18"></path>'
+  }
+};
+const THEME_ORDER = ['neumorphic', 'light', 'mintlify'];
 
 function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme);
-  localStorage.setItem('release-tracker-theme', theme);
+  const resolvedTheme = THEME_CONFIG[theme] ? theme : 'neumorphic';
+  const cfg = THEME_CONFIG[resolvedTheme];
+  document.documentElement.setAttribute('data-theme', resolvedTheme);
+  localStorage.setItem('release-tracker-theme', resolvedTheme);
   if (themeToggleLabel) {
-    themeToggleLabel.textContent = theme === 'neumorphic' ? 'Dark Soft UI' : 'Mintlify Dark';
+    themeToggleLabel.textContent = cfg.label;
+  }
+  if (themeToggleIcon) {
+    themeToggleIcon.innerHTML = cfg.iconHtml;
   }
   if (themeToggleBtn) {
-    themeToggleBtn.setAttribute('data-current-theme', theme);
-    themeToggleBtn.title = `Theme: ${theme === 'neumorphic' ? 'Dark Neumorphic (Soft UI)' : 'Mintlify Dark'} · Click to toggle`;
+    themeToggleBtn.setAttribute('data-current-theme', resolvedTheme);
+    themeToggleBtn.title = cfg.title;
   }
 }
 
-// Keep theme dark: default to 'neumorphic' (Dark Neumorphism)
 const savedTheme = localStorage.getItem('release-tracker-theme') || 'neumorphic';
 applyTheme(savedTheme);
 
 themeToggleBtn?.addEventListener('click', () => {
-  const current = document.documentElement.getAttribute('data-theme') || 'mintlify';
-  const nextTheme = current === 'neumorphic' ? 'mintlify' : 'neumorphic';
+  const current = document.documentElement.getAttribute('data-theme') || 'neumorphic';
+  const idx = THEME_ORDER.indexOf(current);
+  const nextTheme = THEME_ORDER[(idx + 1) % THEME_ORDER.length];
   applyTheme(nextTheme);
 });
 
