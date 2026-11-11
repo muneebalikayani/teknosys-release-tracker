@@ -330,24 +330,24 @@
     },
     {
       "id": 45,
-      "name": "Handover of CAB and GCG Jobs to DWH/Operations - Migration",
-      "ritm": "",
-      "cr": "",
-      "developer": "Ukasha Shafique",
+      "name": "Postpaid Revenue Fixture - Multiplay Marts (30 Day & 90 Day)",
+      "ritm": "RITM0167917",
+      "cr": "CHG0154162",
+      "developer": "Husinah Amir",
       "version": "v1",
       "platform": "GSM",
       "type": "Scheduled",
-      "startDate": "2026-11-10",
-      "targetDeploy": "2026-11-18",
-      "stage": "Development",
+      "startDate": "2026-10-26",
+      "targetDeploy": "2026-10-28",
+      "stage": "Completed",
       "owner": "Dev Team",
-      "status": "On Track",
-      "dbObjects": "",
+      "status": "Completed",
+      "dbObjects": "JTR_PRD_01_OPTM_STD_0_V.DWN_5079_POSTPAID_MULTIPLAY_90_DAYS, JTR_PRD_01_SHRD_STD_0_V.POSTPAID_MULTIPLAY_MONTHY",
       "notes": "",
       "email": "",
       "holidayConflict": "",
-      "updatedAt": "2026-11-10T10:09:09.669Z",
-      "lastModified": 1794305349669,
+      "updatedAt": "2026-11-04T10:07:52.880Z",
+      "lastModified": 1793786872888,
       "createdAt": "2026-11-10T09:52:13.607Z",
       "gitlabUrl": ""
     },
@@ -1383,5 +1383,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T05:28:23.202Z"
+  "updatedAt": "2026-11-11T05:45:17.028Z"
 }
