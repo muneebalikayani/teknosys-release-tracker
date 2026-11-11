@@ -13,6 +13,54 @@ let memoryCache = null;
 let lastCacheTime = 0;
 const CACHE_TTL_MS = 2500; // 2.5s cache for high-frequency polling
 
+function normalizeDeletedIds(entries, fallbackIso = null) {
+  if (!Array.isArray(entries)) return [];
+  const fallbackMs = fallbackIso ? (new Date(fallbackIso).getTime() || 0) : 0;
+  const map = new Map();
+  for (const entry of entries) {
+    const isObj = typeof entry === 'object' && entry !== null;
+    const id = Number(isObj ? entry.id : entry);
+    if (!Number.isFinite(id) || id <= 0) continue;
+    const rawDate = isObj ? entry.deletedAt : null;
+    const parsedMs = rawDate ? new Date(rawDate).getTime() : 0;
+    const ms = Number.isFinite(parsedMs) && parsedMs > 0 ? parsedMs : fallbackMs;
+    if (ms <= 0) continue;
+    const prev = map.get(id);
+    if (prev === undefined || ms > prev) {
+      map.set(id, ms);
+    }
+  }
+  return Array.from(map.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([id, ms]) => ({
+      id,
+      deletedAt: new Date(ms).toISOString()
+    }));
+}
+
+function mergeDeletedIds(existingEntries, incomingEntries, fallbackIso = null) {
+  return normalizeDeletedIds(
+    [...(existingEntries || []), ...(incomingEntries || [])],
+    fallbackIso
+  );
+}
+
+function filterDeletedReleases(releases, deletedIds) {
+  if (!Array.isArray(releases)) return [];
+  const normalizedDeleted = normalizeDeletedIds(deletedIds);
+  if (normalizedDeleted.length === 0) return releases;
+  const deletedMap = new Map(
+    normalizedDeleted.map(d => [Number(d.id), new Date(d.deletedAt).getTime() || 0])
+  );
+  return releases.filter(rel => {
+    if (!rel) return false;
+    const deletedMs = deletedMap.get(Number(rel.id));
+    if (!deletedMs) return true;
+    const createdMs = rel.createdAt ? (new Date(rel.createdAt).getTime() || 0) : 0;
+    return createdMs > deletedMs;
+  });
+}
+
 export default async function handler(req, res) {
   // CORS configuration
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -50,13 +98,15 @@ export default async function handler(req, res) {
 
       if (resp.ok) {
         const data = await resp.json();
+        data.deletedIds = normalizeDeletedIds(data.deletedIds);
+        data.releases = filterDeletedReleases(data.releases, data.deletedIds);
         memoryCache = data;
         lastCacheTime = now;
         return res.status(200).json(data);
       }
 
       if (resp.status === 404) {
-        return res.status(200).json({ releases: [], holidays: [], updatedAt: new Date().toISOString() });
+        return res.status(200).json({ releases: [], holidays: [], deletedIds: [], updatedAt: new Date().toISOString() });
       }
 
       const errText = await resp.text();
@@ -73,16 +123,14 @@ export default async function handler(req, res) {
   // --- POST: Update shared releases & holidays ---
   if (req.method === 'POST') {
     try {
-      const { releases, holidays } = req.body || {};
+      const { releases, holidays, deletedIds } = req.body || {};
       if (!Array.isArray(releases)) {
         return res.status(400).json({ error: 'releases must be an array' });
       }
 
-      const payload = {
-        releases: releases || [],
-        holidays: holidays || [],
-        updatedAt: new Date().toISOString()
-      };
+      const fallbackDeletedAt = new Date().toISOString();
+      const incomingDeletedIds = normalizeDeletedIds(deletedIds, fallbackDeletedAt);
+      const nextHolidays = holidays || [];
 
       // Helper to perform commit with SHA retry logic
       const saveToCloud = async (attempt = 1) => {
@@ -110,20 +158,33 @@ export default async function handler(req, res) {
           }
         }
 
+        const existingDeletedIds = normalizeDeletedIds(existingPayload?.deletedIds);
+        const mergedDeletedIds = mergeDeletedIds(existingDeletedIds, incomingDeletedIds, fallbackDeletedAt);
+        const cleanedReleases = filterDeletedReleases(releases, mergedDeletedIds);
+
         // Skip redundant commits if dataset has not actually changed
         if (
           existingPayload &&
-          JSON.stringify(existingPayload.releases) === JSON.stringify(payload.releases) &&
-          JSON.stringify(existingPayload.holidays) === JSON.stringify(payload.holidays)
+          JSON.stringify(existingPayload.releases) === JSON.stringify(cleanedReleases) &&
+          JSON.stringify(existingPayload.holidays) === JSON.stringify(nextHolidays) &&
+          JSON.stringify(existingDeletedIds) === JSON.stringify(mergedDeletedIds)
         ) {
-          memoryCache = existingPayload;
+          const cachedPayload = { ...existingPayload, deletedIds: existingDeletedIds };
+          memoryCache = cachedPayload;
           lastCacheTime = Date.now();
-          return true;
+          return cachedPayload;
         }
 
+        const nextPayload = {
+          releases: cleanedReleases,
+          holidays: nextHolidays,
+          deletedIds: mergedDeletedIds,
+          updatedAt: new Date().toISOString()
+        };
+
         const bodyData = {
-          message: `Sync updates: ${payload.releases.length} releases (${payload.updatedAt})`,
-          content: Buffer.from(JSON.stringify(payload, null, 2)).toString('base64'),
+          message: `Sync updates: ${nextPayload.releases.length} releases (${nextPayload.updatedAt})`,
+          content: Buffer.from(JSON.stringify(nextPayload, null, 2)).toString('base64'),
           branch: BRANCH
         };
         if (sha) bodyData.sha = sha;
@@ -143,9 +204,9 @@ export default async function handler(req, res) {
         );
 
         if (putRes.ok) {
-          memoryCache = payload;
+          memoryCache = nextPayload;
           lastCacheTime = Date.now();
-          return true;
+          return nextPayload;
         }
 
         // Retry once on 409 conflict (concurrent write from other laptop)
@@ -157,13 +218,14 @@ export default async function handler(req, res) {
         throw new Error(`Failed to save to cloud storage: ${errData}`);
       };
 
-      await saveToCloud();
+      const savedPayload = await saveToCloud();
 
       return res.status(200).json({
         success: true,
-        updatedAt: payload.updatedAt,
-        releaseCount: payload.releases.length,
-        holidayCount: payload.holidays.length
+        updatedAt: savedPayload.updatedAt,
+        releaseCount: savedPayload.releases.length,
+        holidayCount: savedPayload.holidays.length,
+        deletedCount: (savedPayload.deletedIds || []).length
       });
     } catch (err) {
       console.error('Error saving to cloud store:', err);

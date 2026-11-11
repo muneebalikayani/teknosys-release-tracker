@@ -26,11 +26,15 @@ class ReleaseStore {
   constructor() {
     this.storageKeyReleases = 'teknosys_dw_releases_v6';
     this.storageKeyHolidays = 'teknosys_dw_holidays_v2';
+    this.storageKeyDeletedReleases = 'teknosys_dw_deleted_releases_v1';
     this.listeners = new Set();
 
     // Supabase Cloud State
     this.isSupabaseConnected = false;
     this.isSyncing = false;
+    this._isPushingCloud = false;
+    this._cloudPushQueued = false;
+    this._queuedPushReleases = null;
     this.unsubscribeRealtime = null;
     try {
       this.lastLocalMutation = parseInt(localStorage.getItem('teknosys_last_local_mutation') || '0', 10) || 0;
@@ -38,6 +42,7 @@ class ReleaseStore {
       this.lastLocalMutation = 0;
     }
 
+    this.deletedReleases = this.loadDeletedReleases();
     this.releases = this.loadReleases();
     this.saveReleases();
     this.holidays = this.loadHolidays();
@@ -197,6 +202,8 @@ class ReleaseStore {
       return dbObjects;
     };
 
+    const deletedMap = this.getDeletedMap();
+
     try {
       let saved = localStorage.getItem(this.storageKeyReleases);
       if (!saved) {
@@ -207,13 +214,15 @@ class ReleaseStore {
             try {
               const oldParsed = JSON.parse(old);
               if (Array.isArray(oldParsed) && oldParsed.length > 0) {
-                const existingIds = new Set(oldParsed.map(r => r.id));
-                const missingDefaults = DEFAULT_RELEASES.filter(d => !existingIds.has(d.id));
-                const merged = [...oldParsed, ...missingDefaults].map(r => {
-                  if (r.platform === 'JLV') r.platform = 'GSM';
-                  r.dbObjects = sanitizeDbObjects(r.id, r.dbObjects);
-                  return r;
-                });
+                const existingIds = new Set(oldParsed.map(r => Number(r.id)));
+                const missingDefaults = DEFAULT_RELEASES.filter(d => !existingIds.has(Number(d.id)) && !this.isReleaseTombstoned(d, deletedMap));
+                const merged = [...oldParsed, ...missingDefaults]
+                  .filter(r => !this.isReleaseTombstoned(r, deletedMap))
+                  .map(r => {
+                    if (r.platform === 'JLV') r.platform = 'GSM';
+                    r.dbObjects = sanitizeDbObjects(r.id, r.dbObjects);
+                    return r;
+                  });
                 localStorage.setItem(this.storageKeyReleases, JSON.stringify(merged));
                 saved = JSON.stringify(merged);
                 break;
@@ -226,9 +235,10 @@ class ReleaseStore {
       if (saved) {
         const parsed = JSON.parse(saved);
         if (Array.isArray(parsed) && parsed.length > 0) {
-          const existingIds = new Set(parsed.map(r => r.id));
-          const missingDefaults = DEFAULT_RELEASES.filter(d => !existingIds.has(d.id));
-          const fullList = missingDefaults.length > 0 ? [...parsed, ...missingDefaults] : parsed;
+          const existingIds = new Set(parsed.map(r => Number(r.id)));
+          const missingDefaults = DEFAULT_RELEASES.filter(d => !existingIds.has(Number(d.id)) && !this.isReleaseTombstoned(d, deletedMap));
+          const fullList = (missingDefaults.length > 0 ? [...parsed, ...missingDefaults] : parsed)
+            .filter(r => !this.isReleaseTombstoned(r, deletedMap));
           return fullList.map(r => {
             if (r.platform === 'JLV') r.platform = 'GSM';
             if (r.stage === 'SIT') r.stage = 'UAT';
@@ -254,18 +264,20 @@ class ReleaseStore {
     } catch (e) {
       console.warn('Failed to load releases from localStorage:', e);
     }
-    return JSON.parse(JSON.stringify(DEFAULT_RELEASES)).map(r => {
-      if (r.platform === 'JLV') r.platform = 'GSM';
-      if (r.type === 'Urgent') r.type = 'Emergency';
-      if (r.stage === 'CAB / RFC' || r.stage === 'CAB/RFC' || (typeof r.stage === 'string' && r.stage.toLowerCase() === 'cab / rfc')) {
-        r.stage = 'CAB';
-      }
-      if (r.stage === 'Code Freeze' || (typeof r.stage === 'string' && r.stage.toLowerCase() === 'code freeze')) {
-        r.stage = 'CAB';
-      }
-      r.dbObjects = sanitizeDbObjects(r.id, r.dbObjects);
-      return r;
-    });
+    return JSON.parse(JSON.stringify(DEFAULT_RELEASES))
+      .filter(r => !this.isReleaseTombstoned(r, deletedMap))
+      .map(r => {
+        if (r.platform === 'JLV') r.platform = 'GSM';
+        if (r.type === 'Urgent') r.type = 'Emergency';
+        if (r.stage === 'CAB / RFC' || r.stage === 'CAB/RFC' || (typeof r.stage === 'string' && r.stage.toLowerCase() === 'cab / rfc')) {
+          r.stage = 'CAB';
+        }
+        if (r.stage === 'Code Freeze' || (typeof r.stage === 'string' && r.stage.toLowerCase() === 'code freeze')) {
+          r.stage = 'CAB';
+        }
+        r.dbObjects = sanitizeDbObjects(r.id, r.dbObjects);
+        return r;
+      });
   }
 
   normalizeStage(stage) {
@@ -299,6 +311,94 @@ class ReleaseStore {
     } catch (e) {
       console.error('Failed to save releases to localStorage:', e);
     }
+  }
+
+  /**
+   * Normalize deletion tombstones sorted ascending by numeric release ID.
+   */
+  normalizeDeletedIds(entries, fallbackIso = null) {
+    if (!Array.isArray(entries)) return [];
+    const fallbackMs = fallbackIso ? (new Date(fallbackIso).getTime() || 0) : 0;
+    const map = new Map();
+    for (const entry of entries) {
+      const isObj = typeof entry === 'object' && entry !== null;
+      const id = Number(isObj ? entry.id : entry);
+      if (!Number.isFinite(id) || id <= 0) continue;
+      const rawDate = isObj ? entry.deletedAt : null;
+      const parsedMs = rawDate ? new Date(rawDate).getTime() : 0;
+      const ms = Number.isFinite(parsedMs) && parsedMs > 0 ? parsedMs : fallbackMs;
+      if (ms <= 0) continue;
+      const prev = map.get(id);
+      if (prev === undefined || ms > prev) {
+        map.set(id, ms);
+      }
+    }
+    return Array.from(map.entries())
+      .sort((a, b) => a[0] - b[0])
+      .map(([id, ms]) => ({
+        id,
+        deletedAt: new Date(ms).toISOString()
+      }));
+  }
+
+  mergeDeletedIds(existingEntries, incomingEntries, fallbackIso = null) {
+    const existingNorm = this.normalizeDeletedIds(existingEntries, fallbackIso);
+    const incomingNorm = this.normalizeDeletedIds(incomingEntries, fallbackIso);
+    const merged = this.normalizeDeletedIds([...existingNorm, ...incomingNorm], fallbackIso);
+    const incomingMap = new Map(incomingNorm.map(d => [d.id, new Date(d.deletedAt).getTime() || 0]));
+    const localHasNewer = existingNorm.some(d => {
+      const existingMs = new Date(d.deletedAt).getTime() || 0;
+      const incomingMs = incomingMap.get(d.id);
+      return incomingMs === undefined || existingMs > incomingMs;
+    });
+    return { merged, localHasNewer };
+  }
+
+  getDeletedMap(deletedList = this.deletedReleases) {
+    return new Map(
+      (deletedList || []).map(d => [Number(d.id), new Date(d.deletedAt).getTime() || 0])
+    );
+  }
+
+  isReleaseTombstoned(releaseOrId, deletedMap = this.getDeletedMap()) {
+    const isObj = typeof releaseOrId === 'object' && releaseOrId !== null;
+    const id = Number(isObj ? releaseOrId.id : releaseOrId);
+    if (!Number.isFinite(id) || id <= 0) return false;
+    const deletedMs = deletedMap.get(id);
+    if (!deletedMs) return false;
+    if (!isObj) return true;
+    const createdMs = releaseOrId.createdAt ? (new Date(releaseOrId.createdAt).getTime() || 0) : 0;
+    return createdMs <= deletedMs;
+  }
+
+  loadDeletedReleases() {
+    try {
+      const saved = localStorage.getItem(this.storageKeyDeletedReleases);
+      if (saved) {
+        return this.normalizeDeletedIds(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.warn('Failed to load deleted release tombstones from localStorage:', e);
+    }
+    return [];
+  }
+
+  saveDeletedReleases() {
+    try {
+      localStorage.setItem(this.storageKeyDeletedReleases, JSON.stringify(this.deletedReleases));
+    } catch (e) {
+      console.error('Failed to save deleted release tombstones to localStorage:', e);
+    }
+  }
+
+  recordDeletedRelease(id, createdAt = null) {
+    const targetId = Number(id);
+    if (!Number.isFinite(targetId) || targetId <= 0) return;
+    const createdMs = createdAt ? (new Date(createdAt).getTime() || 0) : 0;
+    const deletedAt = new Date(Math.max(Date.now(), createdMs + 1)).toISOString();
+    const { merged } = this.mergeDeletedIds(this.deletedReleases, [{ id: targetId, deletedAt }]);
+    this.deletedReleases = merged;
+    this.saveDeletedReleases();
   }
 
   loadHolidays() {
@@ -383,13 +483,43 @@ class ReleaseStore {
     } catch (e) {}
   }
 
-  mergeWithLocalReleases(cloudReleases) {
-    if (!Array.isArray(cloudReleases) || cloudReleases.length === 0) {
+  mergeWithLocalReleases(cloudReleases, cloudDeletedIds = null) {
+    let localTombstones = this.deletedReleases;
+    const diskTombstones = this.loadDeletedReleases();
+    if (diskTombstones.length > 0) {
+      localTombstones = this.mergeDeletedIds(localTombstones, diskTombstones).merged;
+    }
+
+    let localHasNewerDeletions = false;
+    if (Array.isArray(cloudDeletedIds)) {
+      const { merged: mergedDeleted, localHasNewer } = this.mergeDeletedIds(
+        localTombstones,
+        cloudDeletedIds
+      );
+      localHasNewerDeletions = localHasNewer;
+      if (JSON.stringify(mergedDeleted) !== JSON.stringify(this.deletedReleases)) {
+        this.deletedReleases = mergedDeleted;
+        this.saveDeletedReleases();
+      }
+    } else if (JSON.stringify(localTombstones) !== JSON.stringify(this.deletedReleases)) {
+      this.deletedReleases = localTombstones;
+      this.saveDeletedReleases();
+    }
+
+    const deletedMap = this.getDeletedMap();
+
+    if (!Array.isArray(cloudReleases)) {
+      return this.releases.filter(r => !this.isReleaseTombstoned(r, deletedMap));
+    }
+    if (cloudReleases.length === 0 && deletedMap.size === 0) {
       return this.releases;
     }
 
-    const localMap = new Map(this.releases.map(r => [Number(r.id), r]));
-    const normalizedCloud = cloudReleases.map(r => this.normalizeRelease(r));
+    const activeLocalReleases = this.releases.filter(r => !this.isReleaseTombstoned(r, deletedMap));
+    const localMap = new Map(activeLocalReleases.map(r => [Number(r.id), r]));
+    const normalizedCloud = cloudReleases
+      .map(r => this.normalizeRelease(r))
+      .filter(r => !this.isReleaseTombstoned(r, deletedMap));
     const cloudIdMap = new Map(normalizedCloud.map(r => [Number(r.id), r]));
 
     const merged = [];
@@ -457,8 +587,8 @@ class ReleaseStore {
       merged.push(this.normalizeRelease(winner));
     }
 
-    // Preserve any local releases that are not yet in cloud data
-    for (const localRel of this.releases) {
+    // Preserve any non-tombstoned local releases that are not yet in cloud data
+    for (const localRel of activeLocalReleases) {
       const id = Number(localRel.id);
       if (!cloudIdMap.has(id)) {
         merged.push(this.normalizeRelease(localRel));
@@ -469,24 +599,43 @@ class ReleaseStore {
     // Ensure sorted descending by ID
     merged.sort((a, b) => Number(b.id) - Number(a.id));
 
-    // Only push back to cloud if local changes actually altered the merged cloud dataset
-    if (localHasNewerChanges) {
-      const serializeDigest = (arr) =>
-        [...arr]
-          .sort((a, b) => Number(b.id) - Number(a.id))
-          .map(r => `${r.id}:${r.name}:${r.stage}:${r.status}:${r.targetDeploy}:${r.gitlabUrl || ''}:${r.updatedAt || ''}`)
-          .join('|');
-      if (serializeDigest(normalizedCloud) !== serializeDigest(merged)) {
-        this.syncCloud(merged);
-        if (this.isSupabaseConnected || isSupabaseConfigured()) {
-          seedSupabaseFromLocal(merged, this.holidays).catch(err => {
-            console.warn('Auto-seed to Supabase error during merge:', err);
-          });
-        }
+    // Only push back to cloud if local changes or local deletions actually need to reach cloud
+    const serializeDigest = (arr) =>
+      [...arr]
+        .sort((a, b) => Number(b.id) - Number(a.id))
+        .map(r => `${r.id}:${r.name}:${r.stage}:${r.status}:${r.targetDeploy}:${r.gitlabUrl || ''}:${r.updatedAt || ''}`)
+        .join('|');
+    const hasCloudReleaseDiff =
+      localHasNewerChanges &&
+      serializeDigest(normalizedCloud) !== serializeDigest(merged);
+    if (hasCloudReleaseDiff || localHasNewerDeletions) {
+      this.syncCloud(merged);
+      if (this.isSupabaseConnected || isSupabaseConfigured()) {
+        seedSupabaseFromLocal(merged, this.holidays).catch(err => {
+          console.warn('Auto-seed to Supabase error during merge:', err);
+        });
       }
     }
 
     return merged;
+  }
+
+  applyCloudData(cloudData) {
+    if (!cloudData || !Array.isArray(cloudData.releases)) return false;
+    const hasDeletions = Array.isArray(cloudData.deletedIds) && cloudData.deletedIds.length > 0;
+    if (cloudData.releases.length === 0 && !hasDeletions) return false;
+    this.releases = this.mergeWithLocalReleases(cloudData.releases, cloudData.deletedIds || []);
+    this.saveReleases();
+    if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
+      this.holidays = cloudData.holidays.filter(h => 
+        !h.name?.toLowerCase().includes('reporting load') &&
+        !h.name?.toLowerCase().includes('month-end') &&
+        !h.notes?.toLowerCase().includes('reporting load')
+      );
+      this.saveHolidays();
+    }
+    this.recalculateAllHolidayConflicts();
+    return true;
   }
 
   // --- Zero-Config Live Cloud Sync (Vercel Global Storage) ---
@@ -496,18 +645,7 @@ class ReleaseStore {
       this.notify();
 
       const cloudData = await fetchCloudStore();
-      if (cloudData && Array.isArray(cloudData.releases) && cloudData.releases.length > 0) {
-        this.releases = this.mergeWithLocalReleases(cloudData.releases);
-        this.saveReleases();
-        if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
-          this.holidays = cloudData.holidays.filter(h => 
-            !h.name?.toLowerCase().includes('reporting load') &&
-            !h.name?.toLowerCase().includes('month-end') &&
-            !h.notes?.toLowerCase().includes('reporting load')
-          );
-          this.saveHolidays();
-        }
-        this.recalculateAllHolidayConflicts();
+      if (this.applyCloudData(cloudData)) {
         this.isCloudConnected = true;
       }
       this.startPolling();
@@ -583,6 +721,7 @@ class ReleaseStore {
       const row = payload.new;
       if (!row || !row.id) return;
       const mapped = this.normalizeRelease(mapDbToRelease(row));
+      if (this.isReleaseTombstoned(mapped)) return;
       const idx = this.releases.findIndex(r => Number(r.id) === Number(mapped.id));
       if (idx >= 0) {
         this.releases[idx] = mapped;
@@ -596,6 +735,8 @@ class ReleaseStore {
     } else if (payload.eventType === 'DELETE') {
       const id = Number(payload.old?.id);
       if (id) {
+        const existing = this.releases.find(r => Number(r.id) === id);
+        this.recordDeletedRelease(id, existing?.createdAt);
         this.releases = this.releases.filter(r => Number(r.id) !== id);
         this.saveReleases();
         this.recalculateAllHolidayConflicts();
@@ -644,18 +785,8 @@ class ReleaseStore {
     this.notify();
     try {
       const cloudData = await fetchCloudStore();
-      if (cloudData && Array.isArray(cloudData.releases) && cloudData.releases.length > 0) {
-        this.releases = this.mergeWithLocalReleases(cloudData.releases);
-        if (Array.isArray(cloudData.holidays) && cloudData.holidays.length > 0) {
-          this.holidays = cloudData.holidays.filter(h => 
-            !h.name?.toLowerCase().includes('reporting load') &&
-            !h.name?.toLowerCase().includes('month-end') &&
-            !h.notes?.toLowerCase().includes('reporting load')
-          );
-          this.saveHolidays();
-        }
-        this.saveReleases();
-        this.recalculateAllHolidayConflicts();
+      if (this.applyCloudData(cloudData)) {
+        this.isCloudConnected = true;
       }
       if (this.isSupabaseConnected) {
         await this.initSupabase();
@@ -698,7 +829,7 @@ class ReleaseStore {
     this.pollInterval = setInterval(async () => {
       // Skip polling while tab is hidden or an active sync/recent local mutation is in progress
       if (typeof document !== 'undefined' && document.hidden) return;
-      if (this.isSyncing) return;
+      if (this.isSyncing || this._isPushingCloud) return;
       if (Date.now() - (this.lastLocalMutation || 0) < 4000) return;
 
       if (this.isSupabaseConnected) {
@@ -719,7 +850,7 @@ class ReleaseStore {
           }
 
           const normalizedCloud = cloudData.releases.map(r => this.normalizeRelease(r));
-          const merged = this.mergeWithLocalReleases(normalizedCloud);
+          const merged = this.mergeWithLocalReleases(normalizedCloud, cloudData.deletedIds || []);
           const currSummary = this.releases.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}:${r.updatedAt || ''}`).join('|');
           const newSummary = merged.map(r => `${r.id}:${r.stage}:${r.status}:${r.targetDeploy}:${r.name}:${r.updatedAt || ''}`).join('|');
           if (currSummary !== newSummary) {
@@ -748,15 +879,36 @@ class ReleaseStore {
   }
 
   async syncCloud(releasesToPush = null) {
-    const toPush = releasesToPush || this.releases;
+    if (this._isPushingCloud) {
+      this._cloudPushQueued = true;
+      this._queuedPushReleases = releasesToPush;
+      return;
+    }
+
+    this._isPushingCloud = true;
+    this.setLocalMutationTime();
+    let nextReleases = releasesToPush;
+
     try {
       this.isSyncing = true;
       this.notify();
-      await pushCloudStore(toPush, this.holidays);
-      this.setLocalMutationTime();
+
+      do {
+        this._cloudPushQueued = false;
+        const toPush = nextReleases || this.releases;
+        nextReleases = null;
+        await pushCloudStore(toPush, this.holidays, this.deletedReleases);
+        if (this._cloudPushQueued) {
+          nextReleases = this._queuedPushReleases;
+          this._queuedPushReleases = null;
+        }
+      } while (this._cloudPushQueued);
     } catch (err) {
       console.warn('Failed to push updates to cloud store:', err);
     } finally {
+      this._isPushingCloud = false;
+      this._cloudPushQueued = false;
+      this._queuedPushReleases = null;
       this.isSyncing = false;
       this.notify();
     }
@@ -832,9 +984,9 @@ class ReleaseStore {
 
   // --- CRUD for Releases ---
   addRelease(data) {
-    const nextId = this.releases.length > 0
-      ? Math.max(...this.releases.map(r => Number(r.id) || 0)) + 1
-      : 1;
+    const maxReleaseId = this.releases.reduce((max, r) => Math.max(max, Number(r.id) || 0), 0);
+    const maxDeletedId = this.deletedReleases.reduce((max, d) => Math.max(max, Number(d.id) || 0), 0);
+    const nextId = Math.max(maxReleaseId, maxDeletedId) + 1;
 
     const conflict = this.checkHolidayConflict(data.targetDeploy);
     const nowIso = new Date().toISOString();
@@ -962,6 +1114,8 @@ class ReleaseStore {
     const targetId = Number(id);
     const index = this.releases.findIndex(r => Number(r.id) === targetId);
     if (index === -1) return false;
+    const target = this.releases[index];
+    this.recordDeletedRelease(targetId, target?.createdAt);
     this.releases.splice(index, 1);
     this.saveReleases();
     this.setLocalMutationTime();

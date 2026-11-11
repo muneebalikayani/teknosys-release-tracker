@@ -46,14 +46,15 @@ export async function fetchCloudStore() {
 /**
  * Save releases & holidays to the shared cloud store
  */
-export async function pushCloudStore(releases, holidays) {
+export async function pushCloudStore(releases, holidays, deletedIds = []) {
   try {
     const res = await fetch('/api/sync', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         releases: releases || [],
-        holidays: holidays || []
+        holidays: holidays || [],
+        deletedIds: deletedIds || []
       })
     });
 
