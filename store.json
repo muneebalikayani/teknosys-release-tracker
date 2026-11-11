@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 59,
+      "name": "Simosa Parent Child Data sourcing - Dev changes",
+      "ritm": "",
+      "cr": "",
+      "developer": "Daniyal Ahmed",
+      "version": "v2",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-11",
+      "targetDeploy": "2026-11-16",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-11T04:38:27.870Z",
+      "updatedAt": "2026-11-11T04:38:27.870Z",
+      "lastModified": 1794371907870
+    },
+    {
       "id": 58,
       "name": "CVM Sourcing",
       "ritm": "",
@@ -1337,5 +1360,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T04:37:48.242Z"
+  "updatedAt": "2026-11-11T04:38:29.895Z"
 }
