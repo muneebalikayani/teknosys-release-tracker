@@ -117,7 +117,7 @@
     },
     {
       "id": 56,
-      "name": "Tamasha Definition Update",
+      "name": "Tamasha Definition Update - Prepaid Multiplay Monthly",
       "ritm": "RITM0171316",
       "cr": "CHG0156056",
       "developer": "Daniyal Ahmed",
@@ -134,8 +134,8 @@
       "email": "",
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:38:05.538Z",
-      "updatedAt": "2026-11-11T05:56:11.514Z",
-      "lastModified": 1794376571514,
+      "updatedAt": "2026-11-11T05:57:33.348Z",
+      "lastModified": 1794376653348,
       "gitlabUrl": ""
     },
     {
@@ -1406,5 +1406,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T05:57:28.342Z"
+  "updatedAt": "2026-11-11T05:57:34.988Z"
 }
