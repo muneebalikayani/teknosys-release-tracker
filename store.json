@@ -284,24 +284,24 @@
     },
     {
       "id": 45,
-      "name": "Postpaid Revenue Fixture - Multiplay Marts (30 Day & 90 Day)",
-      "ritm": "RITM0167917",
-      "cr": "CHG0154162",
-      "developer": "Husinah Amir",
+      "name": "Handover of CAB and GCG Jobs to DWH/Operations - Migration",
+      "ritm": "",
+      "cr": "",
+      "developer": "Ukasha Shafique",
       "version": "v1",
       "platform": "GSM",
       "type": "Scheduled",
-      "startDate": "2026-10-26",
-      "targetDeploy": "2026-10-28",
-      "stage": "Completed",
+      "startDate": "2026-11-10",
+      "targetDeploy": "2026-11-18",
+      "stage": "Development",
       "owner": "Dev Team",
-      "status": "Completed",
-      "dbObjects": "JTR_PRD_01_OPTM_STD_0_V.DWN_5079_POSTPAID_MULTIPLAY_90_DAYS, JTR_PRD_01_SHRD_STD_0_V.POSTPAID_MULTIPLAY_MONTHY",
+      "status": "On Track",
+      "dbObjects": "",
       "notes": "",
       "email": "",
       "holidayConflict": "",
-      "updatedAt": "2026-11-04T10:07:52.880Z",
-      "lastModified": 1793786872888,
+      "updatedAt": "2026-11-10T10:09:09.669Z",
+      "lastModified": 1794305349669,
       "createdAt": "2026-11-10T09:52:13.607Z",
       "gitlabUrl": ""
     },
@@ -916,9 +916,9 @@
       "type": "Scheduled",
       "startDate": "2026-09-08",
       "targetDeploy": "2026-09-09",
-      "stage": "Development",
+      "stage": "Completed",
       "owner": "Dev Team",
-      "status": "On Track",
+      "status": "Completed",
       "dbObjects": "",
       "notes": "None",
       "email": "",
@@ -1335,14 +1335,7 @@
       "startDate": "2027-12-25",
       "endDate": "2027-12-25",
       "notes": "Fixed public holiday"
-    },
-    {
-      "id": 22,
-      "name": "Birthday",
-      "startDate": "2027-03-22",
-      "endDate": "2027-03-22",
-      "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T04:33:08.046Z"
+  "updatedAt": "2026-11-11T04:33:44.331Z"
 }
