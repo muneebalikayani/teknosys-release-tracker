@@ -440,12 +440,12 @@
     {
       "id": 42,
       "name": "Prepaid Lifecycle Traffic Active Fixture",
-      "ritm": "",
-      "cr": "",
+      "ritm": "RITM-346264",
+      "cr": "CR-023243",
       "developer": "Rabia Qayyum",
       "version": "v1",
       "platform": "GSM",
-      "type": "Scheduled",
+      "type": "Emergency",
       "startDate": "2026-10-05",
       "targetDeploy": "2026-10-21",
       "stage": "Completed",
@@ -455,7 +455,9 @@
       "notes": "",
       "email": "",
       "holidayConflict": "",
-      "gitlabUrl": ""
+      "gitlabUrl": "",
+      "updatedAt": "2026-11-11T07:53:18.234Z",
+      "lastModified": 1794383598234
     },
     {
       "id": 41,
@@ -1429,5 +1431,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T07:32:35.291Z"
+  "updatedAt": "2026-11-11T07:53:18.792Z"
 }
