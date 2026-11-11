@@ -22,13 +22,13 @@ export function renderReleaseList(container) {
 
   const searchMode = store.searchMode || 'all';
   let hintText = 'Search across releases, developers, tickets & database objects';
-  let placeholderText = 'Search releases, CR, DB...';
+  let placeholderText = 'Search releases, developers, CR, RITM, or database objects...';
   if (searchMode === 'general') {
     hintText = 'Release name, developer, CR, RITM, version';
-    placeholderText = 'Search releases, developers, CR...';
+    placeholderText = 'Search releases, developers, CR, RITM...';
   } else if (searchMode === 'dbObjects') {
     hintText = `${allDbObjects.length} database objects available`;
-    placeholderText = 'Search DB object (e.g. DW_..., SP_...)';
+    placeholderText = 'Search database object (e.g. JTR_PRD_..., DW_...)';
   }
 
   const platforms = ['ALL', ...store.platforms];
@@ -105,17 +105,17 @@ export function renderReleaseList(container) {
       <div class="filter-bar card">
         <div class="unified-search-wrapper" id="unified-search-wrapper">
           <div class="segmented-control search-mode-control" title="Choose Search Scope">
-            <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all" title="Search all fields">
+            <button type="button" class="seg-btn ${searchMode === 'all' ? 'active' : ''}" data-search-mode="all">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-              All
+              All Search
             </button>
-            <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general" title="Search releases, developers, CR, RITM">
+            <button type="button" class="seg-btn ${searchMode === 'general' ? 'active' : ''}" data-search-mode="general">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-              General
+              General Search
             </button>
-            <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects" title="Search database objects">
+            <button type="button" class="seg-btn ${searchMode === 'dbObjects' ? 'active' : ''}" data-search-mode="dbObjects">
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3"></path></svg>
-              DB Objects
+              Database Objects
             </button>
           </div>
 
@@ -139,47 +139,47 @@ export function renderReleaseList(container) {
           <div class="filter-item">
             <label class="filter-label">Platform</label>
             <select id="filter-platform" class="filter-select">
-              ${platforms.map(p => `<option value="${p}" ${store.filters.platform === p ? 'selected' : ''}>${p === 'ALL' ? 'All' : p}</option>`).join('')}
+              ${platforms.map(p => `<option value="${p}" ${store.filters.platform === p ? 'selected' : ''}>${p === 'ALL' ? 'All Platforms' : p}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Type</label>
             <select id="filter-type" class="filter-select">
-              ${types.map(t => `<option value="${t}" ${store.filters.type === t ? 'selected' : ''}>${t === 'ALL' ? 'All' : t}</option>`).join('')}
+              ${types.map(t => `<option value="${t}" ${store.filters.type === t ? 'selected' : ''}>${t === 'ALL' ? 'All Types' : t}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Stage</label>
             <select id="filter-stage" class="filter-select">
-              ${stages.map(s => `<option value="${s}" ${store.filters.stage === s ? 'selected' : ''}>${s === 'ALL' ? 'All' : s}</option>`).join('')}
+              ${stages.map(s => `<option value="${s}" ${store.filters.stage === s ? 'selected' : ''}>${s === 'ALL' ? 'All Stages' : s}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Status</label>
             <select id="filter-status" class="filter-select">
-              ${statuses.map(st => `<option value="${st}" ${store.filters.status === st ? 'selected' : ''}>${st === 'ALL' ? 'All' : st}</option>`).join('')}
+              ${statuses.map(st => `<option value="${st}" ${store.filters.status === st ? 'selected' : ''}>${st === 'ALL' ? 'All Statuses' : st}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Owner</label>
             <select id="filter-owner" class="filter-select">
-              ${owners.map(o => `<option value="${o}" ${store.filters.owner === o ? 'selected' : ''}>${o === 'ALL' ? 'All' : o}</option>`).join('')}
+              ${owners.map(o => `<option value="${o}" ${store.filters.owner === o ? 'selected' : ''}>${o === 'ALL' ? 'All Owners' : o}</option>`).join('')}
             </select>
           </div>
 
           <div class="filter-item">
             <label class="filter-label">Sort</label>
             <select id="filter-sort" class="filter-select">
-              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Desc)</option>
-              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (Asc)</option>
+              <option value="id-desc" ${currentSortKey === 'id-desc' ? 'selected' : ''}># ID (Descending)</option>
+              <option value="id-asc" ${currentSortKey === 'id-asc' ? 'selected' : ''}># ID (Ascending)</option>
               <option value="targetDeploy-desc" ${currentSortKey === 'targetDeploy-desc' ? 'selected' : ''}>Timeline (Newest)</option>
               <option value="targetDeploy-asc" ${currentSortKey === 'targetDeploy-asc' ? 'selected' : ''}>Timeline (Oldest)</option>
-              <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Name (A → Z)</option>
-              <option value="name-desc" ${currentSortKey === 'name-desc' ? 'selected' : ''}>Name (Z → A)</option>
+              <option value="name-asc" ${currentSortKey === 'name-asc' ? 'selected' : ''}>Release Name (A → Z)</option>
+              <option value="name-desc" ${currentSortKey === 'name-desc' ? 'selected' : ''}>Release Name (Z → A)</option>
               <option value="developer-asc" ${currentSortKey === 'developer-asc' ? 'selected' : ''}>Developer (A → Z)</option>
               <option value="platform-asc" ${currentSortKey === 'platform-asc' ? 'selected' : ''}>Platform</option>
               <option value="stage-asc" ${currentSortKey === 'stage-asc' ? 'selected' : ''}>Stage</option>
@@ -188,7 +188,7 @@ export function renderReleaseList(container) {
           </div>
 
           <div id="reset-filter-wrap" style="${hasActiveFilters ? 'display: inline-block;' : 'display: none;'}">
-            <button class="btn btn-ghost btn-sm reset-filter-link" id="btn-reset-filters" title="Reset all filters">Clear</button>
+            <button class="btn btn-ghost btn-sm reset-filter-link" id="btn-reset-filters" title="Reset all filters">Clear Filters</button>
           </div>
         </div>
       </div>
@@ -625,7 +625,7 @@ function setupTableEvents(container) {
       if (newMode === 'general') {
         if (hintEl) hintEl.textContent = 'Release name, developer, CR, RITM, version';
         if (searchInput) {
-          searchInput.placeholder = 'Search releases, CR, RITM...';
+          searchInput.placeholder = 'Search releases, developers, CR, RITM...';
           searchInput.classList.remove('font-mono', 'search-input-impacted');
         }
         searchBox?.classList.remove('search-box-impacted');
@@ -637,7 +637,7 @@ function setupTableEvents(container) {
       } else if (newMode === 'dbObjects') {
         if (hintEl) hintEl.textContent = `${allDbObjects.length} database objects available`;
         if (searchInput) {
-          searchInput.placeholder = 'Search DB object (e.g. DW_..., SP_...)';
+          searchInput.placeholder = 'Search database object (e.g. JTR_PRD_..., DW_...)';
           searchInput.classList.add('font-mono', 'search-input-impacted');
         }
         searchBox?.classList.add('search-box-impacted');
@@ -649,7 +649,7 @@ function setupTableEvents(container) {
       } else {
         if (hintEl) hintEl.textContent = 'Search across releases, developers, tickets & database objects';
         if (searchInput) {
-          searchInput.placeholder = 'Search releases, CR, DB...';
+          searchInput.placeholder = 'Search releases, developers, CR, RITM, or database objects...';
           searchInput.classList.remove('font-mono', 'search-input-impacted');
         }
         searchBox?.classList.remove('search-box-impacted');
