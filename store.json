@@ -8,7 +8,7 @@
       "developer": "Moiez Bhatti",
       "version": "v1",
       "platform": "GSM",
-      "type": "Emergency",
+      "type": "Hotfix",
       "startDate": "2026-11-11",
       "targetDeploy": "2026-11-11",
       "stage": "Development",
@@ -20,8 +20,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-11T07:56:03.079Z",
-      "updatedAt": "2026-11-11T07:56:03.079Z",
-      "lastModified": 1794383763079
+      "updatedAt": "2026-11-11T07:56:53.556Z",
+      "lastModified": 1794383813556
     },
     {
       "id": 62,
@@ -1454,5 +1454,5 @@
       "notes": "Fixed public holiday"
     }
   ],
-  "updatedAt": "2026-11-11T07:56:03.564Z"
+  "updatedAt": "2026-11-11T07:56:54.037Z"
 }
