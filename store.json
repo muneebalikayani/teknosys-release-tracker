@@ -20,8 +20,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-11T07:56:03.079Z",
-      "updatedAt": "2026-11-11T17:25:20.168Z",
-      "lastModified": 1794417920168
+      "updatedAt": "2026-11-13T10:24:18.717Z",
+      "lastModified": 1794565458717
     },
     {
       "id": 62,
@@ -1437,5 +1437,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-11T17:56:46.113Z"
+  "updatedAt": "2026-11-13T10:24:19.537Z"
 }
