@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 64,
+      "name": "Daily Standup Dashboard Renaming Missing KPIs",
+      "ritm": "",
+      "cr": "",
+      "developer": "Javaria",
+      "version": "v1",
+      "platform": "DFS",
+      "type": "Scheduled",
+      "startDate": "2026-11-16",
+      "targetDeploy": "2026-11-16",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-16T09:52:29.878Z",
+      "updatedAt": "2026-11-16T09:52:29.878Z",
+      "lastModified": 1794822749878
+    },
+    {
       "id": 63,
       "name": "Multiplay postpaid Dependency Changes",
       "ritm": "",
@@ -1437,5 +1460,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-13T10:24:19.537Z"
+  "updatedAt": "2026-11-16T09:52:30.076Z"
 }
