@@ -11,17 +11,17 @@
       "type": "Scheduled",
       "startDate": "2026-11-02",
       "targetDeploy": "2026-11-16",
-      "stage": "Production",
+      "stage": "Completed",
       "owner": "Dev Team",
-      "status": "On Track",
+      "status": "Completed",
       "dbObjects": "JTR_PRD_01_OPTM_STD_0_V.SBSCRPN_LIFCYCL_DAILY_FCT",
       "notes": "",
       "email": "rabia.qayyum1@jazz.com.pk",
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-16T12:17:56.265Z",
-      "updatedAt": "2026-11-16T12:17:56.265Z",
-      "lastModified": 1794831476265
+      "updatedAt": "2026-11-16T12:25:32.623Z",
+      "lastModified": 1794831932623
     },
     {
       "id": 65,
@@ -1506,5 +1506,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-16T12:17:57.238Z"
+  "updatedAt": "2026-11-16T12:25:33.398Z"
 }
