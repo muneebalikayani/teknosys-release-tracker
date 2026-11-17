@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 68,
+      "name": "Bundle Upsell and USSD fix (1-12th Nov, 2026)",
+      "ritm": "RITM0172638",
+      "cr": "",
+      "developer": "Hafsa Malik",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-18",
+      "targetDeploy": "2026-11-18",
+      "stage": "CAB",
+      "owner": "Release Manager",
+      "status": "On Track",
+      "dbObjects": "JTR_PRD_01_OPTM_STD_0_T.PROD_ACTVTN_FCT\nJTR_PRD_01_CORE_STD_0_T.SBSCRPN_OFRG_PROD_CHRG",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-17T06:30:23.852Z",
+      "updatedAt": "2026-11-17T06:30:23.852Z",
+      "lastModified": 1794897023852
+    },
+    {
       "id": 67,
       "name": "Postpaid Base packages fix",
       "ritm": "RITM0172619",
@@ -1529,5 +1552,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-17T06:24:38.518Z"
+  "updatedAt": "2026-11-17T06:30:24.368Z"
 }
