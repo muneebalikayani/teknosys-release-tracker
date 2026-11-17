@@ -218,7 +218,7 @@
       "type": "Scheduled",
       "startDate": "2026-11-10",
       "targetDeploy": "2026-11-18",
-      "stage": "Development",
+      "stage": "CAB",
       "owner": "Dev Team",
       "status": "On Track",
       "dbObjects": "",
@@ -226,8 +226,8 @@
       "email": "Handover of CAB and GCG Jobs to Operations",
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:46:58.474Z",
-      "updatedAt": "2026-11-17T04:14:18.481Z",
-      "lastModified": 1794888858481,
+      "updatedAt": "2026-11-17T06:02:27.857Z",
+      "lastModified": 1794895347857,
       "gitlabUrl": ""
     },
     {
@@ -1529,5 +1529,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-17T06:01:58.938Z"
+  "updatedAt": "2026-11-17T06:02:28.412Z"
 }
