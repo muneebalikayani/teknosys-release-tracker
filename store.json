@@ -210,8 +210,8 @@
     {
       "id": 57,
       "name": "Handover of CAB and GCG Jobs to DWH/Operations - Migration",
-      "ritm": "",
-      "cr": "",
+      "ritm": "RITM0172606",
+      "cr": "CHG0156722",
       "developer": "Ukasha Shafique",
       "version": "v1",
       "platform": "GSM",
@@ -223,11 +223,11 @@
       "status": "On Track",
       "dbObjects": "",
       "notes": "",
-      "email": "",
+      "email": "Handover of CAB and GCG Jobs to Operations",
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:46:58.474Z",
-      "updatedAt": "2026-11-10T14:46:58.474Z",
-      "lastModified": 1794322018474,
+      "updatedAt": "2026-11-17T04:14:18.481Z",
+      "lastModified": 1794888858481,
       "gitlabUrl": ""
     },
     {
@@ -1529,5 +1529,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-16T12:57:07.053Z"
+  "updatedAt": "2026-11-17T04:14:19.074Z"
 }
