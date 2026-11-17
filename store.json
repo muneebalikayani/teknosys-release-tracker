@@ -27,7 +27,7 @@
       "id": 67,
       "name": "Postpaid Base packages fix",
       "ritm": "RITM0172619",
-      "cr": "",
+      "cr": "CHG0156845",
       "developer": "Hassan Munir",
       "version": "v1",
       "platform": "GSM",
@@ -43,8 +43,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-16T12:57:06.257Z",
-      "updatedAt": "2026-11-16T12:57:06.257Z",
-      "lastModified": 1794833826257
+      "updatedAt": "2026-11-17T07:19:51.155Z",
+      "lastModified": 1794899991155
     },
     {
       "id": 66,
@@ -1552,5 +1552,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-17T06:30:24.368Z"
+  "updatedAt": "2026-11-17T07:19:52.075Z"
 }
