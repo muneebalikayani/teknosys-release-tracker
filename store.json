@@ -171,7 +171,7 @@
       "platform": "GSM",
       "type": "Scheduled",
       "startDate": "2026-11-11",
-      "targetDeploy": "2026-11-16",
+      "targetDeploy": "2026-11-18",
       "stage": "CAB",
       "owner": "Dev Team",
       "status": "On Track",
@@ -181,8 +181,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-11T04:38:27.870Z",
-      "updatedAt": "2026-11-17T06:04:22.924Z",
-      "lastModified": 1794895462924
+      "updatedAt": "2026-11-17T06:04:29.313Z",
+      "lastModified": 1794895469313
     },
     {
       "id": 58,
@@ -1529,5 +1529,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-17T06:04:23.528Z"
+  "updatedAt": "2026-11-17T06:04:29.960Z"
 }
