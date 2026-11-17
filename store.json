@@ -226,9 +226,9 @@
       "email": "Handover of CAB and GCG Jobs to Operations",
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:46:58.474Z",
-      "updatedAt": "2026-11-17T06:02:27.857Z",
-      "lastModified": 1794895347857,
-      "gitlabUrl": ""
+      "updatedAt": "2026-11-17T06:24:37.738Z",
+      "lastModified": 1794896677738,
+      "gitlabUrl": "https://dwh-gitlab-01.jazz.com.pk/dataops/dataops-spec/-/blob/dev-sprint-sem-gf-gcg-cab/spec"
     },
     {
       "id": 56,
@@ -1529,5 +1529,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-17T06:08:33.631Z"
+  "updatedAt": "2026-11-17T06:24:38.518Z"
 }
