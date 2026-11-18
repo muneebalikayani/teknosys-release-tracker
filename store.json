@@ -187,8 +187,8 @@
     {
       "id": 59,
       "name": "Simosa Parent Child Data sourcing - Dev changes",
-      "ritm": "",
-      "cr": "",
+      "ritm": "RITM0173122",
+      "cr": "CHG0157096",
       "developer": "Daniyal Ahmed",
       "version": "v2",
       "platform": "GSM",
@@ -204,8 +204,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-11T04:38:27.870Z",
-      "updatedAt": "2026-11-17T06:04:29.313Z",
-      "lastModified": 1794895469313
+      "updatedAt": "2026-11-18T07:28:32.277Z",
+      "lastModified": 1794986912277
     },
     {
       "id": 58,
@@ -1552,5 +1552,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-17T07:19:52.075Z"
+  "updatedAt": "2026-11-18T07:28:34.594Z"
 }
