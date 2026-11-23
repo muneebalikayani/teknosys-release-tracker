@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 69,
+      "name": "FVOC Survey Script Update",
+      "ritm": "RITM0174148",
+      "cr": "CHG0157683",
+      "developer": "Hafsa Maik",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-23",
+      "targetDeploy": "2026-11-25",
+      "stage": "CAB",
+      "owner": "Release Manager",
+      "status": "On Track",
+      "dbObjects": "DP_DIT.EXPORT_MEDALLIA_FRANCHISE",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-23T07:55:22.649Z",
+      "updatedAt": "2026-11-23T07:55:22.649Z",
+      "lastModified": 1795420522649
+    },
+    {
       "id": 68,
       "name": "Bundle Upsell and USSD fix (1-12th Nov, 2026)",
       "ritm": "RITM0172638",
@@ -1552,5 +1575,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-23T07:41:43.772Z"
+  "updatedAt": "2026-11-23T07:55:23.352Z"
 }
