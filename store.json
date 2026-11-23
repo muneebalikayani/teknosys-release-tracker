@@ -4,7 +4,7 @@
       "id": 68,
       "name": "Bundle Upsell and USSD fix (1-12th Nov, 2026)",
       "ritm": "RITM0172638",
-      "cr": "",
+      "cr": "CHG0141551",
       "developer": "Hafsa Malik",
       "version": "v1",
       "platform": "GSM",
@@ -20,8 +20,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-17T06:30:23.852Z",
-      "updatedAt": "2026-11-17T06:30:23.852Z",
-      "lastModified": 1794897023852
+      "updatedAt": "2026-11-23T07:41:31.963Z",
+      "lastModified": 1795419691963
     },
     {
       "id": 67,
@@ -1552,5 +1552,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-18T07:53:40.578Z"
+  "updatedAt": "2026-11-23T07:41:32.710Z"
 }
