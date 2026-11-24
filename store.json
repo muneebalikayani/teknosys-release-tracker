@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 71,
+      "name": "FikrFree & GameNow Addition Multiplay Postpaid Monthly + Tariff View Update for M2M Devices Bifurcation",
+      "ritm": "",
+      "cr": "CHG0157944",
+      "developer": "Bilal Siddiqui",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-25",
+      "targetDeploy": "2026-11-25",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "--MP\n jtr_PRD_01_OPTM_STD_0_V.INTM_MP_FIKRFREE_PP_MTHLY\n,jtr_PRD_01_OPTM_STD_0_V.INTM_MP_GAMENOW_PP_MTHLY\n,jtr_PRD_01_OPTM_STD_0_V.INTM_MP_DIGITAL_PP_MTHLY\n,jtr_PRD_01_OPTM_STD_0_V.POSTPAID_MULTIPLAY_MONTHLY\n\n--M2M\n,JTR_PRD_01_PRC_STD_0_V.DIM_MTH_END_PRODUCT_CATALOG",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-24T08:37:58.172Z",
+      "updatedAt": "2026-11-24T08:37:58.172Z",
+      "lastModified": 1795509478172
+    },
+    {
       "id": 70,
       "name": "Monthly Line rent postpaid commissions",
       "ritm": "RITM0174444",
@@ -1598,5 +1621,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-24T07:06:35.918Z"
+  "updatedAt": "2026-11-24T08:37:58.802Z"
 }
