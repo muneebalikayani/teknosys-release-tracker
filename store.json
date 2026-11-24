@@ -1,6 +1,29 @@
 {
   "releases": [
     {
+      "id": 70,
+      "name": "Monthly Line rent postpaid commissions",
+      "ritm": "RITM0174444",
+      "cr": "CHG0157881",
+      "developer": "Moeiz bhatti",
+      "version": "v1",
+      "platform": "GSM",
+      "type": "Scheduled",
+      "startDate": "2026-11-25",
+      "targetDeploy": "2026-11-25",
+      "stage": "Development",
+      "owner": "Dev Team",
+      "status": "On Track",
+      "dbObjects": "",
+      "notes": "",
+      "email": "",
+      "gitlabUrl": "",
+      "holidayConflict": "",
+      "createdAt": "2026-11-24T07:06:34.971Z",
+      "updatedAt": "2026-11-24T07:06:34.971Z",
+      "lastModified": 1795503994971
+    },
+    {
       "id": 69,
       "name": "FVOC Survey Script Update",
       "ritm": "RITM0174148",
@@ -1575,5 +1598,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-23T07:55:23.352Z"
+  "updatedAt": "2026-11-24T07:06:35.918Z"
 }
