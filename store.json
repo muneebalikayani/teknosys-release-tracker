@@ -3,7 +3,7 @@
     {
       "id": 71,
       "name": "FikrFree & GameNow Addition Multiplay Postpaid Monthly + Tariff View Update for M2M Devices Bifurcation",
-      "ritm": "",
+      "ritm": "RITM0174539",
       "cr": "CHG0157944",
       "developer": "Bilal Siddiqui",
       "version": "v1",
@@ -20,8 +20,8 @@
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-24T08:37:58.172Z",
-      "updatedAt": "2026-11-24T08:37:58.172Z",
-      "lastModified": 1795509478172
+      "updatedAt": "2026-11-24T10:20:24.325Z",
+      "lastModified": 1795515624325
     },
     {
       "id": 70,
@@ -1621,5 +1621,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-24T08:37:58.802Z"
+  "updatedAt": "2026-11-24T10:20:25.055Z"
 }
