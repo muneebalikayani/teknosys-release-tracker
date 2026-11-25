@@ -57,17 +57,17 @@
       "type": "Scheduled",
       "startDate": "2026-11-23",
       "targetDeploy": "2026-11-25",
-      "stage": "CAB",
+      "stage": "Completed",
       "owner": "Release Manager",
-      "status": "On Track",
+      "status": "Completed",
       "dbObjects": "DP_DIT.EXPORT_MEDALLIA_FRANCHISE",
       "notes": "",
       "email": "",
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-23T07:55:22.649Z",
-      "updatedAt": "2026-11-23T07:55:22.649Z",
-      "lastModified": 1795420522649
+      "updatedAt": "2026-11-25T09:48:00.088Z",
+      "lastModified": 1795600080088
     },
     {
       "id": 68,
@@ -1621,5 +1621,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-25T06:48:52.985Z"
+  "updatedAt": "2026-11-25T09:48:00.184Z"
 }
