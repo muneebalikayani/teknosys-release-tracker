@@ -310,16 +310,16 @@
       "type": "Scheduled",
       "startDate": "2026-11-10",
       "targetDeploy": "2026-11-18",
-      "stage": "CAB",
+      "stage": "Completed",
       "owner": "Dev Team",
-      "status": "On Track",
+      "status": "Completed",
       "dbObjects": "",
       "notes": "",
       "email": "Handover of CAB and GCG Jobs to Operations",
       "holidayConflict": "",
       "createdAt": "2026-11-10T14:46:58.474Z",
-      "updatedAt": "2026-11-17T06:24:37.738Z",
-      "lastModified": 1794896677738,
+      "updatedAt": "2026-11-25T06:48:51.027Z",
+      "lastModified": 1795589331027,
       "gitlabUrl": "https://dwh-gitlab-01.jazz.com.pk/dataops/dataops-spec/-/blob/dev-sprint-sem-gf-gcg-cab/spec"
     },
     {
@@ -1621,5 +1621,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-25T06:48:10.352Z"
+  "updatedAt": "2026-11-25T06:48:52.985Z"
 }
