@@ -103,17 +103,17 @@
       "type": "Scheduled",
       "startDate": "2026-11-16",
       "targetDeploy": "2026-11-18",
-      "stage": "CAB",
+      "stage": "Completed",
       "owner": "Dev Team",
-      "status": "On Track",
+      "status": "Completed",
       "dbObjects": "JTR_PRD_01_CORE_STD_0_V.OFRG\nJTR_PRD_01_LIMA_STD_0_V.PCT_PRODUCTSSUBSCRIPTIONTYPEOPTIONGROUPS",
       "notes": "N/A",
       "email": "Postpaid Base packages fix deployment - PCT_PRODUCTSSUBSCRIPTIONTYPEOPTIONGROUPS Data fix",
       "gitlabUrl": "",
       "holidayConflict": "",
       "createdAt": "2026-11-16T12:57:06.257Z",
-      "updatedAt": "2026-11-17T07:19:51.155Z",
-      "lastModified": 1794899991155
+      "updatedAt": "2026-11-25T06:48:08.366Z",
+      "lastModified": 1795589288366
     },
     {
       "id": 66,
@@ -1621,5 +1621,5 @@
       "deletedAt": "2026-11-11T11:03:00.990Z"
     }
   ],
-  "updatedAt": "2026-11-24T10:20:25.055Z"
+  "updatedAt": "2026-11-25T06:48:10.352Z"
 }
